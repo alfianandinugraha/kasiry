@@ -2,6 +2,8 @@ package com.kasiry.app.screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Email
@@ -66,6 +68,8 @@ fun RegisterScreen(navController: NavController) {
 
         val focusManager = LocalFocusManager.current
 
+        val scrollState = rememberScrollState()
+
         val annotatedRegister = buildAnnotatedString {
             append("Sudah punya akun? ")
             withStyle(style = SpanStyle(color = Color.blue(500), fontWeight = FontWeight.Bold)) {
@@ -81,84 +85,88 @@ fun RegisterScreen(navController: NavController) {
         }
 
         Column(
-            modifier = Modifier
-                .padding(horizontal = 32.dp)
-                .padding(top = 128.dp)
+            modifier = Modifier.verticalScroll(scrollState),
         ) {
-            Text(
-                text = "Daftar",
-                style = Typo.body,
-                fontWeight = FontWeight.Bold,
-                fontSize = 32.sp,
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 2.dp),
-            )
-            Text(
-                text = "Daftar untuk memulai",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                style = Typo.body,
-                fontSize = 14.sp,
-                color = Color.gray(500),
-            )
-            TextField(
-                label = "Nama Lengkap",
-                modifier = Modifier.padding(bottom = 12.dp),
-                control = form,
-                name = "fullName",
-                startIcon = Icons.Rounded.Person
-            )
-            TextField(
-                label = "Email",
-                modifier = Modifier.padding(bottom = 12.dp),
-                control = form,
-                name = "email",
-                startIcon = Icons.Rounded.Email
-            )
-            TextField(
-                label = "Password",
-                modifier = Modifier.padding(bottom = 16.dp),
-                control = form,
-                name = "password",
-                startIcon = Icons.Rounded.Lock
-            )
-            Button(
-                onClick = {
-                    form.handleSubmit {
-                        form.clearFocus()
-                        focusManager.clearFocus()
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp)
+                    .padding(top = 128.dp, bottom = 32.dp)
             ) {
                 Text(
                     text = "Daftar",
-                    color = Color.White,
-                    style = Typo.body
+                    style = Typo.body,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 32.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 2.dp),
+                )
+                Text(
+                    text = "Daftar untuk memulai",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    style = Typo.body,
+                    fontSize = 14.sp,
+                    color = Color.gray(500),
+                )
+                TextField(
+                    label = "Nama Lengkap",
+                    modifier = Modifier.padding(bottom = 12.dp),
+                    control = form,
+                    name = "fullName",
+                    startIcon = Icons.Rounded.Person
+                )
+                TextField(
+                    label = "Email",
+                    modifier = Modifier.padding(bottom = 12.dp),
+                    control = form,
+                    name = "email",
+                    startIcon = Icons.Rounded.Email
+                )
+                TextField(
+                    label = "Password",
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    control = form,
+                    name = "password",
+                    startIcon = Icons.Rounded.Lock
+                )
+                Button(
+                    onClick = {
+                        form.handleSubmit {
+                            form.clearFocus()
+                            focusManager.clearFocus()
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Daftar",
+                        color = Color.White,
+                        style = Typo.body
+                    )
+                }
+                Text(
+                    text = annotatedRegister,
+                    style = Typo.body,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp)
+                        .clickable {
+                            navController.navigate("login")
+                        }
+                )
+                Text(
+                    text = annotatedForgotPassword,
+                    style = Typo.body,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 6.dp)
                 )
             }
-            Text(
-                text = annotatedRegister,
-                style = Typo.body,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp)
-                    .clickable {
-                        navController.navigate("login")
-                    }
-            )
-            Text(
-                text = annotatedForgotPassword,
-                style = Typo.body,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 6.dp)
-            )
         }
     }
 }
