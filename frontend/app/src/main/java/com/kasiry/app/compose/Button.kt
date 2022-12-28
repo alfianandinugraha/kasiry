@@ -18,14 +18,14 @@ import androidx.compose.ui.unit.dp
 import com.kasiry.app.theme.blue
 
 @Composable
-fun Button(modifier: Modifier = Modifier, onClick: (() -> Unit)? = null, content: @Composable () -> Unit) {
+fun Button(modifier: Modifier = Modifier, onClick: (() -> Unit)? = null, disabled: Boolean = false, content: @Composable () -> Unit) {
     val ripple = rememberRipple(bounded = false)
     Row(
         modifier = modifier
             .clip(shape = RoundedCornerShape(6.dp))
-            .background(color = Color.blue(500))
+            .background(color = Color.blue(if (disabled) 300 else 500))
             .padding(14.dp)
-            .clickable(indication = ripple, interactionSource = remember { MutableInteractionSource() }) {
+            .clickable(indication = ripple, interactionSource = remember { MutableInteractionSource() }, enabled = !disabled) {
                 if (onClick != null) {
                     onClick()
                 }

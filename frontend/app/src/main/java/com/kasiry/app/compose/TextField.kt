@@ -2,6 +2,7 @@ package com.kasiry.app.compose
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Icon
@@ -26,6 +27,7 @@ fun TextField(
     startIcon: ImageVector? = null,
     control: FormStore,
     name: String,
+    disabled: Boolean = false
 ) {
     val field = control.getField<String>(name)
     val value = field.value
@@ -56,7 +58,11 @@ fun TextField(
     Column(modifier = modifier) {
         BasicTextField(
             value = field.value,
+            enabled = !disabled,
             onValueChange = {
+                if (disabled) {
+                    return@BasicTextField
+                }
                 field.value = it
                 if (isSubmitted) {
                     control.validateField(name)
@@ -64,11 +70,18 @@ fun TextField(
             },
             modifier = Modifier
                 .fillMaxWidth()
+                .focusable(enabled = !disabled)
                 .focusRequester(focusRequester)
                 .onFocusChanged {
-                    field.isFocused = it.isFocused
+                    if (!disabled) {
+                        field.isFocused = it.isFocused
+                    }
                 },
-            textStyle = TextStyle(fontSize = 16.sp, fontFamily = Typo.body.fontFamily),
+            textStyle = TextStyle(
+                fontSize = 16.sp,
+                fontFamily = Typo.body.fontFamily,
+                color = if (disabled) Color.gray(500) else Color.black(500)
+            ),
             decorationBox = { innerTextField ->
                 Box(
                     modifier = Modifier

@@ -3,6 +3,8 @@ package com.kasiry.app.theme
 import androidx.compose.ui.graphics.Color
 
 val BlueColor = mapOf(
+    Pair(200, Color(0xFF9FC9E6)),
+    Pair(300, Color(0xFF7FB6DD)),
     Pair(500, Color(0xFF3E92CC)),
 )
 
