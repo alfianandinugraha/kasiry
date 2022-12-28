@@ -16,7 +16,7 @@ class Typo {
     companion object {
         val body = TextStyle (
             fontFamily = nunitoSansFamily,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
         )
     }
