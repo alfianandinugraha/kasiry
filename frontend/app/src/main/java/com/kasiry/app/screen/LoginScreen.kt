@@ -1,13 +1,11 @@
 package com.kasiry.app.screen
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
@@ -21,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.kasiry.app.compose.Button
 import com.kasiry.app.compose.TextField
-import com.kasiry.app.rules.maxLength
 import com.kasiry.app.rules.minLength
 import com.kasiry.app.rules.required
 import com.kasiry.app.theme.*
@@ -62,26 +59,27 @@ fun LoginScreen(navController: NavController) {
 
         val annotatedRegister = buildAnnotatedString {
             append("Belum punya akun? ")
-            withStyle(style = SpanStyle(color = Color.blue(500))) {
+            withStyle(style = SpanStyle(color = Color.blue(500), fontWeight = FontWeight.Bold)) {
                 append("Daftar")
             }
         }
 
         val annotatedForgotPassword = buildAnnotatedString {
             append("Lupa password? ")
-            withStyle(style = SpanStyle(color = Color.blue(500))) {
+            withStyle(style = SpanStyle(color = Color.blue(500), fontWeight = FontWeight.Bold)) {
                 append("Reset")
             }
         }
 
         Column(
             modifier = Modifier
-                .align(Alignment.Center)
                 .padding(horizontal = 32.dp)
+                .padding(top = 128.dp)
         ) {
             Text(
                 text = "Masuk",
                 style = Typo.body,
+                fontWeight = FontWeight.Bold,
                 fontSize = 32.sp,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -93,6 +91,7 @@ fun LoginScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
                 style = Typo.body,
+                fontSize = 14.sp,
                 color = Color.gray(500),
             )
             TextField(
