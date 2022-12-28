@@ -6,6 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Lock
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,7 +29,7 @@ import com.kasiry.app.utils.FormStore
 
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun RegisterScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -51,6 +52,13 @@ fun LoginScreen(navController: NavController) {
                             required(),
                             minLength(6),
                         )
+                    ),
+                    Field(
+                        "fullName",
+                        "",
+                        rules = listOf(
+                            required(),
+                        )
                     )
                 )
             )
@@ -59,9 +67,9 @@ fun LoginScreen(navController: NavController) {
         val focusManager = LocalFocusManager.current
 
         val annotatedRegister = buildAnnotatedString {
-            append("Belum punya akun? ")
+            append("Sudah punya akun? ")
             withStyle(style = SpanStyle(color = Color.blue(500), fontWeight = FontWeight.Bold)) {
-                append("Daftar")
+                append("Masuk")
             }
         }
 
@@ -78,7 +86,7 @@ fun LoginScreen(navController: NavController) {
                 .padding(top = 128.dp)
         ) {
             Text(
-                text = "Masuk",
+                text = "Daftar",
                 style = Typo.body,
                 fontWeight = FontWeight.Bold,
                 fontSize = 32.sp,
@@ -87,13 +95,20 @@ fun LoginScreen(navController: NavController) {
                     .padding(bottom = 2.dp),
             )
             Text(
-                text = "Harap masuk untuk melanjutkan",
+                text = "Daftar untuk memulai",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
                 style = Typo.body,
                 fontSize = 14.sp,
                 color = Color.gray(500),
+            )
+            TextField(
+                label = "Nama Lengkap",
+                modifier = Modifier.padding(bottom = 12.dp),
+                control = form,
+                name = "fullName",
+                startIcon = Icons.Rounded.Person
             )
             TextField(
                 label = "Email",
@@ -120,7 +135,7 @@ fun LoginScreen(navController: NavController) {
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Masuk",
+                    text = "Daftar",
                     color = Color.White,
                     style = Typo.body
                 )
@@ -133,7 +148,7 @@ fun LoginScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(top = 10.dp)
                     .clickable {
-                        navController.navigate("register")
+                        navController.navigate("login")
                     }
             )
             Text(

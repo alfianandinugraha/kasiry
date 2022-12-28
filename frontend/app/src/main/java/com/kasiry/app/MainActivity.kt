@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kasiry.app.screen.LoginScreen
+import com.kasiry.app.screen.RegisterScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,6 +21,12 @@ class MainActivity : ComponentActivity() {
                 navController = navController,
                 startDestination = "login"
             ) {
+                composable("register") {
+                    RegisterScreen(
+                        navController = navController
+                    )
+                }
+
                 composable("login") {
                     LoginScreen(
                         navController = navController
