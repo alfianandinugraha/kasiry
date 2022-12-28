@@ -14,7 +14,7 @@ return new class extends Migration {
     {
         Schema::create("wholesale", function (Blueprint $table) {
             $table->string("wholesale_id", 100);
-            $table->integer("total");
+            $table->integer("quantity");
             $table->float("sell_price");
             $table->timestamps();
 

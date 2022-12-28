@@ -12,17 +12,12 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create("payments", function (Blueprint $table) {
-            $table->string("payment_id", 100);
+        Schema::create("weights", function (Blueprint $table) {
+            $table->string("weight_id", 100);
             $table->string("name");
-            $table->string("user_id", 100);
             $table->timestamps();
 
-            $table->primary("payment_id");
-            $table
-                ->foreign("user_id")
-                ->references("user_id")
-                ->on("users");
+            $table->primary("weight_id");
         });
     }
 
@@ -33,6 +28,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists("payments");
+        Schema::dropIfExists("weights");
     }
 };

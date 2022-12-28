@@ -18,9 +18,14 @@ return new class extends Migration {
             $table->string("email");
             $table->string("phone");
             $table->string("password");
+            $table->string("company_id", 100)->nullable();
             $table->timestamps();
 
             $table->primary("user_id");
+            $table
+                ->foreign("company_id")
+                ->references("company_id")
+                ->on("companies");
         });
     }
 

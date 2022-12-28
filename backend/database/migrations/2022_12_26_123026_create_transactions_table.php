@@ -14,14 +14,14 @@ return new class extends Migration {
     {
         Schema::create("transactions", function (Blueprint $table) {
             $table->string("transaction_id", 100);
-            $table->string("user_id", 100);
+            $table->string("company_id", 100);
             $table->timestamps();
 
             $table->primary("transaction_id");
             $table
-                ->foreign("user_id")
-                ->references("user_id")
-                ->on("users");
+                ->foreign("company_id")
+                ->references("company_id")
+                ->on("companies");
         });
     }
 

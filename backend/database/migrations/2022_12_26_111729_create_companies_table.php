@@ -17,14 +17,9 @@ return new class extends Migration {
             $table->string("name");
             $table->string("address");
             $table->string("phone");
-            $table->string("user_id", 100);
             $table->timestamps();
 
             $table->primary("company_id");
-            $table
-                ->foreign("user_id")
-                ->references("user_id")
-                ->on("users");
         });
     }
 

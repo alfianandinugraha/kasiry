@@ -15,9 +15,14 @@ return new class extends Migration {
         Schema::create("categories", function (Blueprint $table) {
             $table->string("category_id", 100);
             $table->string("name");
+            $table->string("company_id", 100);
             $table->timestamps();
 
             $table->primary("category_id");
+            $table
+                ->foreign("company_id")
+                ->references("company_id")
+                ->on("companies");
         });
     }
 

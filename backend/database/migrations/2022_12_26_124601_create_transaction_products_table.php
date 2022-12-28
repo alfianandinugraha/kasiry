@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->float("buy_price");
             $table->float("sell_price");
             $table->string("barcode");
-            $table->string("unit_name", 100);
+            $table->string("weight_name", 100);
             $table->timestamps();
 
             $table->primary("transaction_product_id");

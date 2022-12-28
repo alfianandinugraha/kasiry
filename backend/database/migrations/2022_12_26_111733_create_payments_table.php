@@ -12,12 +12,17 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create("units", function (Blueprint $table) {
-            $table->string("unit_id", 100);
+        Schema::create("payments", function (Blueprint $table) {
+            $table->string("payment_id", 100);
             $table->string("name");
+            $table->string("company_id", 100);
             $table->timestamps();
 
-            $table->primary("unit_id");
+            $table->primary("payment_id");
+            $table
+                ->foreign("company_id")
+                ->references("company_id")
+                ->on("companies");
         });
     }
 
@@ -28,6 +33,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists("units_tabel");
+        Schema::dropIfExists("payments");
     }
 };

@@ -16,9 +16,14 @@ return new class extends Migration {
             $table->string("asset_id", 100);
             $table->string("file_name");
             $table->string("extension");
+            $table->string("company_id", 100);
             $table->timestamps();
 
             $table->primary("asset_id");
+            $table
+                ->foreign("company_id")
+                ->references("company_id")
+                ->on("companies");
         });
     }
 
