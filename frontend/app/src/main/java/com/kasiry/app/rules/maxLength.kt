@@ -1,12 +1,20 @@
 package com.kasiry.app.rules
 
-fun minLength(length: Number): (Any) -> String {
-    return fun (value: Any): String {
-        value as String
-        return if (value.length < length.toInt()) {
-            "This field must be at least $length characters"
-        } else {
-            ""
+import arrow.core.Either
+
+fun maxLength(length: Int): (Any) -> Either<String, Boolean> {
+    return fun (value: Any): Either<String, Boolean> {
+        return when (value)  {
+            is String -> {
+                if (value.length < length) {
+                    Either.Left("This field must be at least $length characters")
+                } else {
+                    Either.Right(true)
+                }
+            }
+            else -> {
+                Either.Left("Invalid value")
+            }
         }
     }
 }

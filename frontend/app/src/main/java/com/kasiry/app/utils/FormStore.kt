@@ -5,11 +5,14 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusRequester
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 
 class Field <T>(
         val name: String,
         val initialValue: T,
-        val rules: List<(Any) -> String> = listOf()
+        val rules: List<(Any) -> Either<String, Boolean>> = listOf()
     ) {
     private var _value by mutableStateOf(initialValue)
     var value: T
@@ -64,8 +67,13 @@ class FormStore(val fields: List<Field<Any>>) {
     fun handleSubmit(valid: () -> Unit) {
         submitted = true
 
-        values.forEach {
-            it.errors = it.rules.map { rule -> rule(it.value) }.filter { it.isNotEmpty() }
+        values.forEach { it ->
+            it.errors = it.rules.map { rule ->
+                when (val result = rule(it.value)) {
+                    is Either.Left -> result.value
+                    is Either.Right -> ""
+                }
+            }.filter { it.isNotEmpty() }
         }
 
         if (values.all { it.errors.isEmpty() }) {
@@ -75,6 +83,11 @@ class FormStore(val fields: List<Field<Any>>) {
 
     fun validateField(key: String) {
         val field = values.find { it.name == key }
-        field?.errors = field?.rules?.map { rule -> rule(field.value.toString()) }?.filter { it.isNotEmpty() } ?: emptyList()
+        field?.errors = field?.rules?.map { rule ->
+            when (val result = rule(field.value)) {
+                is Either.Left -> result.value
+                is Either.Right -> ""
+            }
+        }?.filter { it.isNotEmpty() } ?: emptyList()
     }
 }

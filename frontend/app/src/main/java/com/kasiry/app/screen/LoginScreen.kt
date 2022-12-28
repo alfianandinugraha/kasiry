@@ -47,7 +47,6 @@ fun LoginScreen(navController: NavController) {
                         "",
                         rules = listOf(
                             required(),
-                            maxLength(255)
                         )
                     ),
                     Field(
@@ -56,7 +55,6 @@ fun LoginScreen(navController: NavController) {
                         rules = listOf(
                             required(),
                             minLength(6),
-                            maxLength(255)
                         )
                     )
                 )
