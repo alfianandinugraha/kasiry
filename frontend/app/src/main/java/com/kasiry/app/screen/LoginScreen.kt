@@ -24,10 +24,7 @@ import com.kasiry.app.compose.TextField
 import com.kasiry.app.rules.maxLength
 import com.kasiry.app.rules.minLength
 import com.kasiry.app.rules.required
-import com.kasiry.app.theme.Blue
-import com.kasiry.app.theme.Gray
-import com.kasiry.app.theme.Typography
-import com.kasiry.app.theme.nunitoSansFamily
+import com.kasiry.app.theme.*
 import com.kasiry.app.utils.Field
 import com.kasiry.app.utils.FormStore
 
@@ -84,11 +81,8 @@ fun LoginScreen(navController: NavController) {
         ) {
             Text(
                 text = "Masuk",
-                style = Typography.body1.copy(
-                    fontFamily = nunitoSansFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 32.sp
-                ),
+                style = Typo.body,
+                fontSize = 32.sp,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 2.dp),
@@ -98,7 +92,7 @@ fun LoginScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                style = Typography.body1,
+                style = Typo.body,
                 color = Gray[500]!!,
             )
             TextField(
@@ -128,12 +122,12 @@ fun LoginScreen(navController: NavController) {
                 Text(
                     text = "Masuk",
                     color = Color.White,
-                    style = Typography.body1
+                    style = Typo.body
                 )
             }
             Text(
                 text = annotatedRegister,
-                style = Typography.body1,
+                style = Typo.body,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -141,7 +135,7 @@ fun LoginScreen(navController: NavController) {
             )
             Text(
                 text = annotatedForgotPassword,
-                style = Typography.body1,
+                style = Typo.body,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()

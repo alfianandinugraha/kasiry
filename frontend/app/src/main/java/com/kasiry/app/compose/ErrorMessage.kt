@@ -13,7 +13,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kasiry.app.theme.Red
-import com.kasiry.app.theme.Typography
+import com.kasiry.app.theme.Typo
 
 @Composable
 fun ErrorMessage(message: String) {
@@ -30,7 +30,7 @@ fun ErrorMessage(message: String) {
             text = message,
             fontSize = 14.sp,
             color = Red[500]!!,
-            style = Typography.body1,
+            style = Typo.body,
             modifier = Modifier
                 .padding(start = 4.dp),
             maxLines = 3,

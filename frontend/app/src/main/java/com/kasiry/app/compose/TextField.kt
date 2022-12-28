@@ -15,10 +15,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kasiry.app.theme.Black
-import com.kasiry.app.theme.Gray
-import com.kasiry.app.theme.Red
-import com.kasiry.app.theme.Typography
+import com.kasiry.app.theme.*
 import com.kasiry.app.utils.FormStore
 
 @Composable
@@ -70,7 +67,7 @@ fun TextField(
                 .onFocusChanged {
                     field.isFocused = it.isFocused
                 },
-            textStyle = TextStyle(fontSize = 16.sp, fontFamily = Typography.body1.fontFamily),
+            textStyle = TextStyle(fontSize = 16.sp, fontFamily = Typo.body.fontFamily),
             decorationBox = { innerTextField ->
                 Box(
                     modifier = Modifier
@@ -98,7 +95,7 @@ fun TextField(
                         text = label,
                         fontSize = textSize.sp,
                         color = fontColor,
-                        style = Typography.body1,
+                        style = Typo.body,
                         modifier = Modifier
                             .offset(labelOffsetX.dp, offsetY.dp)
                     )
