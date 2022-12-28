@@ -12,8 +12,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kasiry.app.theme.Red
 import com.kasiry.app.theme.Typo
+import com.kasiry.app.theme.red
 
 @Composable
 fun ErrorMessage(message: String) {
@@ -21,7 +21,7 @@ fun ErrorMessage(message: String) {
         Icon(
             Icons.Rounded.Warning,
             contentDescription = "",
-            tint = Red[500]!!,
+            tint = Color.red(500),
             modifier = Modifier
                 .width(14.dp)
                 .padding(top = 2.dp)
@@ -29,7 +29,7 @@ fun ErrorMessage(message: String) {
         Text(
             text = message,
             fontSize = 14.sp,
-            color = Red[500]!!,
+            color = Color.red(500),
             style = Typo.body,
             modifier = Modifier
                 .padding(start = 4.dp),

@@ -62,14 +62,14 @@ fun LoginScreen(navController: NavController) {
 
         val annotatedRegister = buildAnnotatedString {
             append("Belum punya akun? ")
-            withStyle(style = SpanStyle(color = Blue[500]!!)) {
+            withStyle(style = SpanStyle(color = Color.blue(500))) {
                 append("Daftar")
             }
         }
 
         val annotatedForgotPassword = buildAnnotatedString {
             append("Lupa password? ")
-            withStyle(style = SpanStyle(color = Blue[500]!!)) {
+            withStyle(style = SpanStyle(color = Color.blue(500))) {
                 append("Reset")
             }
         }
@@ -93,7 +93,7 @@ fun LoginScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
                 style = Typo.body,
-                color = Gray[500]!!,
+                color = Color.gray(500),
             )
             TextField(
                 label = "Email",

@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.*
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -37,9 +38,9 @@ fun TextField(
     val isError = field.errors.isNotEmpty()
 
     val fontColor by animateColorAsState(
-        targetValue = if (isError) Red[500]!!
-            else if (!isFocused) Gray[500]!!
-            else Black[500]!!
+        targetValue = if (isError) Color.red(500)
+            else if (!isFocused) Color.gray(500)
+            else Color.black(500)
     )
     val offsetY by animateFloatAsState(
         targetValue = if (value.isEmpty() && !isFocused) 0f else -24f

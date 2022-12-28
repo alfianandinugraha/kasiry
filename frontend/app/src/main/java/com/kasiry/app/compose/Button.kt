@@ -15,7 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
-import com.kasiry.app.theme.Blue
+import com.kasiry.app.theme.blue
 
 @Composable
 fun Button(modifier: Modifier = Modifier, onClick: (() -> Unit)? = null, content: @Composable () -> Unit) {
@@ -23,7 +23,7 @@ fun Button(modifier: Modifier = Modifier, onClick: (() -> Unit)? = null, content
     Row(
         modifier = modifier
             .clip(shape = RoundedCornerShape(6.dp))
-            .background(color = Blue[500]!!)
+            .background(color = Color.blue(500))
             .padding(14.dp)
             .clickable(indication = ripple, interactionSource = remember { MutableInteractionSource() }) {
                 if (onClick != null) {
