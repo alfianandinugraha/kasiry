@@ -9,6 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.kasiry.app.screen.DashboardScreen
 import com.kasiry.app.screen.LoginScreen
 import com.kasiry.app.screen.RegisterScreen
 
@@ -29,6 +30,12 @@ class MainActivity : ComponentActivity() {
 
                 composable("login") {
                     LoginScreen(
+                        navController = navController
+                    )
+                }
+
+                composable("dashboard") {
+                    DashboardScreen (
                         navController = navController
                     )
                 }

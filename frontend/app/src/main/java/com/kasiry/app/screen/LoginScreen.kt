@@ -111,6 +111,7 @@ fun LoginScreen(navController: NavController) {
             )
             Button(
                 onClick = {
+                    navController.navigate("dashboard")
                     form.handleSubmit {
                         form.clearFocus()
                         focusManager.clearFocus()
