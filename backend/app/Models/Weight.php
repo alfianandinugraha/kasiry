@@ -16,4 +16,9 @@ class Weight extends Model
     public $keyType = "string";
 
     public $incrementing = false;
+
+    public function products()
+    {
+        return $this->hasMany(Product::class, "weight_id", "weight_id");
+    }
 }

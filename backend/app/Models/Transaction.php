@@ -16,4 +16,9 @@ class Transaction extends Model
     public $keyType = "string";
 
     public $incrementing = false;
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class, "company_id", "company_id");
+    }
 }

@@ -16,4 +16,9 @@ class Wholesale extends Model
     public $keyType = "string";
 
     public $incrementing = false;
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, "product_id", "product_id");
+    }
 }

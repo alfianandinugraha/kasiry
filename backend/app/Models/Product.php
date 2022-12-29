@@ -29,4 +29,28 @@ class Product extends Model
     public $keyType = "string";
 
     public $incrementing = false;
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class, "company_id", "company_id");
+    }
+
+    public function weight()
+    {
+        return $this->belongsTo(Weight::class, "weight_id", "weight_id");
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, "category_id", "category_id");
+    }
+
+    public function wholesale()
+    {
+        return $this->belongsTo(
+            Wholesale::class,
+            "wholesale_id",
+            "wholesale_id"
+        );
+    }
 }

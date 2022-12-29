@@ -19,4 +19,19 @@ class TransactionProduct extends Model
         "barcode",
         "weight_name",
     ];
+
+    protected $primaryKey = "transaction_product_id";
+
+    public $keyType = "string";
+
+    public $incrementing = false;
+
+    public function transaction()
+    {
+        return $this->belongsTo(
+            Transaction::class,
+            "transaction_id",
+            "transaction_id"
+        );
+    }
 }

@@ -32,4 +32,14 @@ class User extends Authenticatable
     protected $casts = [];
 
     public $incrementing = false;
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class, "company_id", "company_id");
+    }
+
+    public function restriction()
+    {
+        return $this->hasOne(Restriction::class, "user_id", "user_id");
+    }
 }
