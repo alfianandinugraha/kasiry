@@ -3,6 +3,12 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Category;
+use App\Models\Company;
+use App\Models\Payment;
+use App\Models\User;
+use App\Models\Weight;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,11 +20,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        Weight::query()->delete();
+        User::query()->delete();
+        Category::query()->delete();
+        Payment::query()->delete();
+        Company::query()->delete();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $this->call([
+            CompanySeeder::class,
+            UserSeeder::class,
+            CategorySeeder::class,
+            PaymentSeeder::class,
+            WeightSeeder::class,
+        ]);
     }
 }
