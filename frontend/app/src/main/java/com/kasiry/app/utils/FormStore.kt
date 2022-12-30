@@ -1,19 +1,14 @@
 package com.kasiry.app.utils
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.focus.FocusRequester
 import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
 
 class Field <T>(
-        val name: String,
-        val initialValue: T,
-        val rules: List<(Any) -> Either<String, Boolean>> = listOf()
-    ) {
+    var name: String = "",
+    val initialValue: T,
+    val rules: List<(Any) -> Either<String, Boolean>> = listOf()
+) {
     private var _value by mutableStateOf(initialValue)
     var value: T
         get() = _value
@@ -38,51 +33,52 @@ class Field <T>(
     val focusRequest: FocusRequester = FocusRequester()
 }
 
-class FormStore(val fields: List<Field<Any>>) {
-    var values = mutableStateListOf<Field<Any>>()
+class FormStore(val fields: Map<String, Field<Any>> = mutableStateMapOf()) {
     var submitted by mutableStateOf(false)
 
     init {
-        values.addAll(fields)
-    }
-
-    fun setValue(key: String, value: Any) {
-        values.find { it.name == key }?.value = value
-    }
-
-    fun <T> getField(key: String): Field<T> {
-        return values.find { it.name == key } as Field<T>
-    }
-
-    fun <T> getValue(key: String): T {
-        return values.find { it.name == key }?.value as T
-    }
-
-    fun clearFocus() {
-        values.forEach {
-            it.isFocused = false
+        fields.forEach { (key, value) ->
+            fields[key]?.name = value.name
         }
     }
 
-    fun handleSubmit(valid: () -> Unit) {
+    fun setValue(key: String, value: Any) {
+        fields[key]?.value = value
+    }
+
+    fun <T> getField(key: String): Field<T> {
+        if (fields.containsKey(key)) {
+            return fields[key] as Field<T>
+        } else {
+            throw Exception("Field $key not found")
+        }
+    }
+
+    fun clearFocus() {
+        fields.forEach {
+            it.value.isFocused = false
+        }
+    }
+
+    fun handleSubmit(valid: (fields: Map<String, Field<Any>>) -> Unit) {
         submitted = true
 
-        values.forEach { it ->
-            it.errors = it.rules.map { rule ->
-                when (val result = rule(it.value)) {
+        fields.forEach { it ->
+            it.value.errors = it.value.rules.map { rule ->
+                when (val result = rule(it.value.value)) {
                     is Either.Left -> result.value
                     is Either.Right -> ""
                 }
             }.filter { it.isNotEmpty() }
         }
 
-        if (values.all { it.errors.isEmpty() }) {
-            valid()
+        if (fields.all { it.value.errors.isEmpty() }) {
+            valid(fields)
         }
     }
 
     fun validateField(key: String) {
-        val field = values.find { it.name == key }
+        val field = fields[key]
         field?.errors = field?.rules?.map { rule ->
             when (val result = rule(field.value)) {
                 is Either.Left -> result.value

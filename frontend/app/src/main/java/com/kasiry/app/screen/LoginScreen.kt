@@ -1,5 +1,6 @@
 package com.kasiry.app.screen
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
@@ -22,36 +23,42 @@ import com.kasiry.app.compose.Button
 import com.kasiry.app.compose.TextField
 import com.kasiry.app.rules.minLength
 import com.kasiry.app.rules.required
+import com.kasiry.app.services.AuthService
 import com.kasiry.app.theme.*
 import com.kasiry.app.utils.Field
 import com.kasiry.app.utils.FormStore
-
+import com.kasiry.app.utils.http.HttpState
 
 @Composable
 fun LoginScreen(navController: NavController) {
+    val loginService = remember {
+        AuthService.Login()
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(),
     ) {
+        val loginResponse by loginService.login.collectAsState()
+        val isLoading = loginResponse is HttpState.Loading
+
         val form = remember {
             FormStore(
-                fields = listOf(
-                    Field(
-                        "email",
-                        "",
+                fields = mutableStateMapOf(
+                    "email" to Field(
+                        initialValue = "",
                         rules = listOf(
                             required(),
                         )
                     ),
-                    Field(
-                        "password",
-                        "",
+                    "password" to Field(
+                        initialValue = "",
                         rules = listOf(
                             required(),
                             minLength(6),
                         )
-                    )
+                    ),
                 )
             )
         }
@@ -97,6 +104,7 @@ fun LoginScreen(navController: NavController) {
             )
             TextField(
                 label = "Email",
+                disabled = isLoading,
                 modifier = Modifier.padding(bottom = 12.dp),
                 control = form,
                 name = "email",
@@ -104,17 +112,33 @@ fun LoginScreen(navController: NavController) {
             )
             TextField(
                 label = "Password",
+                disabled = isLoading,
                 modifier = Modifier.padding(bottom = 16.dp),
                 control = form,
                 name = "password",
                 startIcon = Icons.Rounded.Lock
             )
             Button(
+                disabled = isLoading,
                 onClick = {
-                    navController.navigate("dashboard")
                     form.handleSubmit {
                         form.clearFocus()
                         focusManager.clearFocus()
+
+                        loginService.createLogin(
+                            body = AuthService.Login.Body(
+                                email = "Hello",
+                                password = "World"
+                            )
+                        ) {
+                            onSuccess {
+                                navController.navigate("dashboard")
+                            }
+
+                            onError {
+                                Log.d("LoginScreen", "Login error: ${it.message}")
+                            }
+                        }
                     }
                 },
                 modifier = Modifier

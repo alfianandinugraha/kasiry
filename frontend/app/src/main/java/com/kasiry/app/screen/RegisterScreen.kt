@@ -39,29 +39,26 @@ fun RegisterScreen(navController: NavController) {
     ) {
         val form = remember {
             FormStore(
-                fields = listOf(
-                    Field(
-                        "email",
-                        "",
+                fields = mutableStateMapOf(
+                    "name" to Field(
+                        initialValue = "",
                         rules = listOf(
                             required(),
                         )
                     ),
-                    Field(
-                        "password",
-                        "",
+                    "email" to Field(
+                        initialValue = "",
+                        rules = listOf(
+                            required(),
+                        )
+                    ),
+                    "password" to Field(
+                        initialValue = "",
                         rules = listOf(
                             required(),
                             minLength(6),
                         )
                     ),
-                    Field(
-                        "fullName",
-                        "",
-                        rules = listOf(
-                            required(),
-                        )
-                    )
                 )
             )
         }
@@ -114,7 +111,7 @@ fun RegisterScreen(navController: NavController) {
                     label = "Nama Lengkap",
                     modifier = Modifier.padding(bottom = 12.dp),
                     control = form,
-                    name = "fullName",
+                    name = "name",
                     startIcon = Icons.Rounded.Person
                 )
                 TextField(
