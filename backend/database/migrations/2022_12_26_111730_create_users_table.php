@@ -18,8 +18,8 @@ return new class extends Migration {
             $table->string("email");
             $table->string("phone");
             $table->string("password");
+            $table->json("abilities");
             $table->string("company_id", 100)->nullable();
-            $table->string("restriction_id", 100);
             $table->timestamps();
 
             $table->primary("user_id");
@@ -27,11 +27,6 @@ return new class extends Migration {
                 ->foreign("company_id")
                 ->references("company_id")
                 ->on("companies");
-
-            $table
-                ->foreign("restriction_id")
-                ->references("restriction_id")
-                ->on("restrictions");
         });
     }
 

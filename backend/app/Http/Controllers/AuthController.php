@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Restriction;
+use App\Models\Ability;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
@@ -59,12 +58,6 @@ class AuthController extends Controller
 
         $validator->validate();
 
-        $restrictionId = Str::random(10);
-        $restriction = new Restriction([
-            "restriction_id" => $restrictionId,
-            "allowed" => [Restriction::SUPER],
-        ]);
-
         $userId = Str::random(10);
         $user = new User([
             "user_id" => $userId,
@@ -72,13 +65,10 @@ class AuthController extends Controller
             "phone" => $request->phone,
             "email" => $request->email,
             "password" => Hash::make($request->password),
-            "restriction_id" => $restrictionId,
+            "abilities" => [Ability::SUPER],
         ]);
 
-        DB::transaction(function () use ($user, $restriction) {
-            $restriction->saveOrFail();
-            $user->saveOrFail();
-        });
+        $user->saveOrFail();
 
         return Response::json([
             "message" => "Registration successful",

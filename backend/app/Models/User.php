@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -23,7 +25,8 @@ class User extends Authenticatable
         "email",
         "password",
         "phone",
-        "restriction_id",
+        "abilities",
+        "company_id",
     ];
 
     /**
@@ -45,8 +48,11 @@ class User extends Authenticatable
         return $this->belongsTo(Company::class, "company_id", "company_id");
     }
 
-    public function restriction()
+    public function abilities(): Attribute
     {
-        return $this->belongsTo(Restriction::class, "user_id", "user_id");
+        return Attribute::make(
+            get: fn($value) => json_decode($value),
+            set: fn($value) => json_encode($value, true)
+        );
     }
 }

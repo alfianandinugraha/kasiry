@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Ability;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -21,6 +22,7 @@ class UserFactory extends Factory
             "user_id" => Str::random(10),
             "name" => fake()->name(),
             "phone" => fake()->phoneNumber(),
+            "abilities" => [Ability::SUPER],
             "email" => fake()
                 ->unique()
                 ->safeEmail(),
