@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import arrow.core.Either
 import com.kasiry.app.theme.*
 import com.kasiry.app.utils.FormStore
 
@@ -27,10 +28,14 @@ fun TextField(
     startIcon: ImageVector? = null,
     control: FormStore,
     name: String,
-    disabled: Boolean = false
+    disabled: Boolean = false,
+    rules: List<(Any) -> Either<String, Boolean>> = listOf(),
 ) {
-    val field = control.getField<String>(name)
+    val field = remember(control, name, rules) {
+        control.getField<String>(name, rules)
+    }
     val value = field.value
+
     val focusRequester = remember {
         field.focusRequest
     }
@@ -55,28 +60,38 @@ fun TextField(
         targetValue = if (startIcon != null && value.isEmpty() && !isFocused) 32f else 0f
     )
 
+    LaunchedEffect(isSubmitted, rules, name) {
+        if (isSubmitted) {
+            control.validateField(name)
+        }
+    }
+
     Column(modifier = modifier) {
         BasicTextField(
             value = field.value,
             enabled = !disabled,
-            onValueChange = {
-                if (disabled) {
-                    return@BasicTextField
-                }
-                field.value = it
-                if (isSubmitted) {
-                    control.validateField(name)
+            onValueChange = remember(field.value, control) {
+                {
+                    if (!disabled) {
+                        field.value = it
+                        if (isSubmitted) {
+                            control.validateField(name)
+                        }
+                    }
+
                 }
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusable(enabled = !disabled)
-                .focusRequester(focusRequester)
-                .onFocusChanged {
-                    if (!disabled) {
-                        field.isFocused = it.isFocused
+            modifier = remember(focusRequester, isFocused, disabled) {
+                Modifier
+                    .fillMaxWidth()
+                    .focusable(enabled = !disabled)
+                    .focusRequester(focusRequester)
+                    .onFocusChanged {
+                        if (!disabled) {
+                            field.isFocused = it.isFocused
+                        }
                     }
-                },
+            },
             textStyle = TextStyle(
                 fontSize = 16.sp,
                 fontFamily = Typo.body.fontFamily,

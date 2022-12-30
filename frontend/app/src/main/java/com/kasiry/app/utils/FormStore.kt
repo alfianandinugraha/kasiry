@@ -7,7 +7,7 @@ import arrow.core.Either
 class Field <T>(
     var name: String = "",
     val initialValue: T,
-    val rules: List<(Any) -> Either<String, Boolean>> = listOf()
+    var rules: List<(Any) -> Either<String, Boolean>> = listOf()
 ) {
     private var _value by mutableStateOf(initialValue)
     var value: T
@@ -46,8 +46,12 @@ class FormStore(val fields: Map<String, Field<Any>> = mutableStateMapOf()) {
         fields[key]?.value = value
     }
 
-    fun <T> getField(key: String): Field<T> {
+    fun <T> getField(key: String, rules: List<(Any) -> Either<String, Boolean>> = listOf()): Field<T> {
         if (fields.containsKey(key)) {
+            if (rules.isNotEmpty()) {
+                fields[key]?.rules = rules
+            }
+
             return fields[key] as Field<T>
         } else {
             throw Exception("Field $key not found")
