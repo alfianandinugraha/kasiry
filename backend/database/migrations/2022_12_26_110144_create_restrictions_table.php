@@ -15,14 +15,9 @@ return new class extends Migration {
         Schema::create("restrictions", function (Blueprint $table) {
             $table->string("restriction_id", 100);
             $table->json("allowed");
-            $table->string("user_id", 100);
             $table->timestamps();
 
             $table->primary("restriction_id");
-            $table
-                ->foreign("user_id")
-                ->references("user_id")
-                ->on("users");
         });
     }
 

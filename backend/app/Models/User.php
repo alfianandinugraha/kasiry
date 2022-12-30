@@ -17,7 +17,14 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = ["user_id", "name", "email", "password", "phone"];
+    protected $fillable = [
+        "user_id",
+        "name",
+        "email",
+        "password",
+        "phone",
+        "restriction_id",
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -40,6 +47,6 @@ class User extends Authenticatable
 
     public function restriction()
     {
-        return $this->hasOne(Restriction::class, "user_id", "user_id");
+        return $this->belongsTo(Restriction::class, "user_id", "user_id");
     }
 }
