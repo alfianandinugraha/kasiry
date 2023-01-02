@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
+        android:networkSecurityConfig="@xml/network_security_config"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -12,15 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Kasiry"
         tools:targetApi="31">
-        <activity
-            android:name=".LoginActivity"
-            android:exported="false"
-            android:label="@string/title_activity_login"
-            android:theme="@style/Theme.Kasiry">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true"
