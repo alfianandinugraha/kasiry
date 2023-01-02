@@ -5,47 +5,54 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
-import okhttp3.Call
-import java.io.IOException
+import okhttp3.*
 
 class HttpRequest <S, E>(
     val state: MutableStateFlow<HttpState<S, E>?>,
     val callback: HttpCallback<S, E>.() -> Unit,
-    val call: Call
+    val call: Call,
 ) {
-    suspend fun execute(): HttpState<S, E>? {
+    suspend fun execute(): HttpState<S, E> = withContext(Dispatchers.IO) {
         state.value = HttpState.Loading()
 
         try {
-            val response = withContext(Dispatchers.IO) {
-                call.execute()
-            }
+            val response = call.execute()
+            val body = response.body?.string()
+
             if (response.isSuccessful) {
-                val data = Gson().fromJson<S>(response.body?.string(), object : TypeToken<S>() {}.type)
+                val (data, message) = Gson()
+                    .fromJson<HttpResponse<S>>(
+                        body, object : TypeToken<HttpResponse<S>>() {}.type
+                    )
+
                 val value = HttpState.Success(
                     data = data,
-                    message = response.message,
+                    message = message,
                     statusCode = response.code
                 )
 
                 state.value = value
-                callback(HttpCallback(value))
+                withContext(Dispatchers.Main) { callback(HttpCallback(value)) }
 
-                return value
+                value
             } else {
-                val data = Gson().fromJson<E>(response.body?.string(), Map::class.java)
+                val (data, message) = Gson()
+                    .fromJson<HttpResponse<E>>(
+                        body, object : TypeToken<HttpResponse<E>>() {}.type
+                    )
+
                 val value = HttpState.Error(
                     data = data,
-                    message = response.message,
+                    message = message,
                     statusCode = response.code
                 )
 
                 state.value = value
-                callback(HttpCallback(value))
+                withContext(Dispatchers.Main) { callback(HttpCallback(value)) }
 
-                return value
+                value
             }
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             val value = HttpState.Error(
                 message = e.message,
                 data = null,
@@ -53,9 +60,9 @@ class HttpRequest <S, E>(
             )
 
             state.value = value
-            callback(HttpCallback(value))
+            withContext(Dispatchers.Main) { callback(HttpCallback(value)) }
 
-            return value
+            value
         }
     }
 }
