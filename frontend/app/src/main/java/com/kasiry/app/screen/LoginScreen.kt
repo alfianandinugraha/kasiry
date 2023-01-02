@@ -21,18 +21,19 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.kasiry.app.compose.Button
 import com.kasiry.app.compose.TextField
+import com.kasiry.app.models.remote.AuthBody
 import com.kasiry.app.rules.minLength
 import com.kasiry.app.rules.required
-import com.kasiry.app.services.AuthService
 import com.kasiry.app.theme.*
 import com.kasiry.app.utils.Field
 import com.kasiry.app.utils.FormStore
 import com.kasiry.app.utils.http.HttpState
+import com.kasiry.app.viewmodel.LoginViewModel
 
 @Composable
 fun LoginScreen(navController: NavController) {
     val loginService = remember {
-        AuthService.Login()
+        LoginViewModel()
     }
 
     Box(
@@ -120,8 +121,8 @@ fun LoginScreen(navController: NavController) {
                             val email = it["email"]?.value as String
                             val password = it["password"]?.value as String
 
-                            loginService.createLogin(
-                                body = AuthService.Login.Body(
+                            loginService.login(
+                                body = AuthBody.Login(
                                     email = email,
                                     password = password
                                 )

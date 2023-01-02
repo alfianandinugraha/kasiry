@@ -17,7 +17,9 @@ class HttpRequest <S, E>(
         state.value = HttpState.Loading()
 
         try {
-            val response = call.execute()
+            val response = withContext(Dispatchers.IO) {
+                call.execute()
+            }
             if (response.isSuccessful) {
                 val data = Gson().fromJson<S>(response.body?.string(), object : TypeToken<S>() {}.type)
                 val value = HttpState.Success(
@@ -27,9 +29,7 @@ class HttpRequest <S, E>(
                 )
 
                 state.value = value
-                withContext(Dispatchers.Main) {
-                    callback(HttpCallback(value))
-                }
+                callback(HttpCallback(value))
 
                 return value
             } else {
@@ -41,9 +41,7 @@ class HttpRequest <S, E>(
                 )
 
                 state.value = value
-                withContext(Dispatchers.Main) {
-                    callback(HttpCallback(value))
-                }
+                callback(HttpCallback(value))
 
                 return value
             }
@@ -55,9 +53,7 @@ class HttpRequest <S, E>(
             )
 
             state.value = value
-            withContext(Dispatchers.Main) {
-                callback(HttpCallback(value))
-            }
+            callback(HttpCallback(value))
 
             return value
         }
