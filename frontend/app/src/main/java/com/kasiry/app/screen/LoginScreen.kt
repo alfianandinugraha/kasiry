@@ -10,6 +10,7 @@ import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -32,8 +33,9 @@ import com.kasiry.app.viewmodel.LoginViewModel
 
 @Composable
 fun LoginScreen(navController: NavController) {
+    val context = LocalContext.current
     val loginService = remember {
-        LoginViewModel()
+        LoginViewModel(context = context)
     }
     val loginResponse by loginService.login.collectAsState()
     val isLoading = loginResponse is HttpState.Loading
