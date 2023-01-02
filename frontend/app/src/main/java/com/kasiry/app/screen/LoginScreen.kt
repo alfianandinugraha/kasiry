@@ -35,29 +35,29 @@ fun LoginScreen(navController: NavController) {
     val loginService = remember {
         LoginViewModel()
     }
+    val loginResponse by loginService.login.collectAsState()
+    val isLoading = loginResponse is HttpState.Loading
+
+    val form = remember {
+        FormStore(
+            fields = mutableStateMapOf(
+                "email" to Field(
+                    initialValue = "",
+                ),
+                "password" to Field(
+                    initialValue = "",
+                ),
+            )
+        )
+    }
+
+    val focusManager = LocalFocusManager.current
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(),
     ) {
-        val loginResponse by loginService.login.collectAsState()
-        val isLoading = loginResponse is HttpState.Loading
-
-        val form = remember {
-            FormStore(
-                fields = mutableStateMapOf(
-                    "email" to Field(
-                        initialValue = "",
-                    ),
-                    "password" to Field(
-                        initialValue = "",
-                    ),
-                )
-            )
-        }
-
-        val focusManager = LocalFocusManager.current
 
         Column(
             modifier = Modifier
