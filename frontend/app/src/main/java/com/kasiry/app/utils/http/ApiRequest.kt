@@ -47,9 +47,13 @@ class ApiRequest {
             body: Any?= null,
             headers: Map<String, String> = mapOf()
         ): Request.Builder {
+            val url = "${API_BASE_URL}${path}"
             return Request.Builder()
-                .url("$API_BASE_URL/$path")
-                .headers(ApiRequest.headers(headers))
+                .url(url)
+                .headers(headers(headers.toMutableMap().let {
+                    it["Accept"] = "application/json"
+                    it
+                }))
                 .method(
                     mapMethod(method),
                     if (body != null) {
