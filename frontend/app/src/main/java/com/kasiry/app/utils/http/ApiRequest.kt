@@ -6,6 +6,7 @@ import okhttp3.Headers
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.internal.EMPTY_REQUEST
 
 class ApiRequest {
     companion object {
@@ -44,7 +45,7 @@ class ApiRequest {
         fun json(
             method: HttpMethod,
             path: String,
-            body: Any?= null,
+            body: Any? = null,
             headers: Map<String, String> = mapOf()
         ): Request.Builder {
             val url = "${API_BASE_URL}${path}"
@@ -59,7 +60,11 @@ class ApiRequest {
                     if (body != null) {
                         Gson().toJson(body).toRequestBody("application/json".toMediaTypeOrNull())
                     } else {
-                        null
+                        if (method == HttpMethod.GET) {
+                            null
+                        } else {
+                            EMPTY_REQUEST
+                        }
                     }
                 )
         }
