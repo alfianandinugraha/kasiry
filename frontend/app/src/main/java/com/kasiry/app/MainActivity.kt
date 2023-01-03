@@ -84,6 +84,12 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     }
+                    composable("employees") {
+                        EmployeeScreen(
+                            navController = navController,
+                            application = application
+                        )
+                    }
                     composable("company-update") {
                         (profileState as HttpState.Success).data.company?.let { it ->
                             CompanyUpdateScreen(
