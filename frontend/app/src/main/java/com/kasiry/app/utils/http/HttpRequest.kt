@@ -10,37 +10,27 @@ import kotlinx.coroutines.withContext
 import okhttp3.*
 import java.lang.reflect.Type
 
-class HttpRequest <S, E>(
-    val state: MutableStateFlow<HttpState<S, E>?>,
-    val callback: (HttpCallback<S, E>.() -> Unit)? = null,
+class HttpRequest <S>(
     val call: Call,
     val success: Type,
     val error: Type,
 ) {
     companion object {
-        inline fun <reified S, reified E> create(
-            state: MutableStateFlow<HttpState<S, E>?>,
-            noinline callback: (HttpCallback<S, E>.() -> Unit)? = null,
-            call: Call,
-        ) = HttpRequest(
-            state = state,
-            callback = callback,
+        inline fun <reified S> create(call: Call) = HttpRequest<S>(
             call = call,
-            success = object : TypeToken<HttpResponse<S>>() {}.type,
-            error = object : TypeToken<HttpResponse<E>>() {}.type
+            success = object : TypeToken<HttpState.Success<S>>() {}.type,
+            error = object : TypeToken<HttpState.Error>() {}.type
         )
     }
 
-    suspend fun execute(): HttpState<S, E> = withContext(Dispatchers.IO) {
-        state.value = HttpState.Loading()
-
+    suspend fun execute(): HttpState<S> = withContext(Dispatchers.IO) {
         try {
             val response = call.execute()
             val body = response.body?.string()
 
             if (response.isSuccessful) {
                 val result = Gson()
-                    .fromJson<HttpResponse<S>>(body, success)
+                    .fromJson<HttpState.Success<S>>(body, success)
 
                 val value = HttpState.Success(
                     data = result.data,
@@ -48,37 +38,27 @@ class HttpRequest <S, E>(
                     statusCode = response.code
                 )
 
-                state.value = value.copy()
-                withContext(Dispatchers.Main) { callback?.let { it(HttpCallback(value.copy())) } }
-
                 value
             } else {
-                val (data, message, errors) = Gson()
-                    .fromJson<HttpResponse<E>>(
+                val json = Gson()
+                    .fromJson<HttpState.Error>(
                         body, error
                     )
 
+                Log.d("HttpRequest", "Error: $json")
+
                 val value = HttpState.Error(
-                    data = data,
-                    message = message,
+                    message = json.message,
                     statusCode = response.code,
-                    errors = errors
+                    errors = json.errors
                 )
-
-                state.value = value.copy()
-                withContext(Dispatchers.Main) { callback?.let { it(HttpCallback(value.copy())) } }
-
                 value
             }
         } catch (e: Exception) {
             val value = HttpState.Error(
                 message = e.message,
-                data = null,
                 statusCode = 500
             )
-
-            state.value = value.copy()
-            withContext(Dispatchers.Main) { callback?.let { it(HttpCallback(value.copy())) } }
 
             value
         }

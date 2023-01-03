@@ -1,5 +1,6 @@
 package com.kasiry.app.screen
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,7 +11,6 @@ import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -23,6 +23,7 @@ import androidx.navigation.NavController
 import com.kasiry.app.compose.Button
 import com.kasiry.app.compose.TextField
 import com.kasiry.app.models.remote.AuthBody
+import com.kasiry.app.repositories.AuthRepository
 import com.kasiry.app.rules.minLength
 import com.kasiry.app.rules.required
 import com.kasiry.app.theme.*
@@ -32,10 +33,9 @@ import com.kasiry.app.utils.http.HttpState
 import com.kasiry.app.viewmodel.LoginViewModel
 
 @Composable
-fun LoginScreen(navController: NavController) {
-    val context = LocalContext.current
+fun LoginScreen(navController: NavController, application: Application) {
     val loginService = remember {
-        LoginViewModel(context = context)
+        LoginViewModel(application)
     }
     val loginResponse by loginService.login.collectAsState()
     val isLoading = loginResponse is HttpState.Loading
@@ -124,7 +124,7 @@ fun LoginScreen(navController: NavController) {
                             val password = it["password"]?.value as String
 
                             loginService.login(
-                                body = AuthBody.Login(
+                                body = AuthRepository.LoginBody(
                                     email = email,
                                     password = password
                                 )

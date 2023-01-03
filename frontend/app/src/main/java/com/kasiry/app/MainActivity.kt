@@ -30,7 +30,8 @@ class MainActivity : ComponentActivity() {
 
                 composable("login") {
                     LoginScreen(
-                        navController = navController
+                        navController = navController,
+                        application = application
                     )
                 }
 
