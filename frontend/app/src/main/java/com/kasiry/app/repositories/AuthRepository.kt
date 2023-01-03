@@ -1,5 +1,6 @@
 package com.kasiry.app.repositories
 
+import android.content.Context
 import com.kasiry.app.models.data.Login
 import com.kasiry.app.utils.http.ApiRequest
 import com.kasiry.app.utils.http.HttpMethod
@@ -7,7 +8,9 @@ import com.kasiry.app.utils.http.HttpRequest
 import com.kasiry.app.utils.http.HttpState
 import okhttp3.OkHttpClient
 
-class AuthRepository(private val client: OkHttpClient) {
+class AuthRepository(
+    context: Context,
+) {
     data class LoginBody (
         val email: String,
         val password: String,
@@ -18,6 +21,10 @@ class AuthRepository(private val client: OkHttpClient) {
         val email: String,
         val password: String,
     )
+
+    private val client = OkHttpClient
+        .Builder()
+        .build()
 
     suspend fun login(body: LoginBody): HttpState<Login> {
         val request = ApiRequest

@@ -7,11 +7,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowCircleDown
-import androidx.compose.material.icons.filled.Outbound
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -24,13 +21,14 @@ import com.kasiry.app.compose.MainMenu
 import com.kasiry.app.compose.ProductItem
 import com.kasiry.app.compose.TitleMore
 import com.kasiry.app.compose.TransactionItem
+import com.kasiry.app.models.data.Profile
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.theme.blue
 import com.kasiry.app.theme.gray
 import kotlin.math.ceil
 
 @Composable
-fun DashboardScreen(navController: NavController) {
+fun DashboardScreen(navController: NavController, profile: Profile) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
@@ -79,7 +77,7 @@ fun DashboardScreen(navController: NavController) {
                                         color = Color.gray()
                                     )
                                     Text(
-                                        text = "Admin",
+                                        text = profile.name,
                                         style = Typo.body,
                                         fontSize = 24.sp,
                                         fontWeight = FontWeight.Bold,
