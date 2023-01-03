@@ -11,10 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.kasiry.app.screen.DashboardScreen
-import com.kasiry.app.screen.LoginScreen
-import com.kasiry.app.screen.ProfileScreen
-import com.kasiry.app.screen.RegisterScreen
+import com.kasiry.app.screen.*
 import com.kasiry.app.utils.http.HttpState
 import com.kasiry.app.viewmodel.MainViewModel
 import org.koin.android.ext.android.get
@@ -56,6 +53,13 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("profile") {
                         ProfileScreen(
+                            navController = navController,
+                            application = application,
+                            profile = (profileState as HttpState.Success).data
+                        )
+                    }
+                    composable("profile-update") {
+                        ProfileUpdateScreen(
                             navController = navController,
                             application = application,
                             profile = (profileState as HttpState.Success).data

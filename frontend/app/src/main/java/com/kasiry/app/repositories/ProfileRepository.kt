@@ -27,4 +27,27 @@ class ProfileRepository(context: Context) {
             )
             .execute()
     }
+
+    private val updateClient = OkHttpClient
+        .Builder()
+        .addInterceptor(
+            AccessTokenInterceptor(context)
+        )
+        .build()
+
+    suspend fun update(profile: Profile): HttpState<Profile> {
+        val request = ApiRequest
+            .json(
+                HttpMethod.PUT,
+                "/profile",
+                profile
+            )
+            .build()
+
+        return HttpRequest
+            .create<Profile>(
+                call = updateClient.newCall(request),
+            )
+            .execute()
+    }
 }

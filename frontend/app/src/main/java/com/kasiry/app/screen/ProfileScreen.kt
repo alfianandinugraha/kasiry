@@ -89,6 +89,9 @@ fun ProfileScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp)
                     .padding(top = 16.dp),
+                onClick = {
+                    navController.navigate("profile-update")
+                }
             ) {
                 Text(
                     text = "Update",

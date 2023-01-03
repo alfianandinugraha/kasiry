@@ -19,6 +19,10 @@ class MainViewModel(
     private val _profile = MutableStateFlow<HttpState<Profile>?>(null)
     val profile = _profile.asStateFlow()
 
+    fun setProfile(profile: Profile) {
+        _profile.value = HttpState.Success(profile)
+    }
+
     fun getProfile(
         callback: (HttpCallback<Profile>.() -> Unit)? = null,
     ) {
