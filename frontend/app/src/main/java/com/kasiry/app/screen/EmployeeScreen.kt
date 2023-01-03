@@ -32,6 +32,9 @@ fun EmployeeScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp)
                 .padding(bottom = 16.dp),
+            onClick = {
+                navController.navigate("employees/create")
+            },
         ) {
             Text(
                 text = "Tambah Pegawai",
