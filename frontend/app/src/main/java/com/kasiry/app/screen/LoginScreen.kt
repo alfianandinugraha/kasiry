@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.kasiry.app.compose.Button
 import com.kasiry.app.compose.TextField
-import com.kasiry.app.models.remote.AuthBody
 import com.kasiry.app.repositories.AuthRepository
 import com.kasiry.app.repositories.ProfileRepository
 import com.kasiry.app.rules.minLength
@@ -32,13 +31,11 @@ import com.kasiry.app.utils.Field
 import com.kasiry.app.utils.FormStore
 import com.kasiry.app.utils.http.HttpState
 import com.kasiry.app.viewmodel.LoginViewModel
-import com.kasiry.app.viewmodel.MainViewModel
 import org.koin.androidx.compose.get
 
 @Composable
 fun LoginScreen(navController: NavController, application: Application) {
     val profileRepository: ProfileRepository = get()
-    val mainViewModel: MainViewModel = get()
 
     val loginService = remember {
         LoginViewModel(
@@ -140,7 +137,6 @@ fun LoginScreen(navController: NavController, application: Application) {
                                 )
                             ) {
                                 onSuccess {
-                                    mainViewModel.setProfile(it.data)
                                     navController.navigate("dashboard")
                                 }
 

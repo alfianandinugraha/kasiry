@@ -1,7 +1,7 @@
 package com.kasiry.app.screen
 
+import android.app.Application
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,24 +15,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.kasiry.app.compose.Button
+import com.kasiry.app.compose.TopBar
 import com.kasiry.app.models.data.Profile
+import com.kasiry.app.repositories.AuthRepository
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.theme.blue
 import com.kasiry.app.theme.gray
+import com.kasiry.app.theme.red
+import com.kasiry.app.viewmodel.MainViewModel
+import com.kasiry.app.viewmodel.ProfileViewModel
+import org.koin.androidx.compose.get
 
 @Composable
 fun ProfileScreen(
     navController: NavController,
-    profile: Profile
+    profile: Profile,
+    application: Application,
 ) {
+    val profileViewModel = ProfileViewModel(
+        application,
+        authRepository = AuthRepository(application.applicationContext)
+    )
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 32.dp)
     ) {
+        TopBar(
+            title = "Profile",
+            onBack = {
+                navController.popBackStack()
+            },
+        )
         Column(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -64,6 +83,35 @@ fun ProfileScreen(
                 fontSize = 16.sp,
                 modifier = Modifier.padding(top = 4.dp),
                 color = Color.gray()
+            )
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp)
+                    .padding(top = 16.dp),
+            ) {
+                Text(
+                    text = "Update",
+                    style = Typo.body,
+                    color = Color.White,
+                    fontSize = 16.sp,
+                )
+            }
+            Text(
+                text = "Logout",
+                style = Typo.body,
+                color = Color.red(),
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .clickable {
+                        profileViewModel.logout {
+                            onSuccess {
+                                navController.navigate("login")
+                            }
+                        }
+                    },
+                textAlign = TextAlign.Center
             )
         }
     }

@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kasiry.app.screen.DashboardScreen
 import com.kasiry.app.screen.LoginScreen
+import com.kasiry.app.screen.ProfileScreen
 import com.kasiry.app.screen.RegisterScreen
 import com.kasiry.app.utils.http.HttpState
 import com.kasiry.app.viewmodel.MainViewModel
@@ -43,29 +44,32 @@ class MainActivity : ComponentActivity() {
 
             if (profileState is HttpState.Loading || profileState === null) {
                 Log.d("MainActivity", "onCreate")
-            } else {
                 Text(text = "Loading...")
-                NavHost(
-                    navController = navController,
-                    startDestination = if (profileState is HttpState.Success) "dashboard" else "login"
-                ) {
-                    composable("register") {
-                        RegisterScreen(
-                            navController = navController
+            } else {
+                val startDestination = if (profileState is HttpState.Success) "dashboard" else "login"
+                NavHost(navController = navController, startDestination = startDestination) {
+                    composable("dashboard") {
+                        DashboardScreen(
+                            navController = navController,
+                            profile = (profileState as HttpState.Success).data
                         )
                     }
-
+                    composable("profile") {
+                        ProfileScreen(
+                            navController = navController,
+                            application = application,
+                            profile = (profileState as HttpState.Success).data
+                        )
+                    }
                     composable("login") {
                         LoginScreen(
                             navController = navController,
                             application = application
                         )
                     }
-
-                    composable("dashboard") {
-                        DashboardScreen (
-                            navController = navController,
-                            profile = (profileState as HttpState.Success).data
+                    composable("register") {
+                        RegisterScreen(
+                            navController = navController
                         )
                     }
                 }

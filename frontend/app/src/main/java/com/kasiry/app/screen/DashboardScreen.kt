@@ -1,6 +1,7 @@
 package com.kasiry.app.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -94,6 +95,9 @@ fun DashboardScreen(navController: NavController, profile: Profile) {
                                         .background(Color.blue())
                                         .padding(8.dp)
                                         .size(20.dp)
+                                        .clickable {
+                                            navController.navigate("profile")
+                                        }
                                 )
                             }
                             Row(

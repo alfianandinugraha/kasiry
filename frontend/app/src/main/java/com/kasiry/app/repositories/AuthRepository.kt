@@ -2,10 +2,7 @@ package com.kasiry.app.repositories
 
 import android.content.Context
 import com.kasiry.app.models.data.Login
-import com.kasiry.app.utils.http.ApiRequest
-import com.kasiry.app.utils.http.HttpMethod
-import com.kasiry.app.utils.http.HttpRequest
-import com.kasiry.app.utils.http.HttpState
+import com.kasiry.app.utils.http.*
 import okhttp3.OkHttpClient
 
 class AuthRepository(
@@ -24,6 +21,13 @@ class AuthRepository(
 
     private val client = OkHttpClient
         .Builder()
+        .build()
+
+    private val logoutClient = OkHttpClient
+        .Builder()
+        .addInterceptor(
+            AccessTokenInterceptor(context)
+        )
         .build()
 
     suspend fun login(body: LoginBody): HttpState<Login> {
@@ -63,7 +67,7 @@ class AuthRepository(
             .build()
 
         return HttpRequest.create<Login>(
-            call = client.newCall(request),
+            call = logoutClient.newCall(request),
         ).execute()
     }
 }

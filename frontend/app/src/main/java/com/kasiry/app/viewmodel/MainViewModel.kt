@@ -5,14 +5,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.kasiry.app.models.data.Profile
 import com.kasiry.app.repositories.ProfileRepository
-import com.kasiry.app.utils.http.AccessTokenInterceptor
 import com.kasiry.app.utils.http.HttpCallback
 import com.kasiry.app.utils.http.HttpState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
 
 class MainViewModel(
     application: Application,
@@ -20,10 +18,6 @@ class MainViewModel(
 ): AndroidViewModel(application) {
     private val _profile = MutableStateFlow<HttpState<Profile>?>(null)
     val profile = _profile.asStateFlow()
-
-    fun setProfile(profile: Profile) {
-        _profile.value = HttpState.Success(profile)
-    }
 
     fun getProfile(
         callback: (HttpCallback<Profile>.() -> Unit)? = null,
