@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -18,14 +19,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.kasiry.app.compose.MainMenu
-import com.kasiry.app.compose.ProductItem
-import com.kasiry.app.compose.TitleMore
-import com.kasiry.app.compose.TransactionItem
+import com.kasiry.app.compose.*
+import com.kasiry.app.models.data.Ability
 import com.kasiry.app.models.data.Profile
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.theme.blue
 import com.kasiry.app.theme.gray
+import com.kasiry.app.viewmodel.MainViewModel
+import org.koin.androidx.compose.get
 import kotlin.math.ceil
 
 @Composable
@@ -174,10 +175,13 @@ fun DashboardScreen(navController: NavController, profile: Profile) {
                                 color = Color.blue()
                             )
                             MainMenu(
-                                text = "Profil",
-                                icon = Icons.Rounded.Person,
+                                text = "Usaha",
+                                icon = Icons.Rounded.Store,
                                 bgColor = Color.blue(50),
-                                color = Color.blue()
+                                color = Color.blue(),
+                                onClick = {
+                                    navController.navigate("company")
+                                }
                             )
                         }
 

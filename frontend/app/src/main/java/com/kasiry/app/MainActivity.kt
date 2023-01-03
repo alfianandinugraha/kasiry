@@ -76,6 +76,14 @@ class MainActivity : ComponentActivity() {
                             navController = navController
                         )
                     }
+                    composable("company") {
+                        (profileState as HttpState.Success).data.company?.let { it ->
+                            CompanyScreen(
+                                navController = navController,
+                                company = it
+                            )
+                        }
+                    }
                 }
             }
         }
