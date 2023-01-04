@@ -77,4 +77,19 @@ class CategoryRepository(
             )
             .execute()
     }
+
+    suspend fun get(categoryId: String): HttpState<Category> {
+        val request = ApiRequest
+            .json(
+                HttpMethod.GET,
+                "/categories/$categoryId"
+            )
+            .build()
+
+        return HttpRequest
+            .create<Category>(
+                call = client.newCall(request),
+            )
+            .execute()
+    }
 }

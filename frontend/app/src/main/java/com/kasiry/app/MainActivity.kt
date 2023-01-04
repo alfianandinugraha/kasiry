@@ -7,7 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -15,8 +14,6 @@ import com.kasiry.app.screen.*
 import com.kasiry.app.utils.http.HttpState
 import com.kasiry.app.viewmodel.MainViewModel
 import org.koin.android.ext.android.get
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.startKoin
 
 class MainActivity : ComponentActivity() {
     lateinit var mainViewModel: MainViewModel
@@ -117,6 +114,16 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             application = application,
                         )
+                    }
+                    composable("categories/{categoryId}") {
+                        val categoryId = it.arguments?.getString("categoryId")
+                        if (categoryId != null) {
+                            CategoryUpdateScreen(
+                                navController = navController,
+                                application = application,
+                                categoryId = categoryId
+                            )
+                        }
                     }
                     composable("company-update") {
                         (profileState as HttpState.Success).data.company?.let { it ->
