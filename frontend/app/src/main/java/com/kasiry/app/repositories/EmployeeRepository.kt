@@ -16,7 +16,7 @@ class EmployeeRepository(
         )
         .build()
 
-    data class UpdateBody (
+    data class CreateBody (
         val name: String,
         val email: String,
         val phone: String,
@@ -24,7 +24,7 @@ class EmployeeRepository(
         val abilities: Ability,
     )
 
-    suspend fun create(employee: UpdateBody): HttpState<Employee> {
+    suspend fun create(employee: CreateBody): HttpState<Employee> {
         val request = ApiRequest
             .json(
                 HttpMethod.POST,

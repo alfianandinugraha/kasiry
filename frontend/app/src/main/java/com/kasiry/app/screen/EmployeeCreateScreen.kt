@@ -202,7 +202,7 @@ fun EmployeeCreateScreen(
                                 )
 
                                 viewModel.create(
-                                    EmployeeRepository.UpdateBody(
+                                    EmployeeRepository.CreateBody(
                                         name = name,
                                         email = email,
                                         phone = phone,

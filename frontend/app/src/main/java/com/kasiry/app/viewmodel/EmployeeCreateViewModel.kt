@@ -19,7 +19,7 @@ class EmployeeCreateViewModel(
     val create = _create.asStateFlow()
 
     fun create (
-        employee: EmployeeRepository.UpdateBody,
+        employee: EmployeeRepository.CreateBody,
         callback: HttpCallback<Employee>.() -> Unit
     ) {
         _create.value = HttpState.Loading()
