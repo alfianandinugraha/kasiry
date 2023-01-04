@@ -117,8 +117,7 @@ class EmployeeController extends Controller
                 Rule::unique("users", "email")->ignore($userId, "user_id"),
             ],
             "phone" => ["required", "string", "max:255"],
-            "abilities" => ["required", "array"],
-            "password" => ["required", "string", "min:8"],
+            "abilities" => ["required"],
         ]);
 
         $validator->validate();
@@ -128,7 +127,6 @@ class EmployeeController extends Controller
             "email" => $request->email,
             "phone" => $request->phone,
             "abilities" => $request->abilities,
-            "password" => Hash::make($request->password),
         ]);
 
         return Response::make([

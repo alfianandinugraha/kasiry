@@ -24,11 +24,35 @@ class EmployeeRepository(
         val abilities: Ability,
     )
 
+    data class UpdateBody (
+        val userId: String,
+        val name: String,
+        val email: String,
+        val phone: String,
+        val abilities: Ability,
+    )
+
     suspend fun create(employee: CreateBody): HttpState<Employee> {
         val request = ApiRequest
             .json(
                 HttpMethod.POST,
                 "/employees",
+                employee
+            )
+            .build()
+
+        return HttpRequest
+            .create<Employee>(
+                call = client.newCall(request),
+            )
+            .execute()
+    }
+
+    suspend fun update(employee: UpdateBody): HttpState<Employee> {
+        val request = ApiRequest
+            .json(
+                HttpMethod.PUT,
+                "/employees/${employee.userId}",
                 employee
             )
             .build()

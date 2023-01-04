@@ -1,6 +1,7 @@
 package com.kasiry.app.screen
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.navigation.NavController
@@ -94,8 +95,8 @@ fun EmployeeUpdateScreen(
 
                 val abilities = it.data.abilities
                 if (abilities.employee == true) form.setValue("employee", abilities.employee)
-                if (abilities.transaction == true) form.setValue("product", abilities.transaction)
-                if (abilities.product == true) form.setValue("transaction", abilities.product)
+                if (abilities.product == true) form.setValue("product", abilities.product)
+                if (abilities.transaction == true) form.setValue("transaction", abilities.transaction)
             }
         }
     }
@@ -195,12 +196,25 @@ fun EmployeeUpdateScreen(
                                 val name = it["name"]?.value as String
                                 val email = it["email"]?.value as String
                                 val phone = it["phone"]?.value as String
-                                val password = it["password"]?.value as String
                                 val abilities = Ability(
                                     employee = it["employee"]?.value as Boolean,
                                     product = it["product"]?.value as Boolean,
                                     transaction = it["transaction"]?.value as Boolean,
                                 )
+
+                                viewModel.update(
+                                    EmployeeRepository.UpdateBody(
+                                        name = name,
+                                        email = email,
+                                        phone = phone,
+                                        abilities = abilities,
+                                        userId = userId,
+                                    )
+                                ) {
+                                    onSuccess {
+                                        navController.popBackStack()
+                                    }
+                                }
                             }
                         }
                     ) {
