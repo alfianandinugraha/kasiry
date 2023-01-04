@@ -17,6 +17,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Person
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,14 +27,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kasiry.app.compose.Button
 import com.kasiry.app.compose.Checkbox
+import com.kasiry.app.models.data.Ability
+import com.kasiry.app.models.data.Employee
+import com.kasiry.app.repositories.EmployeeRepository
+import com.kasiry.app.rules.minLength
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.theme.blue
+import com.kasiry.app.utils.http.HttpState
+import com.kasiry.app.viewmodel.EmployeeCreateViewModel
+import com.kasiry.app.viewmodel.MainViewModel
+import org.koin.androidx.compose.get
 
 @Composable
 fun EmployeeCreateScreen(
     navController: NavController,
     application: Application
 ) {
+    val mainViewModel: MainViewModel = get()
+    val profile by mainViewModel.profile.collectAsState()
+
+    val viewModel = EmployeeCreateViewModel(
+        application = application,
+        employeeRepository = get()
+    )
+
     val form = remember {
         FormStore(
             mapOf(
@@ -57,7 +75,8 @@ fun EmployeeCreateScreen(
                 "password" to Field(
                     initialValue = "",
                     rules = listOf(
-                        required()
+                        required(),
+                        minLength(8)
                     )
                 ),
                 "employee" to Field(
@@ -165,16 +184,49 @@ fun EmployeeCreateScreen(
                         .weight(1f)
                 )
             }
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-            ) {
-                Text(
-                    text = "Tambah",
-                    style = Typo.body,
-                    color = Color.White,
-                )
+            when(val profileState = profile) {
+                is HttpState.Success -> {
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        onClick = {
+                            form.handleSubmit {
+                                val name = it["name"]?.value as String
+                                val email = it["email"]?.value as String
+                                val phone = it["phone"]?.value as String
+                                val password = it["password"]?.value as String
+                                val abilities = Ability(
+                                    employee = it["employee"]?.value as Boolean,
+                                    product = it["product"]?.value as Boolean,
+                                    transaction = it["transaction"]?.value as Boolean,
+                                )
+
+                                viewModel.update(
+                                    EmployeeRepository.UpdateBody(
+                                        name = name,
+                                        email = email,
+                                        phone = phone,
+                                        password = password,
+                                        abilities = abilities,
+                                    )
+                                ) {
+                                    onSuccess {
+                                        navController.popBackStack()
+                                    }
+                                }
+                            }
+                        }
+                    ) {
+                        Text(
+                            text = "Tambah",
+                            style = Typo.body,
+                            color = Color.White,
+                        )
+                    }
+
+                }
+                else -> {}
             }
         }
     }

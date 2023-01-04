@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -33,4 +34,6 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::get("/company", [CompanyController::class, "index"]);
     Route::post("/company", [CompanyController::class, "store"]);
     Route::put("/company", [CompanyController::class, "update"]);
+
+    Route::post("/employees", [EmployeeController::class, "store"]);
 });
