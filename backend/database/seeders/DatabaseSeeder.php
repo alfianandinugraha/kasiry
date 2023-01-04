@@ -8,7 +8,6 @@ use App\Models\Category;
 use App\Models\Company;
 use App\Models\Payment;
 use App\Models\User;
-use App\Models\Weight;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -20,7 +19,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        Weight::query()->delete();
         User::query()->delete();
         Category::query()->delete();
         Payment::query()->delete();
@@ -31,7 +29,6 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CategorySeeder::class,
             PaymentSeeder::class,
-            WeightSeeder::class,
         ]);
     }
 }

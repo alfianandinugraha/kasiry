@@ -20,22 +20,12 @@ return new class extends Migration {
             $table->float("buy_price");
             $table->float("sell_price");
             $table->string("barcode");
-            $table->string("weight_id", 100);
             $table->string("picture_id", 100);
-            $table->string("wholesale_id", 100);
             $table->string("company_id", 100);
             $table->string("category_id", 100);
             $table->timestamps();
 
             $table->primary("product_id");
-            $table
-                ->foreign("weight_id")
-                ->references("weight_id")
-                ->on("weights");
-            $table
-                ->foreign("wholesale_id")
-                ->references("wholesale_id")
-                ->on("wholesale");
             $table
                 ->foreign("company_id")
                 ->references("company_id")
