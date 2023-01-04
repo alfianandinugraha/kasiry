@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Label
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.runtime.*
@@ -19,8 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.kasiry.app.compose.Alert
 import com.kasiry.app.compose.Button
 import com.kasiry.app.compose.TextField
 import com.kasiry.app.compose.TopBar
@@ -74,6 +77,64 @@ fun CategoryUpdateScreen(
             onSuccess {
                 form.setValue("name", it.data.name)
             }
+        }
+    }
+
+    var isAlertShow by remember {
+        mutableStateOf(false)
+    }
+
+    if (isAlertShow) {
+        Alert(
+            title = "Hapus Kategori",
+            icon = Icons.Rounded.Delete,
+            onClose = {
+                isAlertShow = false
+            }
+        ) {
+            Column {
+                Text(
+                    text = "Apakah anda yakin ingin menghapus data ini?",
+                    style = Typo.body,
+                    textAlign = TextAlign.Center,
+                )
+                Button(
+                    bgColor = { Color.red() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    onClick = {
+                        viewModel.delete(categoryId) {
+                            onSuccess {
+                                isAlertShow = false
+                                navController.popBackStack()
+                            }
+                            onError {
+                                isAlertShow = false
+                            }
+                        }
+                    }
+                ) {
+                    Text(
+                        text = "Hapus",
+                        style = Typo.body,
+                        textAlign = TextAlign.Center,
+                        color = Color.White,
+                    )
+                }
+                Text(
+                    text = "Batal",
+                    style = Typo.body,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            isAlertShow = false
+                        }
+                        .padding(vertical = 14.dp),
+                )
+            }
+
         }
     }
 
@@ -153,6 +214,9 @@ fun CategoryUpdateScreen(
                         modifier = Modifier
                             .padding(top = 14.dp)
                             .align(Alignment.CenterHorizontally)
+                            .clickable {
+                                isAlertShow = true
+                            }
                     )
 
                 }

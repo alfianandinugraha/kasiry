@@ -21,6 +21,9 @@ class CategoryUpdateViewModel(
     private val _category = MutableStateFlow<HttpState<Category>?>(null)
     val category = _category.asStateFlow()
 
+    private val _delete = MutableStateFlow<HttpState<Any>?>(null)
+    val delete = _delete.asStateFlow()
+
     fun get(
         categoryId: String,
         callback: HttpCallback<Category>.() -> Unit
@@ -40,6 +43,18 @@ class CategoryUpdateViewModel(
         viewModelScope.launch {
             val response = categoryRepository.update(category)
             _update.value = response
+
+            callback(HttpCallback(response))
+        }
+    }
+
+    fun delete(
+        categoryId: String,
+        callback: HttpCallback<Any>.() -> Unit
+    ) {
+        viewModelScope.launch {
+            val response = categoryRepository.delete(categoryId)
+            _delete.value = response
 
             callback(HttpCallback(response))
         }
