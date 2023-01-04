@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -39,52 +40,56 @@ fun CategoryScreen(
         }
     }
 
-    Column(
+    LazyColumn(
         modifier = Modifier.fillMaxWidth()
     ) {
-        TopBar(
-            title = "Kategori",
-            onBack = {
-                navController.popBackStack()
-            },
-        )
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp)
-                .padding(bottom = 16.dp),
-            onClick = {
-                navController.navigate("categories/create")
-            },
-        ) {
-            Text(
-                text = "Tambah Kategori",
-                color = Color.White,
-                style = Typo.body
+        item {
+            TopBar(
+                title = "Kategori",
+                onBack = {
+                    navController.popBackStack()
+                },
             )
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp)
+                    .padding(bottom = 16.dp),
+                onClick = {
+                    navController.navigate("categories/create")
+                },
+            ) {
+                Text(
+                    text = "Tambah Kategori",
+                    color = Color.White,
+                    style = Typo.body
+                )
+            }
         }
-        Column(
-            modifier = Modifier.padding(horizontal = 32.dp)
-        ) {
-            when(val categoriesState = categories) {
-                is HttpState.Success -> {
-                    categoriesState.data.forEach { category ->
-                        CategoryItem(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 12.dp)
-                                .clickable {
-                                    navController.navigate("categories/${category.categoryId}")
-                                },
-                            category = category
-                        )
-                    }
+        when(val categoriesState = categories) {
+            is HttpState.Success -> {
+                items(
+                    count = categoriesState.data.size,
+                ) {
+                    val category = categoriesState.data[it]
+                    CategoryItem(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp)
+                            .padding(horizontal = 32.dp)
+                            .clickable {
+                                navController.navigate("categories/${category.categoryId}")
+                            },
+                        category = category
+                    )
                 }
-                is HttpState.Loading -> {
+            }
+            is HttpState.Loading -> {
+                item {
                     Loading()
                 }
-                else -> {}
             }
+            else -> {}
         }
     }
 }
