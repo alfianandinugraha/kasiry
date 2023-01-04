@@ -22,14 +22,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.kasiry.app.compose.Button
+import com.kasiry.app.compose.CategoryItem
 import com.kasiry.app.compose.EmployeeItem
 import com.kasiry.app.compose.TopBar
 import com.kasiry.app.models.data.Employee
+import com.kasiry.app.repositories.CategoryRepository
 import com.kasiry.app.repositories.EmployeeRepository
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.theme.blue
 import com.kasiry.app.theme.gray
 import com.kasiry.app.utils.http.HttpState
+import com.kasiry.app.viewmodel.CategoryViewModel
 import com.kasiry.app.viewmodel.EmployeeViewModel
 import org.koin.androidx.compose.get
 
@@ -38,6 +41,22 @@ fun CategoryScreen(
     navController: NavController,
     application: Application
 ) {
+    val categoryRepository: CategoryRepository = get()
+    val viewModel = remember {
+        CategoryViewModel(
+            application,
+            categoryRepository
+        )
+    }
+    val categories by viewModel.categories.collectAsState()
+
+    LaunchedEffect(true) {
+        viewModel.getAll {
+            onSuccess {
+                Log.d("CategoryScreen", "onSuccess: $it")
+            }
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -66,37 +85,20 @@ fun CategoryScreen(
         Column(
             modifier = Modifier.padding(horizontal = 32.dp)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(
-                        width = 1.dp,
-                        color = Color.gray(300),
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(16.dp)
-            ) {
-                Icon(
-                    Icons.Rounded.Label,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(24.dp)
-                        .align(Alignment.CenterVertically),
-                    tint = Color.gray(400)
-                )
-                Text(
-                    text = "Kategori 1",
-                    style = Typo.body,
-                    modifier = Modifier.padding(start = 12.dp)
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Icon(
-                    Icons.Rounded.ChevronRight,
-                    contentDescription = null,
-                    tint = Color.blue(),
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                )
+            when(val categoriesState = categories) {
+                is HttpState.Success -> {
+                    categoriesState.data.forEach { category ->
+                        CategoryItem(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 12.dp)
+                                .clickable {
+                                    navController.navigate("categories/${category.categoryId}")
+                                },
+                            category = category
+                        )
+                    }
+                }
             }
         }
     }
