@@ -40,4 +40,19 @@ class EmployeeRepository(
             )
             .execute()
     }
+
+    suspend fun getAll(): HttpState<List<Employee>> {
+        val request = ApiRequest
+            .json(
+                HttpMethod.GET,
+                "/employees",
+            )
+            .build()
+
+        return HttpRequest
+            .create<List<Employee>>(
+                call = client.newCall(request),
+            )
+            .execute()
+    }
 }
