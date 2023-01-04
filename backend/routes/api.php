@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
@@ -40,4 +41,19 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::get("/employees/{userId}", [EmployeeController::class, "detail"]);
     Route::put("/employees/{userId}", [EmployeeController::class, "update"]);
     Route::delete("/employees/{userId}", [EmployeeController::class, "delete"]);
+
+    Route::post("/categories", [CategoryController::class, "store"]);
+    Route::get("/categories", [CategoryController::class, "index"]);
+    Route::get("/categories/{categoryId}", [
+        CategoryController::class,
+        "detail",
+    ]);
+    Route::put("/categories/{categoryId}", [
+        CategoryController::class,
+        "update",
+    ]);
+    Route::delete("/categories/{categoryId}", [
+        CategoryController::class,
+        "delete",
+    ]);
 });
