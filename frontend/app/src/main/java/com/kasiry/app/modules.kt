@@ -1,5 +1,6 @@
 package com.kasiry.app
 
+import com.kasiry.app.repositories.CategoryRepository
 import com.kasiry.app.repositories.EmployeeRepository
 import com.kasiry.app.repositories.ProfileRepository
 import com.kasiry.app.viewmodel.MainViewModel
@@ -11,6 +12,12 @@ import org.koin.dsl.module
 val appModules = module {
     single {
         ProfileRepository(
+            context = androidContext()
+        )
+    }
+
+    single {
+        CategoryRepository(
             context = androidContext()
         )
     }

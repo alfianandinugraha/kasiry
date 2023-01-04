@@ -112,6 +112,12 @@ class MainActivity : ComponentActivity() {
                             application = application,
                         )
                     }
+                    composable("categories/create") {
+                        CategoryCreateScreen(
+                            navController = navController,
+                            application = application,
+                        )
+                    }
                     composable("company-update") {
                         (profileState as HttpState.Success).data.company?.let { it ->
                             CompanyUpdateScreen(
