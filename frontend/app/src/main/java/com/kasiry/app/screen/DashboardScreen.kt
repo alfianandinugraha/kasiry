@@ -175,7 +175,10 @@ fun DashboardScreen(navController: NavController, profile: Profile) {
                                 text = "Kategori",
                                 icon = Icons.Rounded.Label,
                                 bgColor = Color.blue(50),
-                                color = Color.blue()
+                                color = Color.blue(),
+                                onClick = {
+                                    navController.navigate("categories")
+                                }
                             )
                             MainMenu(
                                 text = "Usaha",
