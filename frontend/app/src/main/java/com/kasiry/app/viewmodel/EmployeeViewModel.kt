@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.kasiry.app.models.data.Employee
 import com.kasiry.app.repositories.EmployeeRepository
+import com.kasiry.app.utils.http.HttpCallback
 import com.kasiry.app.utils.http.HttpState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,14 +20,16 @@ class EmployeeViewModel(
     private val _employees = MutableStateFlow<HttpState<List<Employee>>?>(null)
     val employees = _employees.asStateFlow()
 
-    fun getAll(): Job {
+    fun getAll(
+        callback: HttpCallback<List<Employee>>.() -> Unit
+    ): Job {
         _employees.value = HttpState.Loading()
 
         return viewModelScope.launch {
             val response = employeeRepository.getAll()
             _employees.value = response
 
-            Log.d("EmployeeViewModel", "getAll: $response")
+            callback(HttpCallback(response))
         }
     }
 }

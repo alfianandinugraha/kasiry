@@ -104,6 +104,16 @@ fun EmployeeUpdateScreen(
                 if (abilities.product == true) form.setValue("product", abilities.product)
                 if (abilities.transaction == true) form.setValue("transaction", abilities.transaction)
             }
+            onError {
+                Toast
+                    .makeText(
+                        application.applicationContext,
+                        "Gagal memuat pegawai",
+                        Toast.LENGTH_SHORT
+                    )
+                    .show()
+                navController.popBackStack()
+            }
         }
     }
     Column {

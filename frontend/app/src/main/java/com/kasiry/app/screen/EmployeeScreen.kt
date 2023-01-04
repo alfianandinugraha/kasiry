@@ -2,6 +2,7 @@ package com.kasiry.app.screen
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -34,7 +35,18 @@ fun EmployeeScreen(
     val employees by viewModel.employees.collectAsState()
 
     LaunchedEffect(true) {
-        viewModel.getAll()
+        viewModel.getAll {
+            onError {
+                Toast
+                    .makeText(
+                        application.applicationContext,
+                        "Gagal memuat semua pegawai",
+                        Toast.LENGTH_SHORT
+                    )
+                    .show()
+                navController.popBackStack()
+            }
+        }
     }
 
     Column(
