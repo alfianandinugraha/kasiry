@@ -21,6 +21,8 @@ class CategoryViewModel(
     fun getAll(
         callback: HttpCallback<List<Category>>.() -> Unit
     ) {
+        _categories.value = HttpState.Loading()
+
         viewModelScope.launch {
             val response = categoryRepository.getAll()
             _categories.value = response

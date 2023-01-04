@@ -22,6 +22,8 @@ class CategoryCreateViewModel(
         category: Category,
         callback: HttpCallback<Category>.() -> Unit
     ) {
+        _create.value = HttpState.Loading()
+
         viewModelScope.launch {
             val response = categoryRepository.create(category)
             _create.value = response

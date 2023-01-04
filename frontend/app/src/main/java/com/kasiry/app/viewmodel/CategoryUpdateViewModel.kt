@@ -28,6 +28,8 @@ class CategoryUpdateViewModel(
         categoryId: String,
         callback: HttpCallback<Category>.() -> Unit
     ) {
+        _category.value = HttpState.Loading()
+
         viewModelScope.launch {
             val response = categoryRepository.get(categoryId)
             _category.value = response
@@ -40,6 +42,8 @@ class CategoryUpdateViewModel(
         category: Category,
         callback: HttpCallback<Category>.() -> Unit
     ) {
+        _update.value = HttpState.Loading()
+
         viewModelScope.launch {
             val response = categoryRepository.update(category)
             _update.value = response
@@ -52,6 +56,8 @@ class CategoryUpdateViewModel(
         categoryId: String,
         callback: HttpCallback<Any>.() -> Unit
     ) {
+        _delete.value = HttpState.Loading()
+
         viewModelScope.launch {
             val response = categoryRepository.delete(categoryId)
             _delete.value = response
