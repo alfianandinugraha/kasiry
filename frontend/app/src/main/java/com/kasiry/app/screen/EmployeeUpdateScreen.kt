@@ -2,11 +2,11 @@ package com.kasiry.app.screen
 
 import android.app.Application
 import android.util.Log
+import android.view.Gravity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.navigation.NavController
-import com.kasiry.app.compose.TextField
-import com.kasiry.app.compose.TopBar
 import com.kasiry.app.rules.required
 import com.kasiry.app.utils.Field
 import com.kasiry.app.utils.FormStore
@@ -15,16 +15,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.kasiry.app.compose.Button
-import com.kasiry.app.compose.Checkbox
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
+import com.kasiry.app.compose.*
 import com.kasiry.app.models.data.Ability
 import com.kasiry.app.models.data.Employee
 import com.kasiry.app.repositories.EmployeeRepository
@@ -100,8 +105,64 @@ fun EmployeeUpdateScreen(
             }
         }
     }
-
     Column {
+        var isShow by remember {
+            mutableStateOf(false)
+        }
+        if (isShow) {
+            Alert(
+                title = "Hapus Pegawai",
+                icon = Icons.Rounded.Delete,
+                onClose = {
+                    isShow = false
+                }
+            ) {
+                Column {
+                    Text(
+                        text = "Apakah anda yakin ingin menghapus data ini?",
+                        style = Typo.body,
+                        textAlign = TextAlign.Center,
+                    )
+                    Button(
+                        bgColor = { Color.red() },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        onClick = {
+                            viewModel.delete(userId) {
+                                onSuccess {
+                                    isShow = false
+                                    navController.popBackStack()
+                                }
+                                onError {
+                                    isShow = false
+                                }
+                            }
+                        }
+                    ) {
+                        Text(
+                            text = "Hapus",
+                            style = Typo.body,
+                            textAlign = TextAlign.Center,
+                            color = Color.White,
+                        )
+                    }
+                    Text(
+                        text = "Batal",
+                        style = Typo.body,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                isShow = false
+                            }
+                            .padding(vertical = 14.dp),
+                    )
+                }
+
+            }
+        }
+
         TopBar(
             title = "Ubah Pegawai",
             onBack = {
@@ -228,8 +289,12 @@ fun EmployeeUpdateScreen(
                         text = "Hapus",
                         style = Typo.body,
                         color = Color.red(),
-                        modifier = Modifier.padding(top = 14.dp)
+                        modifier = Modifier
+                            .padding(top = 14.dp)
                             .align(Alignment.CenterHorizontally)
+                            .clickable {
+                                isShow = true
+                            }
                     )
                 }
                 else -> {}

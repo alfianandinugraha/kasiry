@@ -93,4 +93,19 @@ class EmployeeRepository(
             )
             .execute()
     }
+
+    suspend fun delete(userId: String) : HttpState<Any> {
+        val request = ApiRequest
+            .json(
+                HttpMethod.DELETE,
+                "/employees/$userId",
+            )
+            .build()
+
+        return HttpRequest
+            .create<Any>(
+                call = client.newCall(request),
+            )
+            .execute()
+    }
 }

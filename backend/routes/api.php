@@ -39,4 +39,5 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::get("/employees", [EmployeeController::class, "index"]);
     Route::get("/employees/{userId}", [EmployeeController::class, "detail"]);
     Route::put("/employees/{userId}", [EmployeeController::class, "update"]);
+    Route::delete("/employees/{userId}", [EmployeeController::class, "delete"]);
 });
