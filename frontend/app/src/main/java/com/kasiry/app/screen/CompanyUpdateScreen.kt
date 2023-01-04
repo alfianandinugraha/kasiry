@@ -1,6 +1,7 @@
 package com.kasiry.app.screen
 
 import android.app.Application
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -132,6 +133,15 @@ fun CompanyUpdateScreen(
                                             )
                                         )
                                         navController.popBackStack()
+                                    }
+                                    onError {
+                                        Toast
+                                            .makeText(
+                                                application.applicationContext,
+                                                "Gagal mengubah usaha",
+                                                Toast.LENGTH_SHORT
+                                            )
+                                            .show()
                                     }
                                 }
                             }

@@ -1,6 +1,7 @@
 package com.kasiry.app.screen
 
 import android.app.Application
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
@@ -212,6 +213,15 @@ fun EmployeeCreateScreen(
                                 ) {
                                     onSuccess {
                                         navController.popBackStack()
+                                    }
+                                    onError {
+                                        Toast
+                                            .makeText(
+                                                application.applicationContext,
+                                                "Gagal menambahkan pegawai",
+                                                Toast.LENGTH_SHORT
+                                            )
+                                            .show()
                                     }
                                 }
                             }

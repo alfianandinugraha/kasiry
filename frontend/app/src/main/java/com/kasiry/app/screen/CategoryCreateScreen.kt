@@ -1,6 +1,7 @@
 package com.kasiry.app.screen
 
 import android.app.Application
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -125,6 +126,15 @@ fun CategoryCreateScreen(
                                 ) {
                                     onSuccess {
                                         navController.popBackStack()
+                                    }
+                                    onError {
+                                        Toast
+                                            .makeText(
+                                                application.applicationContext,
+                                                "Gagal menambahkan kategori",
+                                                Toast.LENGTH_SHORT
+                                            )
+                                            .show()
                                     }
                                 }
                             }
