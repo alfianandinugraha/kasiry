@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.kasiry.app.compose.Button
-import com.kasiry.app.compose.Guard
 import com.kasiry.app.compose.TopBar
 import com.kasiry.app.models.data.Ability
 import com.kasiry.app.models.data.Company
@@ -87,23 +86,21 @@ fun CompanyScreen(
             )
             when (val profileState = profile) {
                 is HttpState.Success -> {
-                    Guard(allowed = Ability.UPDATE_COMPANY, abilities = profileState.data.abilities) {
-                        Button(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 32.dp)
-                                .padding(top = 16.dp),
-                            onClick = {
-                                navController.navigate("company-update")
-                            }
-                        ) {
-                            Text(
-                                text = "Ubah",
-                                style = Typo.body,
-                                color = Color.White,
-                                fontSize = 16.sp,
-                            )
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 32.dp)
+                            .padding(top = 16.dp),
+                        onClick = {
+                            navController.navigate("company-update")
                         }
+                    ) {
+                        Text(
+                            text = "Ubah",
+                            style = Typo.body,
+                            color = Color.White,
+                            fontSize = 16.sp,
+                        )
                     }
                 }
                 else -> {}

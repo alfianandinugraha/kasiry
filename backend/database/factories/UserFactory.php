@@ -22,7 +22,11 @@ class UserFactory extends Factory
             "user_id" => Str::random(10),
             "name" => fake()->name(),
             "phone" => fake()->phoneNumber(),
-            "abilities" => [Ability::SUPER],
+            "abilities" => [
+                "employee" => true,
+                "product" => true,
+                "transaction" => true,
+            ],
             "email" => fake()
                 ->unique()
                 ->safeEmail(),

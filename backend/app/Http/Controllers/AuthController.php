@@ -65,7 +65,11 @@ class AuthController extends Controller
             "phone" => $request->phone,
             "email" => $request->email,
             "password" => Hash::make($request->password),
-            "abilities" => [Ability::SUPER],
+            "abilities" => [
+                "employee" => true,
+                "product" => true,
+                "transaction" => true,
+            ],
         ]);
 
         $user->saveOrFail();
