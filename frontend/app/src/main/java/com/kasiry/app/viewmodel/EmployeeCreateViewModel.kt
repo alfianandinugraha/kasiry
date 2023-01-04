@@ -15,18 +15,18 @@ class EmployeeCreateViewModel(
     application: Application,
     val employeeRepository: EmployeeRepository
 ): AndroidViewModel(application) {
-    private val _update = MutableStateFlow<HttpState<Employee>?>(null)
-    val update = _update.asStateFlow()
+    private val _create = MutableStateFlow<HttpState<Employee>?>(null)
+    val create = _create.asStateFlow()
 
-    fun update (
+    fun create (
         employee: EmployeeRepository.UpdateBody,
         callback: HttpCallback<Employee>.() -> Unit
     ) {
-        _update.value = HttpState.Loading()
+        _create.value = HttpState.Loading()
 
         viewModelScope.launch {
-            val response = employeeRepository.update(employee)
-            _update.value = response
+            val response = employeeRepository.create(employee)
+            _create.value = response
 
             callback(HttpCallback(response))
         }

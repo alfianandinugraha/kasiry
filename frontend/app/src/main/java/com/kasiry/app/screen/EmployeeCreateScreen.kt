@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import com.kasiry.app.compose.Button
 import com.kasiry.app.compose.Checkbox
 import com.kasiry.app.models.data.Ability
-import com.kasiry.app.models.data.Employee
 import com.kasiry.app.repositories.EmployeeRepository
 import com.kasiry.app.rules.minLength
 import com.kasiry.app.theme.Typo
@@ -202,7 +201,7 @@ fun EmployeeCreateScreen(
                                     transaction = it["transaction"]?.value as Boolean,
                                 )
 
-                                viewModel.update(
+                                viewModel.create(
                                     EmployeeRepository.UpdateBody(
                                         name = name,
                                         email = email,
