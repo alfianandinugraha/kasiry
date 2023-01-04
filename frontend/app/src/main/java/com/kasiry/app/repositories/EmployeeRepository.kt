@@ -55,4 +55,19 @@ class EmployeeRepository(
             )
             .execute()
     }
+
+    suspend fun get(userId: String) : HttpState<Employee> {
+        val request = ApiRequest
+            .json(
+                HttpMethod.GET,
+                "/employees/$userId",
+            )
+            .build()
+
+        return HttpRequest
+            .create<Employee>(
+                call = client.newCall(request),
+            )
+            .execute()
+    }
 }

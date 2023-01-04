@@ -72,6 +72,9 @@ fun EmployeeScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(bottom = 16.dp),
+                            onClick = {
+                                navController.navigate("employees/${employee.userId}/update")
+                            }
                         )
                     }
                 }

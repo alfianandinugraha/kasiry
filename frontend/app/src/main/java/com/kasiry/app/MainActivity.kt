@@ -96,6 +96,16 @@ class MainActivity : ComponentActivity() {
                             application = application
                         )
                     }
+                    composable("employees/{userId}/update") {
+                        val userId = it.arguments?.getString("userId")
+                        if (userId != null) {
+                            EmployeeUpdateScreen(
+                                navController = navController,
+                                application = application,
+                                userId = userId
+                            )
+                        }
+                    }
                     composable("company-update") {
                         (profileState as HttpState.Success).data.company?.let { it ->
                             CompanyUpdateScreen(
