@@ -1,5 +1,6 @@
 package com.kasiry.app.utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -23,7 +24,9 @@ fun rememberCameraLauncher(context: Context, onResult: (Uri) -> Unit): CameraLau
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
         onResult = {
-            onResult(file)
+            if (Activity.RESULT_OK == it.resultCode) {
+                onResult(file)
+            }
         }
     )
 
