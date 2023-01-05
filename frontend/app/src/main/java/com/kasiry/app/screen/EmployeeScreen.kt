@@ -5,14 +5,14 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.kasiry.app.compose.Button
-import com.kasiry.app.compose.EmployeeItem
-import com.kasiry.app.compose.TopBar
+import com.kasiry.app.compose.*
 import com.kasiry.app.models.data.Employee
 import com.kasiry.app.repositories.EmployeeRepository
 import com.kasiry.app.theme.Typo
@@ -49,52 +49,42 @@ fun EmployeeScreen(
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        TopBar(
-            title = "Pegawai",
-            onBack = {
-                navController.popBackStack()
-            },
-        )
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp)
-                .padding(bottom = 16.dp),
-            onClick = {
-                navController.navigate("employees/create")
-            },
-        ) {
-            Text(
-                text = "Tambah Pegawai",
-                color = Color.White,
-                style = Typo.body
+    Layout(
+        topbar = {
+            TopBar(
+                title = "Pegawai",
+                onBack = {
+                    navController.popBackStack()
+                },
             )
-        }
-        Column(
-            modifier = Modifier.padding(horizontal = 32.dp)
-        ) {
-            when (val employeeState = employees) {
-                is HttpState.Success -> {
-                    employeeState.data.forEach { employee ->
-                        EmployeeItem(
-                            employee = employee,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 16.dp),
-                            onClick = {
-                                navController.navigate("employees/${employee.userId}/update")
-                            }
-                        )
-                    }
-                }
-                is HttpState.Loading -> {
-                    Text("Loading")
-                }
-                else -> {}
+        },
+        floatingButton = {
+            IconCircleButton(icon = Icons.Rounded.Add) {
+                navController.navigate("employees/create")
             }
+        }
+    ) {
+        when (val employeeState = employees) {
+            is HttpState.Success -> {
+                items(employeeState.data.size) { idx ->
+                    val employee = employeeState.data[idx]
+                    EmployeeItem(
+                        employee = employee,
+                        modifier = Modifier
+                            .padding(bottom = 16.dp)
+                            .padding(horizontal = 32.dp),
+                        onClick = {
+                            navController.navigate("employees/${employee.userId}/update")
+                        }
+                    )
+                }
+            }
+            is HttpState.Loading -> {
+                item {
+                    Loading()
+                }
+            }
+            else -> {}
         }
     }
 }
