@@ -3,14 +3,12 @@ package com.kasiry.app.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -20,22 +18,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.kasiry.app.compose.*
-import com.kasiry.app.models.data.Ability
 import com.kasiry.app.models.data.Profile
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.theme.blue
 import com.kasiry.app.theme.gray
-import com.kasiry.app.viewmodel.MainViewModel
-import org.koin.androidx.compose.get
 import kotlin.math.ceil
 
 @Composable
 fun DashboardScreen(navController: NavController, profile: Profile) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
-    ) {
+    Layout {
         item {
             Box {
                 Box(
@@ -106,24 +97,24 @@ fun DashboardScreen(navController: NavController, profile: Profile) {
                                     .fillMaxWidth()
                                     .padding(top = 16.dp)
                             ) {
-                               Column(
-                                   modifier = Modifier
-                                       .weight(1f)
-                                       .padding(end = 8.dp)
-                               ) {
-                                   Text(
-                                       text = "Penjualan",
-                                       style = Typo.body,
-                                       fontSize = 14.sp,
-                                       color = Color.gray()
-                                   )
-                                   Text(
-                                       text = "Rp150.000",
-                                       style = Typo.body,
-                                       fontSize = 18.sp,
-                                       fontWeight = FontWeight.Bold,
-                                   )
-                               }
+                                Column(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(end = 8.dp)
+                                ) {
+                                    Text(
+                                        text = "Penjualan",
+                                        style = Typo.body,
+                                        fontSize = 14.sp,
+                                        color = Color.gray()
+                                    )
+                                    Text(
+                                        text = "Rp150.000",
+                                        style = Typo.body,
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Bold,
+                                    )
+                                }
                                 Column(
                                     modifier = Modifier
                                         .weight(1f)
@@ -155,6 +146,9 @@ fun DashboardScreen(navController: NavController, profile: Profile) {
                                 icon = Icons.Rounded.Inventory2,
                                 bgColor = Color.blue(50),
                                 color = Color.blue(),
+                                onClick = {
+                                    navController.navigate("products")
+                                }
                             )
                             MainMenu(
                                 text = "Transaksi",
