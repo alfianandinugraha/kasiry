@@ -28,17 +28,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.kasiry.app.compose.Button
-import com.kasiry.app.compose.Layout
-import com.kasiry.app.compose.TextField
-import com.kasiry.app.compose.TopBar
+import com.kasiry.app.compose.*
 import com.kasiry.app.rules.required
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.theme.gray
-import com.kasiry.app.utils.Field
-import com.kasiry.app.utils.FormStore
-import com.kasiry.app.utils.rememberCameraLauncher
-import com.kasiry.app.utils.rememberPermissionRequest
+import com.kasiry.app.utils.*
+import com.kasiry.app.utils.launcher.rememberGetContent
 
 @Composable
 fun ProductCreateScreen(
@@ -94,6 +89,9 @@ fun ProductCreateScreen(
     var isCameraOpen by remember {
         mutableStateOf(false)
     }
+    var isModalOpen by remember {
+        mutableStateOf(false)
+    }
 
     val cameraLauncher = rememberCameraLauncher(
         context = application.applicationContext,
@@ -105,6 +103,7 @@ fun ProductCreateScreen(
         }
     )
     val permission = rememberPermissionRequest("android.permission.CAMERA")
+    val getContentLauncher = rememberGetContent("image/*")
 
     if (isCameraOpen) {
         Box {
@@ -146,6 +145,91 @@ fun ProductCreateScreen(
             }
         }
     } else {
+        if (isModalOpen) {
+            ModalBottom(
+                title = "Pilih Gambar",
+                onClose = {
+                    isModalOpen = false
+                }
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .clip(
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .fillMaxWidth()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = rememberRipple(bounded = false)
+                        ) {
+                            permission.launch {
+                                onGranted {
+                                    cameraLauncher.launch()
+                                }
+                                onDenied {
+                                    Toast
+                                        .makeText(
+                                            application.applicationContext,
+                                            "Izin kamera tidak diberikan",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                        .show()
+                                }
+                            }
+                            isModalOpen = false
+                        }
+                        .padding(8.dp)
+                ) {
+                    Icon(
+                        Icons.Rounded.Camera,
+                        contentDescription = null,
+                        tint = Color.gray(),
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .size(28.dp)
+                    )
+                    Text(
+                        text = "Ambil Foto",
+                        style = Typo.body,
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .clip(
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .fillMaxWidth()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = rememberRipple(bounded = false)
+                        ) {
+                            getContentLauncher.launch {
+                                onSuccess {
+                                    imageUri = it
+                                }
+                            }
+                            isModalOpen = false
+                        }
+                        .padding(8.dp)
+                ) {
+                    Icon(
+                        Icons.Rounded.Image,
+                        contentDescription = null,
+                        tint = Color.gray(),
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .size(28.dp)
+                    )
+                    Text(
+                        text = "Pilih dari Galeri",
+                        style = Typo.body,
+                    )
+                }
+            }
+        }
         Layout(
             topbar = {
                 TopBar(
@@ -201,20 +285,7 @@ fun ProductCreateScreen(
                                     indication = rememberRipple(),
                                     interactionSource = remember { MutableInteractionSource() }
                                 ) {
-                                    permission.launch {
-                                        onGranted {
-                                            cameraLauncher.launch()
-                                        }
-                                        onDenied {
-                                            Toast
-                                                .makeText(
-                                                    application.applicationContext,
-                                                    "Gagal membuka kamera",
-                                                    Toast.LENGTH_LONG
-                                                )
-                                                .show()
-                                        }
-                                    }
+                                    isModalOpen = true
                                 }
                                 .drawBehind {
                                     drawRoundRect(
