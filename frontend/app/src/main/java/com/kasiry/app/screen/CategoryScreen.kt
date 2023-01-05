@@ -3,18 +3,16 @@ package com.kasiry.app.screen
 import android.app.Application
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.kasiry.app.compose.*
 import com.kasiry.app.repositories.CategoryRepository
-import com.kasiry.app.theme.Typo
 import com.kasiry.app.utils.http.HttpState
 import com.kasiry.app.viewmodel.CategoryViewModel
 import org.koin.androidx.compose.get
@@ -53,32 +51,21 @@ fun CategoryScreen(
         }
     }
 
-    LazyColumn(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        item {
+    Layout(
+        topbar = {
             TopBar(
                 title = "Kategori",
                 onBack = {
                     navController.popBackStack()
                 },
             )
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
-                    .padding(bottom = 16.dp),
-                onClick = {
-                    navController.navigate("categories/create")
-                },
-            ) {
-                Text(
-                    text = "Tambah Kategori",
-                    color = Color.White,
-                    style = Typo.body
-                )
+        },
+        floatingButton = {
+            IconCircleButton(icon = Icons.Rounded.Add) {
+                navController.navigate("categories/create")
             }
         }
+    ) {
         when(val categoriesState = categories) {
             is HttpState.Success -> {
                 items(
@@ -89,11 +76,11 @@ fun CategoryScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 12.dp)
-                            .padding(horizontal = 32.dp)
-                            .clickable {
-                                navController.navigate("categories/${category.categoryId}")
-                            },
-                        category = category
+                            .padding(horizontal = 32.dp),
+                        category = category,
+                        onClick = {
+                            navController.navigate("categories/${category.categoryId}")
+                        }
                     )
                 }
             }
