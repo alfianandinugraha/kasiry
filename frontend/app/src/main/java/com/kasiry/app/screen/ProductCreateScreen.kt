@@ -5,6 +5,7 @@ import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -31,6 +32,8 @@ import coil.compose.AsyncImage
 import com.kasiry.app.compose.*
 import com.kasiry.app.rules.required
 import com.kasiry.app.theme.Typo
+import com.kasiry.app.theme.black
+import com.kasiry.app.theme.blue
 import com.kasiry.app.theme.gray
 import com.kasiry.app.utils.*
 import com.kasiry.app.utils.launcher.rememberGetContent
@@ -79,10 +82,16 @@ fun ProductCreateScreen(
                         required()
                     )
                 ),
+                "categoryId" to Field(
+                    initialValue = "",
+                ),
             )
         )
     }
-
+    val categoryField = form.getField<String>("categoryId")
+    var categoryName by remember {
+        mutableStateOf("")
+    }
     var imageUri by remember {
         mutableStateOf(Uri.EMPTY)
     }
@@ -90,6 +99,9 @@ fun ProductCreateScreen(
         mutableStateOf(false)
     }
     var isModalOpen by remember {
+        mutableStateOf(false)
+    }
+    var isCategoryOpen by remember {
         mutableStateOf(false)
     }
 
@@ -246,6 +258,9 @@ fun ProductCreateScreen(
                         .fillMaxWidth()
                         .padding(
                             horizontal = 32.dp
+                        )
+                        .padding(
+                            bottom = 120.dp
                         ),
                 ) {
                     Text(
@@ -418,6 +433,67 @@ fun ProductCreateScreen(
                                 .weight(1f),
                         )
                     }
+                    Text(
+                        text = "Kategori",
+                        style = Typo.body,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 12.dp)
+                    )
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row {
+                            if (categoryName.isNotEmpty()) {
+                                Icon(
+                                    Icons.Rounded.Label,
+                                    contentDescription = null,
+                                    tint = Color.gray(),
+                                    modifier = Modifier
+                                        .padding(end = 8.dp)
+                                )
+                            }
+                            Text(
+                                text = categoryName.ifEmpty { "Tidak ada" },
+                                style = Typo.body,
+                                color = if (categoryName.isNotEmpty()) Color.black() else Color.gray(),
+                            )
+                        }
+                        Row(
+                            modifier = Modifier
+                                .clip(
+                                    shape = RoundedCornerShape(6.dp)
+                                )
+                                .clickable(
+                                    indication = rememberRipple(),
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) {
+                                    isCategoryOpen = true
+                                }
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.blue(),
+                                    shape = RoundedCornerShape(6.dp)
+                                )
+                                .padding(horizontal = 12.dp, vertical = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(2.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Pilih",
+                                style = Typo.body,
+                                color = Color.blue(),
+                            )
+                            Icon(
+                                Icons.Rounded.ChevronRight,
+                                contentDescription = null,
+                                tint = Color.blue(),
+                            )
+                        }
+                    }
                     Button(
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -436,6 +512,24 @@ fun ProductCreateScreen(
                 }
             }
         }
+        CategoryPickerScreen(
+            isOpen = isCategoryOpen,
+            onBack = remember {
+                {
+                    isCategoryOpen = false
+                }
+            },
+            navController = navController,
+            application = application,
+            onCategorySelected = remember {
+                {
+                    categoryField.value = it.categoryId
+                    categoryName = it.name
+                    isCategoryOpen = false
+                }
+            },
+            categoryId = categoryField.value,
+        )
     }
 
 }
