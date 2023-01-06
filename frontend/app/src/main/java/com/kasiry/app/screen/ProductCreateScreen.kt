@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -26,23 +27,37 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.kasiry.app.compose.*
+import com.kasiry.app.models.data.Asset
+import com.kasiry.app.models.data.Profile
+import com.kasiry.app.repositories.AssetRepository
 import com.kasiry.app.rules.required
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.theme.black
 import com.kasiry.app.theme.blue
 import com.kasiry.app.theme.gray
 import com.kasiry.app.utils.*
+import com.kasiry.app.utils.http.HttpState
 import com.kasiry.app.utils.launcher.rememberGetContent
+import com.kasiry.app.viewmodel.AssetViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProductCreateScreen(
     navController: NavController,
-    application: Application
+    application: Application,
+    assetViewModel: AssetViewModel,
+    profile: Profile
 ) {
+    val upload by assetViewModel.upload.collectAsState()
+
     val form = remember {
         FormStore(
             fields = mapOf(
@@ -354,6 +369,9 @@ fun ProductCreateScreen(
                             name = "stock",
                             modifier = Modifier
                                 .weight(1f),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
+                            ),
                         )
                         TextField(
                             label = "Satuan",
@@ -424,6 +442,9 @@ fun ProductCreateScreen(
                             name = "sell_price",
                             modifier = Modifier
                                 .weight(1f),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
+                            ),
                         )
                         TextField(
                             label = "Harga Beli",
@@ -431,6 +452,9 @@ fun ProductCreateScreen(
                             name = "buy_price",
                             modifier = Modifier
                                 .weight(1f),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
+                            ),
                         )
                     }
                     Text(
@@ -497,9 +521,46 @@ fun ProductCreateScreen(
                     Button(
                         modifier = Modifier
                             .fillMaxWidth(),
+                        disabled =  upload is HttpState.Loading,
                         onClick = {
                             form.handleSubmit {
+                                val asset = Asset(
+                                    assetId = "",
+                                    fileName = "test",
+                                    extension = "",
+                                    companyId = "",
+                                )
 
+                                val scope = CoroutineScope(Dispatchers.IO)
+                                val contentResolver = application
+                                    .applicationContext
+                                    .contentResolver
+
+                                scope.launch {
+                                    val stream = contentResolver.openInputStream(imageUri)
+                                    val mimeType = contentResolver.getType(imageUri)
+
+                                    if (stream !== null && mimeType !== null) {
+                                        val (_, type) = mimeType.split("/")
+
+                                        val assetResponse = assetViewModel.upload(
+                                            body = AssetRepository
+                                                .UploadBody(
+                                                    fileName = "test.$type",
+                                                    companyId = profile.companyId,
+                                                    file = stream,
+                                                )
+                                        )
+                                    } else {
+                                        Toast
+                                            .makeText(
+                                                application.applicationContext,
+                                                "Gagal mengambil gambar",
+                                                Toast.LENGTH_LONG
+                                            )
+                                            .show()
+                                    }
+                                }
                             }
                         }
                     ) {

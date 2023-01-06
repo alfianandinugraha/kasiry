@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kasiry.app.screen.*
 import com.kasiry.app.utils.http.HttpState
+import com.kasiry.app.viewmodel.AssetViewModel
 import com.kasiry.app.viewmodel.MainViewModel
 import org.koin.android.ext.android.get
 
@@ -82,7 +83,12 @@ class MainActivity : ComponentActivity() {
                     composable("products/create") {
                         ProductCreateScreen(
                             navController = navController,
-                            application = application
+                            application = application,
+                            assetViewModel = AssetViewModel(
+                                application,
+                                assetRepository = get()
+                            ),
+                            profile = (profileState as HttpState.Success).data
                         )
                     }
                     composable("company") {

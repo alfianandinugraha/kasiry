@@ -1,5 +1,6 @@
 package com.kasiry.app
 
+import com.kasiry.app.repositories.AssetRepository
 import com.kasiry.app.repositories.CategoryRepository
 import com.kasiry.app.repositories.EmployeeRepository
 import com.kasiry.app.repositories.ProfileRepository
@@ -18,6 +19,12 @@ val appModules = module {
 
     single {
         CategoryRepository(
+            context = androidContext()
+        )
+    }
+
+    factory {
+        AssetRepository(
             context = androidContext()
         )
     }
