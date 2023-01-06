@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.kasiry.app.BuildConfig
 import okhttp3.Headers
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.internal.EMPTY_REQUEST
@@ -66,6 +67,30 @@ class ApiRequest {
                             EMPTY_REQUEST
                         }
                     }
+                )
+        }
+
+        fun formData(
+            method: HttpMethod,
+            path: String,
+            body: MultipartBody? = null,
+            headers: Map<String, String> = mapOf()
+        ): Request.Builder {
+            val url = "${API_BASE_URL}${path}"
+            return Request.Builder()
+                .url(url)
+                .headers(headers(headers.toMutableMap().let {
+                    it["Accept"] = "application/json"
+                    it
+                }))
+                .method(
+                    mapMethod(method),
+                    body
+                        ?: if (method == HttpMethod.GET) {
+                            null
+                        } else {
+                            EMPTY_REQUEST
+                        }
                 )
         }
     }
