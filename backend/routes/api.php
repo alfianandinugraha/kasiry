@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompanyController;
@@ -56,4 +57,6 @@ Route::middleware("auth:sanctum")->group(function () {
         CategoryController::class,
         "delete",
     ]);
+
+    Route::post("/assets", [AssetController::class, "store"]);
 });
