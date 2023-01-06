@@ -5,6 +5,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -15,6 +17,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import arrow.core.Either
@@ -30,6 +33,9 @@ fun TextField(
     name: String,
     disabled: Boolean = false,
     rules: List<(Any) -> Either<String, Boolean>> = listOf(),
+    keyboardOptions: KeyboardOptions = KeyboardOptions(
+        keyboardType = KeyboardType.Text,
+    ),
 ) {
     val field = remember(control, name, rules) {
         control.getField<String>(name, rules)
@@ -81,6 +87,7 @@ fun TextField(
 
                 }
             },
+            keyboardOptions = keyboardOptions,
             modifier = remember(focusRequester, isFocused, disabled) {
                 Modifier
                     .fillMaxWidth()
