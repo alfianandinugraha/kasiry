@@ -95,9 +95,11 @@ class ProductController extends Controller
             ->where("company_id", $user->company_id)
             ->firstOrFail();
 
-        $product->asset;
+        $product->picture;
         $product->category;
         $product->company;
+
+        Log::info($product);
 
         return Response::make(
             [
@@ -114,12 +116,12 @@ class ProductController extends Controller
     {
         $user = $request->user();
         $products = Product::query()
-            ->with(["asset", "category", "company"])
+            ->with(["picture", "category", "company"])
             ->where("company_id", $user->company_id)
             ->get();
 
         foreach ($products as $product) {
-            $product->asset;
+            $product->picture;
             $product->category;
             $product->company;
         }

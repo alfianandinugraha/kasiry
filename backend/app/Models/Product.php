@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -38,7 +39,7 @@ class Product extends Model
         return $this->belongsTo(Category::class, "category_id", "category_id");
     }
 
-    public function asset()
+    public function picture()
     {
         return $this->belongsTo(Asset::class, "picture_id", "asset_id");
     }
