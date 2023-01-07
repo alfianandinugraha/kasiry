@@ -13,11 +13,11 @@ class Product extends Model
         "product_id",
         "name",
         "description",
-        "price",
         "stock",
         "buy_price",
         "sell_price",
         "barcode",
+        "picture_id",
         "company_id",
         "category_id",
     ];
@@ -36,5 +36,10 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class, "category_id", "category_id");
+    }
+
+    public function asset()
+    {
+        return $this->belongsTo(Asset::class, "picture_id", "asset_id");
     }
 }

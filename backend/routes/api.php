@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -59,4 +60,13 @@ Route::middleware("auth:sanctum")->group(function () {
     ]);
 
     Route::post("/assets", [AssetController::class, "store"]);
+
+    Route::get("/products", [ProductController::class, "index"]);
+    Route::post("/products", [ProductController::class, "store"]);
+    Route::get("/products/{productId}", [ProductController::class, "detail"]);
+    Route::put("/products/{productId}", [ProductController::class, "update"]);
+    Route::delete("/products/{productId}", [
+        ProductController::class,
+        "delete",
+    ]);
 });

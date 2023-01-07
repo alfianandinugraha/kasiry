@@ -16,4 +16,9 @@ class Asset extends Model
     public $keyType = "string";
 
     public $incrementing = false;
+
+    public function product()
+    {
+        return $this->hasOne(Product::class, "picture_id", "asset_id");
+    }
 }
