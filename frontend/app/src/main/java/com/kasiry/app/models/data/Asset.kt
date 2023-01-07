@@ -5,4 +5,5 @@ data class Asset(
     val companyId: String,
     val fileName: String,
     val extension: String,
+    val url: String
 )
