@@ -68,6 +68,7 @@ fun ProductListScreen(
         CameraView(
             onFound = {
                 form.setValue("query", it)
+                productViewModel.filter(it)
                 isCameraOpen = false
             },
             onError = {
@@ -129,6 +130,10 @@ fun ProductListScreen(
                                     name = "query",
                                     modifier = Modifier
                                         .weight(.8f),
+                                    onChange = {
+                                        Log.d("ProductListScreen", "ProductListScreen: $it")
+                                        productViewModel.filter(it)
+                                    }
                                 )
                                 Box(
                                     modifier = Modifier

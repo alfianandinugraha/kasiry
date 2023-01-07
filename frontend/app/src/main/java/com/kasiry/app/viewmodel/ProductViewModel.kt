@@ -93,7 +93,7 @@ class ProductViewModel(
     private val _listState = MutableStateFlow<HttpState<List<Product>>?>(null)
     private val _filterListState = MutableStateFlow<HttpState<List<Product>>?>(null)
     val listState = _listState.asStateFlow()
-    val filterListState = _listState.asStateFlow()
+    val filterListState = _filterListState.asStateFlow()
 
     suspend fun getAll(
         query: String? = null,
