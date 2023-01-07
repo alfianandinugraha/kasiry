@@ -2,9 +2,7 @@ package com.kasiry.app.screen
 
 import android.app.Application
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -33,8 +31,6 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.kasiry.app.compose.*
 import com.kasiry.app.models.data.Profile
-import com.kasiry.app.repositories.AssetRepository
-import com.kasiry.app.repositories.ProductRepository
 import com.kasiry.app.rules.required
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.theme.black
@@ -42,13 +38,11 @@ import com.kasiry.app.theme.blue
 import com.kasiry.app.theme.gray
 import com.kasiry.app.utils.*
 import com.kasiry.app.utils.http.HttpState
-import com.kasiry.app.utils.launcher.rememberGetContent
 import com.kasiry.app.viewmodel.AssetViewModel
 import com.kasiry.app.viewmodel.ProductViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Composable
 fun ProductCreateScreen(
@@ -59,7 +53,6 @@ fun ProductCreateScreen(
     profile: Profile
 ) {
     val upload by assetViewModel.upload.collectAsState()
-    val storeState by productViewModel.storeState.collectAsState()
 
     val form = remember {
         FormStore(
@@ -123,17 +116,7 @@ fun ProductCreateScreen(
         mutableStateOf(false)
     }
 
-    val cameraLauncher = rememberCameraLauncher(
-        context = application.applicationContext,
-        onResult = {
-            if (it !== Uri.EMPTY) {
-                imageUri = it
-            }
-            Log.d("Camera", "onResult: $it")
-        }
-    )
     val permission = rememberPermissionRequest("android.permission.CAMERA")
-    val getContentLauncher = rememberGetContent("image/*")
 
     if (isCameraOpen) {
         CameraView(
@@ -157,89 +140,15 @@ fun ProductCreateScreen(
         )
     } else {
         if (isModalOpen) {
-            ModalBottom(
-                title = "Pilih Gambar",
+            ModalPicturePicker(
                 onClose = {
                     isModalOpen = false
+                },
+                onFind = {
+                    imageUri = it
+                    isModalOpen = false
                 }
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .clip(
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .fillMaxWidth()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = rememberRipple(bounded = false)
-                        ) {
-                            permission.launch {
-                                onGranted {
-                                    cameraLauncher.launch()
-                                }
-                                onDenied {
-                                    Toast
-                                        .makeText(
-                                            application.applicationContext,
-                                            "Izin kamera tidak diberikan",
-                                            Toast.LENGTH_SHORT
-                                        )
-                                        .show()
-                                }
-                            }
-                            isModalOpen = false
-                        }
-                        .padding(8.dp)
-                ) {
-                    Icon(
-                        Icons.Rounded.Camera,
-                        contentDescription = null,
-                        tint = Color.gray(),
-                        modifier = Modifier
-                            .padding(end = 8.dp)
-                            .size(28.dp)
-                    )
-                    Text(
-                        text = "Ambil Foto",
-                        style = Typo.body,
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .clip(
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .fillMaxWidth()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = rememberRipple(bounded = false)
-                        ) {
-                            getContentLauncher.launch {
-                                onSuccess {
-                                    imageUri = it
-                                }
-                            }
-                            isModalOpen = false
-                        }
-                        .padding(8.dp)
-                ) {
-                    Icon(
-                        Icons.Rounded.Image,
-                        contentDescription = null,
-                        tint = Color.gray(),
-                        modifier = Modifier
-                            .padding(end = 8.dp)
-                            .size(28.dp)
-                    )
-                    Text(
-                        text = "Pilih dari Galeri",
-                        style = Typo.body,
-                    )
-                }
-            }
+            )
         }
         Layout(
             topbar = {
