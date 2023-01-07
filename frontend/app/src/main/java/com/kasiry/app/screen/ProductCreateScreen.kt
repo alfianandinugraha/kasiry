@@ -32,9 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.kasiry.app.compose.*
-import com.kasiry.app.models.data.Asset
 import com.kasiry.app.models.data.Profile
 import com.kasiry.app.repositories.AssetRepository
+import com.kasiry.app.repositories.ProductRepository
 import com.kasiry.app.rules.required
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.theme.black
@@ -44,46 +44,49 @@ import com.kasiry.app.utils.*
 import com.kasiry.app.utils.http.HttpState
 import com.kasiry.app.utils.launcher.rememberGetContent
 import com.kasiry.app.viewmodel.AssetViewModel
+import com.kasiry.app.viewmodel.ProductViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun ProductCreateScreen(
     navController: NavController,
     application: Application,
     assetViewModel: AssetViewModel,
+    productViewModel: ProductViewModel,
     profile: Profile
 ) {
     val upload by assetViewModel.upload.collectAsState()
+    val storeState by productViewModel.storeState.collectAsState()
 
     val form = remember {
         FormStore(
             fields = mapOf(
                 "name" to Field(
-                    initialValue = "",
+                    initialValue = "Lampu Philips",
                     rules = listOf(
                         required()
                     )
                 ),
                 "description" to Field(
-                    initialValue = "",
+                    initialValue = "Lampu terang",
                 ),
                 "stock" to Field(
-                    initialValue = "",
+                    initialValue = "20",
                     rules = listOf(
                         required()
                     )
                 ),
                 "sell_price" to Field(
-                    initialValue = "",
+                    initialValue = "20000",
                     rules = listOf(
                         required()
                     )
                 ),
                 "buy_price" to Field(
-                    initialValue = "",
+                    initialValue = "10000",
                     rules = listOf(
                         required()
                     )
@@ -92,18 +95,18 @@ fun ProductCreateScreen(
                     initialValue = "",
                 ),
                 "weight" to Field(
-                    initialValue = "",
+                    initialValue = "unit",
                     rules = listOf(
                         required()
                     )
                 ),
-                "categoryId" to Field(
+                "category_id" to Field(
                     initialValue = "",
                 ),
             )
         )
     }
-    val categoryField = form.getField<String>("categoryId")
+    val categoryField = form.getField<String>("category_id")
     var categoryName by remember {
         mutableStateOf("")
     }
@@ -521,44 +524,105 @@ fun ProductCreateScreen(
                     Button(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        disabled =  upload is HttpState.Loading,
+                        disabled = upload is HttpState.Loading,
                         onClick = {
                             form.handleSubmit {
-                                val asset = Asset(
-                                    assetId = "",
-                                    fileName = "test",
-                                    extension = "",
-                                    companyId = "",
-                                )
-
                                 val scope = CoroutineScope(Dispatchers.IO)
                                 val contentResolver = application
                                     .applicationContext
                                     .contentResolver
 
                                 scope.launch {
-                                    val stream = contentResolver.openInputStream(imageUri)
-                                    val mimeType = contentResolver.getType(imageUri)
+                                    val categoryId =
+                                        it["category_id"]?.value.toString().ifEmpty { null }
+                                    val description =
+                                        it["description"]?.value.toString().ifEmpty { null }
+                                    val barcode = it["barcode"]?.value.toString().ifEmpty { null }
 
-                                    if (stream !== null && mimeType !== null) {
-                                        val (_, type) = mimeType.split("/")
-
-                                        val assetResponse = assetViewModel.upload(
-                                            body = AssetRepository
-                                                .UploadBody(
-                                                    fileName = "test.$type",
-                                                    companyId = profile.companyId,
-                                                    file = stream,
-                                                )
+                                    val productBody = ProductRepository
+                                        .StoreBody(
+                                            name = it["name"]?.value.toString(),
+                                            description = description,
+                                            stock = it["stock"]?.value.toString().toDouble(),
+                                            weight = it["weight"]?.value.toString(),
+                                            barcode = barcode,
+                                            sellPrice = it["sell_price"]?.value.toString()
+                                                .toDouble(),
+                                            buyPrice = it["buy_price"]?.value.toString().toDouble(),
+                                            categoryId = categoryId,
+                                            pictureId = null
                                         )
-                                    } else {
-                                        Toast
-                                            .makeText(
-                                                application.applicationContext,
-                                                "Gagal mengambil gambar",
-                                                Toast.LENGTH_LONG
-                                            )
-                                            .show()
+
+                                    if (imageUri !== Uri.EMPTY) {
+                                        val stream = contentResolver.openInputStream(imageUri)
+                                        val mimeType = contentResolver.getType(imageUri)
+
+                                        if (stream !== null && mimeType !== null) {
+                                            val (_, type) = mimeType.split("/")
+
+                                            try {
+                                                val assetResponse = assetViewModel.upload(
+                                                    body = AssetRepository
+                                                        .UploadBody(
+                                                            fileName = "test.$type",
+                                                            companyId = profile.companyId,
+                                                            file = stream,
+                                                        )
+                                                )
+
+                                                if (assetResponse is HttpState.Success) {
+                                                    productBody.pictureId = assetResponse.data.assetId
+                                                } else {
+                                                    Toast
+                                                        .makeText(
+                                                            application.applicationContext,
+                                                            "Gagal mengambil gambar",
+                                                            Toast.LENGTH_LONG
+                                                        )
+                                                        .show()
+                                                    return@launch
+                                                }
+                                            } catch (e: Exception) {
+                                                Toast
+                                                    .makeText(
+                                                        application.applicationContext,
+                                                        "Gagal mengambil gambar",
+                                                        Toast.LENGTH_LONG
+                                                    )
+                                                    .show()
+                                                return@launch
+                                            }
+                                        } else {
+                                            Toast
+                                                .makeText(
+                                                    application.applicationContext,
+                                                    "Gagal mengambil gambar",
+                                                    Toast.LENGTH_LONG
+                                                )
+                                                .show()
+                                        }
+                                    }
+
+                                    productViewModel.store(productBody) {
+                                        onSuccess {
+                                            Toast
+                                                .makeText(
+                                                    application.applicationContext,
+                                                    "Berhasil menambahkan produk",
+                                                    Toast.LENGTH_LONG
+                                                )
+                                                .show()
+                                            navController.popBackStack()
+                                        }
+                                        onError {
+                                            Toast
+                                                .makeText(
+                                                    application.applicationContext,
+                                                    "Gagal menambahkan produk",
+                                                    Toast.LENGTH_LONG
+                                                )
+                                                .show()
+                                        }
                                     }
                                 }
                             }
@@ -592,5 +656,4 @@ fun ProductCreateScreen(
             categoryId = categoryField.value,
         )
     }
-
 }

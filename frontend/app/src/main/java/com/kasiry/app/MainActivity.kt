@@ -14,6 +14,7 @@ import com.kasiry.app.screen.*
 import com.kasiry.app.utils.http.HttpState
 import com.kasiry.app.viewmodel.AssetViewModel
 import com.kasiry.app.viewmodel.MainViewModel
+import com.kasiry.app.viewmodel.ProductViewModel
 import org.koin.android.ext.android.get
 
 class MainActivity : ComponentActivity() {
@@ -88,7 +89,8 @@ class MainActivity : ComponentActivity() {
                                 application,
                                 assetRepository = get()
                             ),
-                            profile = (profileState as HttpState.Success).data
+                            profile = (profileState as HttpState.Success).data,
+                            productViewModel = get()
                         )
                     }
                     composable("company") {
