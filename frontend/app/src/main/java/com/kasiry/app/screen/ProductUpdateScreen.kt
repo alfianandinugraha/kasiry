@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.navigation.NavController
@@ -34,10 +35,7 @@ import coil.compose.AsyncImage
 import com.kasiry.app.compose.*
 import com.kasiry.app.models.data.Product
 import com.kasiry.app.rules.required
-import com.kasiry.app.theme.Typo
-import com.kasiry.app.theme.black
-import com.kasiry.app.theme.blue
-import com.kasiry.app.theme.gray
+import com.kasiry.app.theme.*
 import com.kasiry.app.utils.Field
 import com.kasiry.app.utils.FormStore
 import com.kasiry.app.utils.http.HttpState
@@ -123,6 +121,9 @@ fun ProductUpdateScreen(
     var isCategoryOpen by remember {
         mutableStateOf(false)
     }
+    var isAlertOpen by remember {
+        mutableStateOf(false)
+    }
 
     val permission = rememberPermissionRequest("android.permission.CAMERA")
 
@@ -184,6 +185,63 @@ fun ProductUpdateScreen(
                     isModalOpen = false
                 }
             )
+        }
+        if (isAlertOpen) {
+            Alert(
+                title = "Hapus Produk",
+                icon = Icons.Rounded.Delete,
+                onClose = {
+                    isAlertOpen = false
+                }
+            ) {
+                Column {
+                    Text(
+                        text = "Apakah anda yakin ingin menghapus data ini?",
+                        style = Typo.body,
+                        textAlign = TextAlign.Center,
+                    )
+                    Button(
+                        bgColor = { Color.red() },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        onClick = {
+                            val scope = CoroutineScope(Dispatchers.IO)
+
+                            scope.launch {
+                                productViewModel.delete(productId) {
+                                    onSuccess {
+                                        isAlertOpen = false
+                                        navController.popBackStack()
+                                    }
+                                    onError {
+                                        isAlertOpen = false
+                                    }
+                                }
+                            }
+                        }
+                    ) {
+                        Text(
+                            text = "Hapus",
+                            style = Typo.body,
+                            textAlign = TextAlign.Center,
+                            color = Color.White,
+                        )
+                    }
+                    Text(
+                        text = "Batal",
+                        style = Typo.body,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                isAlertOpen = false
+                            }
+                            .padding(vertical = 14.dp),
+                    )
+                }
+
+            }
         }
         Layout(
             topbar = {
@@ -506,6 +564,18 @@ fun ProductUpdateScreen(
                             style = Typo.body,
                         )
                     }
+                    Text(
+                        text = "Hapus",
+                        style = Typo.body,
+                        color = Color.red(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                isAlertOpen = true
+                            }
+                            .padding(top = 16.dp),
+                        textAlign = TextAlign.Center,
+                    )
                 }
             }
         }
