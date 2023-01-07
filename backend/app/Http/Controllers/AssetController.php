@@ -6,6 +6,7 @@ use App\Models\Asset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -46,5 +47,17 @@ class AssetController extends Controller
             ],
             201
         );
+    }
+
+    public function detail(Request $request, $assetId)
+    {
+        $asset = Asset::query()->findOrFail($assetId);
+
+        $fileName = $asset->file_name;
+        $extension = $asset->extension;
+
+        $path = Storage::path("public/$assetId.$extension");
+
+        return Response::download($path, "$fileName.$extension");
     }
 }
