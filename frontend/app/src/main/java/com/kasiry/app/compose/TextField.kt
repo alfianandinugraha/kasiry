@@ -36,6 +36,7 @@ fun TextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions(
         keyboardType = KeyboardType.Text,
     ),
+    onChange: (String) -> Unit = {},
 ) {
     val field = remember(control, name, rules) {
         control.getField<String>(name, rules)
@@ -79,6 +80,7 @@ fun TextField(
             onValueChange = remember(field.value, control) {
                 {
                     if (!disabled) {
+                        onChange(it)
                         field.value = it
                         if (isSubmitted) {
                             control.validateField(name)
