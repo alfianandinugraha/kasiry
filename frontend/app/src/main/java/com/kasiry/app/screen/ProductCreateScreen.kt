@@ -136,44 +136,25 @@ fun ProductCreateScreen(
     val getContentLauncher = rememberGetContent("image/*")
 
     if (isCameraOpen) {
-        Box {
-            CameraView(
-                onFound = {
-                    form.setValue("barcode", it)
-                    isCameraOpen = false
-                },
-                onError = {
-                    Toast
-                        .makeText(
-                            application.applicationContext,
-                            "Gagal membaca QR Cdoe",
-                            Toast.LENGTH_SHORT
-                        )
-                        .show()
-                    isCameraOpen = false
-                }
-            )
-            Box(
-                modifier = Modifier
-                    .offset(x = 16.dp, y = 16.dp)
-                    .clip(
-                        shape = RoundedCornerShape(999.dp)
+        CameraView(
+            onFound = {
+                form.setValue("barcode", it)
+                isCameraOpen = false
+            },
+            onError = {
+                Toast
+                    .makeText(
+                        application.applicationContext,
+                        "Gagal membaca QR Cdoe",
+                        Toast.LENGTH_SHORT
                     )
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple(bounded = false)
-                    ) {
-                        isCameraOpen = false
-                    }
-                    .background(Color.White)
-                    .padding(16.dp)
-            ) {
-                Icon(
-                    Icons.Rounded.ArrowBack,
-                    contentDescription = null
-                )
+                    .show()
+                isCameraOpen = false
+            },
+            onClose = {
+                isCameraOpen = false
             }
-        }
+        )
     } else {
         if (isModalOpen) {
             ModalBottom(
