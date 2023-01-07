@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Inventory2
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,21 +19,38 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.kasiry.app.models.data.Product
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.theme.blue
 import com.kasiry.app.theme.gray
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+
+val formatter = DecimalFormat("#,###.###", DecimalFormatSymbols().apply {
+    decimalSeparator = ','
+    groupingSeparator = '.'
+})
 
 @Composable
 fun ProductItem(
     modifier: Modifier = Modifier,
-    onClick: (() -> Unit)? = null
+    onClick: ((Product) -> Unit)? = null,
+    product: Product
 ) {
+    val sellPrice = remember(product.sellPrice) {
+        formatter.format(product.sellPrice)
+    }
+
+    val stock = remember(product.stock) {
+        formatter.format(product.stock)
+    }
+
     Column(
         modifier = modifier
             .clickable(
                 enabled = onClick != null,
             ) {
-                onClick?.invoke()
+                onClick?.invoke(product)
             }
     ) {
         Box(
@@ -51,7 +69,7 @@ fun ProductItem(
             )
         }
         Text(
-            text = "Box Murah box murah box murah",
+            text = product.name,
             style = Typo.body,
             fontSize = 14.sp,
             modifier = Modifier
@@ -74,14 +92,14 @@ fun ProductItem(
                         .padding(end = 4.dp)
                 )
                 Text (
-                    text = "3 unit",
+                    text = "$stock ${product.weight ?: ""}",
                     style = Typo.body,
                     color = Color.gray(),
                     fontSize = 14.sp
                 )
             }
             Text(
-                text = "Rp100.000",
+                text = "Rp${sellPrice}",
                 style = Typo.body,
                 fontWeight = FontWeight.Bold,
                 color = Color.blue(),

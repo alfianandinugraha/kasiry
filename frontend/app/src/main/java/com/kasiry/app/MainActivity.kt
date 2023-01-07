@@ -78,7 +78,8 @@ class MainActivity : ComponentActivity() {
                     composable("products") {
                         ProductListScreen(
                             navController = navController,
-                            application = application
+                            application = application,
+                            productViewModel = get()
                         )
                     }
                     composable("products/create") {

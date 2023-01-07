@@ -215,34 +215,34 @@ fun DashboardScreen(navController: NavController, profile: Profile) {
             }
         }
 
-        val data = listOf("☕", "🙂", "🥛", "🎉", "📐", "🎯")
-        items(ceil(data.size / 2f).toInt()) { index ->
-            val firstData = data[index * 2]
-            val secondData = data.getOrNull((index * 2) + 1)
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
-                    .padding(bottom = 16.dp)
-            ) {
-                ProductItem(
-                    modifier = Modifier
-                        .weight(1f)
-                )
-                if (secondData != null) {
-                    ProductItem(
-                        modifier = Modifier
-                            .weight(1f)
-                    )
-                } else {
-                    Spacer(
-                        modifier = Modifier
-                            .weight(1f)
-                    )
-                }
-            }
-        }
+//        val data = listOf("☕", "🙂", "🥛", "🎉", "📐", "🎯")
+//        items(ceil(data.size / 2f).toInt()) { index ->
+//            val firstData = data[index * 2]
+//            val secondData = data.getOrNull((index * 2) + 1)
+//
+//            Row(
+//                horizontalArrangement = Arrangement.spacedBy(16.dp),
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(horizontal = 32.dp)
+//                    .padding(bottom = 16.dp)
+//            ) {
+//                ProductItem(
+//                    modifier = Modifier
+//                        .weight(1f)
+//                )
+//                if (secondData != null) {
+//                    ProductItem(
+//                        modifier = Modifier
+//                            .weight(1f)
+//                    )
+//                } else {
+//                    Spacer(
+//                        modifier = Modifier
+//                            .weight(1f)
+//                    )
+//                }
+//            }
+//        }
     }
 }
