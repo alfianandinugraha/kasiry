@@ -1,5 +1,6 @@
 package com.kasiry.app.utils.http
 
+import android.net.Uri
 import com.google.gson.Gson
 import com.kasiry.app.BuildConfig
 import okhttp3.Headers
@@ -8,6 +9,8 @@ import okhttp3.MultipartBody
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.internal.EMPTY_REQUEST
+import java.net.URI
+import java.net.URL
 
 class ApiRequest {
     companion object {
@@ -47,11 +50,22 @@ class ApiRequest {
             method: HttpMethod,
             path: String,
             body: Any? = null,
-            headers: Map<String, String> = mapOf()
+            headers: Map<String, String> = mapOf(),
+            params: Map<String, Any?> = mapOf()
         ): Request.Builder {
-            val url = "${API_BASE_URL}${path}"
+            val uri = Uri.parse("$API_BASE_URL$path")
+                .buildUpon()
+
+            params.forEach { (key, value) ->
+                if (value != null) {
+                    uri.appendQueryParameter(key, value.toString())
+                }
+            }
+
+            uri.build()
+
             return Request.Builder()
-                .url(url)
+                .url(uri.toString())
                 .headers(headers(headers.toMutableMap().let {
                     it["Accept"] = "application/json"
                     it
