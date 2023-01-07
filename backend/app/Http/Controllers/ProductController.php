@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use GuzzleHttp\Handler\Proxy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
@@ -99,8 +100,6 @@ class ProductController extends Controller
         $product->category;
         $product->company;
 
-        Log::info($product);
-
         return Response::make(
             [
                 "message" => "Berhasil mendapatkan detail produk.",
@@ -130,6 +129,63 @@ class ProductController extends Controller
             [
                 "message" => "Berhasil mendapatkan daftar produk.",
                 "data" => collect($products)
+                    ->camelKeys()
+                    ->all(),
+            ],
+            200
+        );
+    }
+
+    public function update(Request $request, $productId)
+    {
+        $validator = Validator::make($request->all(), [
+            "name" => ["required", "string", "max:255"],
+            "description" => ["string", "max:255"],
+            "stock" => ["required", "numeric", "min:0"],
+            "buyPrice" => ["required", "numeric", "min:0"],
+            "sellPrice" => ["required", "numeric", "min:0"],
+            "barcode" => ["nullable", "string", "max:255"],
+            "weight" => ["required", "string", "max:255"],
+            "categoryId" => [
+                "nullable",
+                "string",
+                "exists:categories,category_id",
+            ],
+            "pictureId" => ["nullable", "string", "exists:assets,asset_id"],
+        ]);
+
+        $validator->validate();
+
+        $user = $request->user();
+        $product = Product::query()
+            ->where("product_id", $productId)
+            ->where("company_id", $user->company_id)
+            ->firstOrFail();
+
+        $values = [
+            "name" => $request->name,
+            "description" => $request->description,
+            "stock" => $request->stock,
+            "buy_price" => $request->buyPrice,
+            "sell_price" => $request->sellPrice,
+            "barcode" => $request->barcode,
+            "weight" => $request->weight,
+            "category_id" => $request->categoryId,
+            "picture_id" => $request->pictureId,
+        ];
+
+        Product::query()
+            ->find($productId)
+            ->updateOrFail($values);
+
+        $product->picture;
+        $product->category;
+        $product->company;
+
+        return Response::make(
+            [
+                "message" => "Berhasil mengubah produk.",
+                "data" => collect($product)
                     ->camelKeys()
                     ->all(),
             ],

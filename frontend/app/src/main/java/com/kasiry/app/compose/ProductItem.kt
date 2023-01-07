@@ -90,7 +90,7 @@ fun ProductItem(
                             .background(Color.gray(300))
                     ) {
                         AsyncImage(
-                            model = product.picture.url,
+                            model = product.picture?.url,
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                         )
@@ -229,7 +229,7 @@ fun ProductItem(
                 .fillMaxWidth()
         ) {
             AsyncImage(
-                model = product.picture.url,
+                model = product.picture?.url,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
             )

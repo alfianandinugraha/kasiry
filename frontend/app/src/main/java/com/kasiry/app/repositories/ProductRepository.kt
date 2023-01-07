@@ -33,9 +33,9 @@ class ProductRepository(context: Context) {
         val buyPrice: Double,
         val sellPrice: Double,
         val stock: Double,
-        val barcode: String,
+        val barcode: String?,
         val categoryId: String?,
-        val pictureId: String?
+        val pictureId: String? = null,
     )
 
     suspend fun store(body: StoreBody): HttpState<Product> {

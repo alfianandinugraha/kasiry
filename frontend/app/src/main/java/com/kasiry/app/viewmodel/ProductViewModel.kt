@@ -2,6 +2,7 @@ package com.kasiry.app.viewmodel
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.kasiry.app.models.data.Product
@@ -143,18 +144,75 @@ class ProductViewModel(
         }
     }
 
+    data class UpdateBody(
+        val name: String,
+        val description: String?,
+        val weight: String,
+        val buyPrice: Double,
+        val sellPrice: Double,
+        val stock: Double,
+        val barcode: String?,
+        val categoryId: String?,
+        val pictureUri: Uri? = null,
+        val pictureId: String?
+    )
+
     private val _updateState = MutableStateFlow<HttpState<Product>?>(null)
     val updateState = _updateState.asStateFlow()
 
     suspend fun update(
         productId: String,
-        body: ProductRepository.UpdateBody,
+        body: UpdateBody,
         callback: (HttpCallback<Product>.() -> Unit)? = null
     ): HttpState<Product> {
         _updateState.value = HttpState.Loading()
 
         return withContext(viewModelScope.coroutineContext) {
-            val response = productRepository.update(productId, body)
+            val context = getApplication<Application>().applicationContext
+            var pictureId: String? = body.pictureId;
+            val isHttp = body.pictureUri?.scheme == "http" || body.pictureUri?.scheme == "https"
+
+            Log.d("ProductViewModel", "isHttp: $productId")
+
+            if (body.pictureUri !== Uri.EMPTY && body.pictureUri !== null && !isHttp) {
+                val stream = context.contentResolver.openInputStream(body.pictureUri)
+                val mimeType = context.contentResolver.getType(body.pictureUri)
+
+                if (stream !== null && mimeType !== null) {
+                    val (_, type) = mimeType.split("/")
+
+                    val assetResponse = assetRepository.upload(
+                        AssetRepository.UploadBody(
+                            fileName = "test.$type",
+                            file = stream,
+                        )
+                    )
+
+                    if (assetResponse is HttpState.Error) {
+                        return@withContext HttpState.Error(
+                            message = "Gagal mengupload gambar"
+                        )
+                    }
+
+                    if (assetResponse is HttpState.Success) {
+                        pictureId = assetResponse.data.assetId
+                    }
+                }
+            }
+
+            val updateBody = ProductRepository.UpdateBody(
+                name = body.name,
+                description = body.description,
+                weight = body.weight,
+                buyPrice = body.buyPrice,
+                sellPrice = body.sellPrice,
+                stock = body.stock,
+                barcode = body.barcode,
+                categoryId = body.categoryId,
+                pictureId = pictureId,
+            )
+
+            val response = productRepository.update(productId, updateBody)
             _updateState.value = response
 
             callback?.invoke(HttpCallback(response))

@@ -11,7 +11,7 @@ data class Product(
     val barcode: String?,
     val category: Category?,
     val company: Company,
-    val picture: Asset,
+    val picture: Asset?,
 ) {
     override fun toString(): String {
         return "Product(productId='$productId', name='$name', weight='$weight', buyPrice=$buyPrice, sellPrice=$sellPrice, stock=$stock, barcode='$barcode', category=$category, company=$company, picture=$picture)"

@@ -62,28 +62,28 @@ fun ProductUpdateScreen(
         FormStore(
             fields = mapOf(
                 "name" to Field(
-                    initialValue = "Lampu Philips",
+                    initialValue = "",
                     rules = listOf(
                         required()
                     )
                 ),
                 "description" to Field(
-                    initialValue = "Lampu terang",
+                    initialValue = "",
                 ),
                 "stock" to Field(
-                    initialValue = "20",
+                    initialValue = "",
                     rules = listOf(
                         required()
                     )
                 ),
                 "sell_price" to Field(
-                    initialValue = "20000",
+                    initialValue = "",
                     rules = listOf(
                         required()
                     )
                 ),
                 "buy_price" to Field(
-                    initialValue = "10000",
+                    initialValue = "",
                     rules = listOf(
                         required()
                     )
@@ -92,12 +92,15 @@ fun ProductUpdateScreen(
                     initialValue = "",
                 ),
                 "weight" to Field(
-                    initialValue = "unit",
+                    initialValue = "",
                     rules = listOf(
                         required()
                     )
                 ),
                 "category_id" to Field(
+                    initialValue = "",
+                ),
+                "picture_id" to Field(
                     initialValue = "",
                 ),
             )
@@ -138,7 +141,11 @@ fun ProductUpdateScreen(
                 form.setValue("weight", it.data.weight ?: "")
                 form.setValue("category_id", it.data.category?.categoryId ?: "")
                 categoryName = it.data.category?.name ?: ""
-                imageUri = it.data.picture.url.toUri()
+
+                if (it.data.picture !== null) {
+                    form.setValue("picture_id", it.data.picture.assetId ?: "")
+                    imageUri = it.data.picture.url.toUri()
+                }
             }
             onError {
                 productState = it
@@ -445,6 +452,51 @@ fun ProductUpdateScreen(
                         onClick = {
                             form.handleSubmit {
                                 val scope = CoroutineScope(Dispatchers.IO)
+
+                                scope.launch {
+                                    val categoryId =
+                                        it["category_id"]?.value.toString().ifEmpty { null }
+                                    val description =
+                                        it["description"]?.value.toString().ifEmpty { null }
+                                    val barcode = it["barcode"]?.value.toString().ifEmpty { null }
+
+                                    val productBody = ProductViewModel
+                                        .UpdateBody(
+                                            name = it["name"]?.value.toString(),
+                                            description = description,
+                                            stock = it["stock"]?.value.toString().toDouble(),
+                                            weight = it["weight"]?.value.toString(),
+                                            barcode = barcode,
+                                            sellPrice = it["sell_price"]?.value.toString()
+                                                .toDouble(),
+                                            buyPrice = it["buy_price"]?.value.toString().toDouble(),
+                                            categoryId = categoryId,
+                                            pictureUri = imageUri,
+                                            pictureId = it["picture_id"]?.value.toString().ifEmpty { null }
+                                        )
+
+                                    productViewModel.update(productId, productBody) {
+                                        onSuccess {
+                                            Toast
+                                                .makeText(
+                                                    application.applicationContext,
+                                                    "Berhasil menambahkan produk",
+                                                    Toast.LENGTH_LONG
+                                                )
+                                                .show()
+                                            navController.popBackStack()
+                                        }
+                                        onError {
+                                            Toast
+                                                .makeText(
+                                                    application.applicationContext,
+                                                    "Gagal menambahkan produk",
+                                                    Toast.LENGTH_LONG
+                                                )
+                                                .show()
+                                        }
+                                    }
+                                }
                             }
                         }
                     ) {
