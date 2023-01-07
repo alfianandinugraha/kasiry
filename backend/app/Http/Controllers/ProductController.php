@@ -109,4 +109,29 @@ class ProductController extends Controller
             200
         );
     }
+
+    public function index(Request $request)
+    {
+        $user = $request->user();
+        $products = Product::query()
+            ->with(["asset", "category", "company"])
+            ->where("company_id", $user->company_id)
+            ->get();
+
+        foreach ($products as $product) {
+            $product->asset;
+            $product->category;
+            $product->company;
+        }
+
+        return Response::make(
+            [
+                "message" => "Berhasil mendapatkan daftar produk.",
+                "data" => collect($products)
+                    ->camelKeys()
+                    ->all(),
+            ],
+            200
+        );
+    }
 }
