@@ -1,10 +1,8 @@
 package com.kasiry.app
 
-import com.kasiry.app.repositories.AssetRepository
-import com.kasiry.app.repositories.CategoryRepository
-import com.kasiry.app.repositories.EmployeeRepository
-import com.kasiry.app.repositories.ProfileRepository
+import com.kasiry.app.repositories.*
 import com.kasiry.app.viewmodel.MainViewModel
+import com.kasiry.app.viewmodel.ProductViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -33,6 +31,19 @@ val appModules = module {
         MainViewModel(
             androidApplication(),
             profileRepository = get(),
+        )
+    }
+
+    factory {
+        ProductRepository(
+            context = androidContext()
+        )
+    }
+
+    single {
+        ProductViewModel(
+            androidApplication(),
+            productRepository = get(),
         )
     }
 
