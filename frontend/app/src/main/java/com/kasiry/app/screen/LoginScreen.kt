@@ -31,10 +31,18 @@ import com.kasiry.app.utils.Field
 import com.kasiry.app.utils.FormStore
 import com.kasiry.app.utils.http.HttpState
 import com.kasiry.app.viewmodel.LoginViewModel
+import com.kasiry.app.viewmodel.ProfileViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.get
 
 @Composable
-fun LoginScreen(navController: NavController, application: Application) {
+fun LoginScreen(
+    navController: NavController,
+    application: Application,
+    profileViewModel: ProfileViewModel
+) {
     val profileRepository: ProfileRepository = get()
 
     val loginService = remember {
@@ -51,10 +59,10 @@ fun LoginScreen(navController: NavController, application: Application) {
         FormStore(
             fields = mutableStateMapOf(
                 "email" to Field(
-                    initialValue = "",
+                    initialValue = "hello@gmail.com",
                 ),
                 "password" to Field(
-                    initialValue = "",
+                    initialValue = "user1234",
                 ),
             )
         )
@@ -108,6 +116,7 @@ fun LoginScreen(navController: NavController, application: Application) {
             )
             TextField(
                 label = "Password",
+                disabled = isLoading,
                 modifier = Modifier.padding(bottom = 16.dp),
                 control = form,
                 name = "password",
@@ -130,20 +139,23 @@ fun LoginScreen(navController: NavController, application: Application) {
                             val email = it["email"]?.value as String
                             val password = it["password"]?.value as String
 
-                            loginService.login(
-                                body = AuthRepository.LoginBody(
-                                    email = email,
-                                    password = password
-                                )
-                            ) {
-                                onSuccess {
-                                    navController.navigate("dashboard")
-                                }
+                            CoroutineScope(Dispatchers.IO).launch {
+                                loginService.login(
+                                    body = AuthRepository.LoginBody(
+                                        email = email,
+                                        password = password
+                                    )
+                                ) {
+                                    onSuccess {
+                                        profileViewModel.setProfile(it.data)
+                                    }
 
-                                onError {
-                                    Log.d("LoginScreen", "Login error: ${it.message}")
+                                    onError {
+                                        Log.d("LoginScreen", "Login error: ${it.message}")
+                                    }
                                 }
                             }
+
                         }
                     }
                 },

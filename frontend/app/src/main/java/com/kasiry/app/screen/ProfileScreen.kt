@@ -36,12 +36,8 @@ fun ProfileScreen(
     navController: NavController,
     profile: Profile,
     application: Application,
+    profileViewModel: ProfileViewModel
 ) {
-    val profileViewModel = ProfileViewModel(
-        application,
-        authRepository = AuthRepository(application.applicationContext)
-    )
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -110,7 +106,7 @@ fun ProfileScreen(
                     .clickable {
                         profileViewModel.logout {
                             onSuccess {
-                                navController.navigate("login")
+                                profileViewModel.removeProfile()
                             }
                         }
                     },

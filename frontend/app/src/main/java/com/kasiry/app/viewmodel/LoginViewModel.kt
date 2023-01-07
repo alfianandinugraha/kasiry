@@ -22,29 +22,36 @@ class LoginViewModel(
     private val _login = MutableStateFlow<HttpState<Login>?>(null)
     val login = _login.asStateFlow()
 
-    fun login(
+    suspend fun login(
         body: AuthRepository.LoginBody,
         callback: HttpCallback<Profile>.() -> Unit,
-    ): Job {
+    ): HttpState<Profile> {
         _login.value = HttpState.Loading()
 
-        return viewModelScope.launch(Dispatchers.Main) {
+        return withContext(viewModelScope.coroutineContext) {
             val loginResponse = authRepository.login(body)
-            _login.value = loginResponse
 
             val context = getApplication<Application>().applicationContext
+            var profileResponse: HttpState<Profile> = HttpState.Error()
 
             if (loginResponse is HttpState.Success) {
                 context.accessToken = loginResponse.data.token
+                profileResponse = profileRepository.get()
             }
 
             if (loginResponse is HttpState.Error) {
                 context.accessToken = null
+                val httpError = HttpState.Error(
+                    message = "Gagal mendapatkan profil"
+                )
+                _login.value = httpError
+                profileResponse = httpError
             }
 
-            val profileResponse = profileRepository.get()
-
+            _login.value = loginResponse
             callback(HttpCallback(profileResponse))
+
+            return@withContext profileResponse
         }
     }
 }

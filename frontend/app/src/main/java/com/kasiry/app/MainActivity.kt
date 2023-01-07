@@ -2,157 +2,180 @@ package com.kasiry.app
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.kasiry.app.compose.Loading
 import com.kasiry.app.screen.*
 import com.kasiry.app.utils.http.HttpState
 import com.kasiry.app.viewmodel.AssetViewModel
 import com.kasiry.app.viewmodel.MainViewModel
 import com.kasiry.app.viewmodel.ProductViewModel
+import com.kasiry.app.viewmodel.ProfileViewModel
 import org.koin.android.ext.android.get
 
 class MainActivity : ComponentActivity() {
     lateinit var mainViewModel: MainViewModel
+    lateinit var profileViewModel: ProfileViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         mainViewModel = get()
+        profileViewModel = get()
 
-        mainViewModel.getProfile {
-            onSuccess {
-                Log.d("MainActivity", "Profile onSuccess: $it")
-            }
+        profileViewModel.getProfile {
             onError {
-                Log.d("MainActivity", "Profile onError: $it")
+                Toast.makeText(this@MainActivity, "Gagal mendapatkan profil", Toast.LENGTH_SHORT).show()
             }
         }
 
         setContent {
             val navController = rememberNavController()
-            val profileState by mainViewModel.profile.collectAsState()
+            val profileState by profileViewModel.profileState.collectAsState()
+            Log.d("MainActivity", "profileState: $profileState")
 
-            if (profileState is HttpState.Loading || profileState === null) {
-                Log.d("MainActivity", "onCreate")
-                Text(text = "Loading...")
-            } else {
-                val startDestination = if (profileState is HttpState.Success) "dashboard" else "login"
-                NavHost(navController = navController, startDestination = startDestination) {
-                    composable("dashboard") {
-                        DashboardScreen(
-                            navController = navController,
-                            profile = (profileState as HttpState.Success).data
-                        )
-                    }
-                    composable("profile") {
-                        ProfileScreen(
-                            navController = navController,
-                            application = application,
-                            profile = (profileState as HttpState.Success).data
-                        )
-                    }
-                    composable("profile-update") {
-                        ProfileUpdateScreen(
-                            navController = navController,
-                            application = application,
-                            profile = (profileState as HttpState.Success).data
-                        )
-                    }
-                    composable("login") {
-                        LoginScreen(
-                            navController = navController,
-                            application = application
-                        )
-                    }
-                    composable("register") {
-                        RegisterScreen(
-                            navController = navController
-                        )
-                    }
-                    composable("products") {
-                        ProductListScreen(
-                            navController = navController,
-                            application = application,
-                            productViewModel = get()
-                        )
-                    }
-                    composable("products/create") {
-                        ProductCreateScreen(
-                            navController = navController,
-                            application = application,
-                            assetViewModel = AssetViewModel(
-                                application,
-                                assetRepository = get()
-                            ),
-                            profile = (profileState as HttpState.Success).data,
-                            productViewModel = get()
-                        )
-                    }
-                    composable("company") {
-                        (profileState as HttpState.Success).data.company?.let { it ->
-                            CompanyScreen(
-                                navController = navController,
-                                company = it
-                            )
-                        }
-                    }
-                    composable("employees") {
-                        EmployeeScreen(
-                            navController = navController,
-                            application = application
-                        )
-                    }
-                    composable("employees/create") {
-                        EmployeeCreateScreen(
-                            navController = navController,
-                            application = application
-                        )
-                    }
-                    composable("employees/{userId}/update") {
-                        val userId = it.arguments?.getString("userId")
-                        if (userId != null) {
-                            EmployeeUpdateScreen(
+
+            when (val profile = profileState) {
+                is HttpState.Loading -> {
+                    Loading(
+                        modifier = Modifier
+                            .padding(top = 42.dp)
+                    )
+                }
+                null -> {
+                    Loading(
+                        modifier = Modifier
+                            .padding(top = 42.dp)
+                    )
+                }
+                is HttpState.Error -> {
+                    NavHost(navController = navController, startDestination = "login") {
+                        composable("login") {
+                            LoginScreen(
                                 navController = navController,
                                 application = application,
-                                userId = userId
+                                profileViewModel = get()
+                            )
+                        }
+                        composable("register") {
+                            RegisterScreen(
+                                navController = navController
                             )
                         }
                     }
-                    composable("categories") {
-                        CategoryScreen(
-                            navController = navController,
-                            application = application,
-                        )
-                    }
-                    composable("categories/create") {
-                        CategoryCreateScreen(
-                            navController = navController,
-                            application = application,
-                        )
-                    }
-                    composable("categories/{categoryId}") {
-                        val categoryId = it.arguments?.getString("categoryId")
-                        if (categoryId != null) {
-                            CategoryUpdateScreen(
+                }
+                is HttpState.Success -> {
+                    NavHost(navController = navController, startDestination = "dashboard") {
+                        composable("dashboard") {
+                            DashboardScreen(
+                                navController = navController,
+                                profile = profile.data
+                            )
+                        }
+                        composable("profile") {
+                            ProfileScreen(
                                 navController = navController,
                                 application = application,
-                                categoryId = categoryId
+                                profile = profile.data,
+                                profileViewModel = get()
                             )
                         }
-                    }
-                    composable("company-update") {
-                        (profileState as HttpState.Success).data.company?.let { it ->
-                            CompanyUpdateScreen(
+                        composable("profile-update") {
+                            ProfileUpdateScreen(
                                 navController = navController,
-                                company = it,
+                                application = application,
+                                profile = profile.data
+                            )
+                        }
+                        composable("products") {
+                            ProductListScreen(
+                                navController = navController,
+                                application = application,
+                                productViewModel = get()
+                            )
+                        }
+                        composable("products/create") {
+                            ProductCreateScreen(
+                                navController = navController,
+                                application = application,
+                                assetViewModel = AssetViewModel(
+                                    application,
+                                    assetRepository = get()
+                                ),
+                                profile = profile.data,
+                                productViewModel = get()
+                            )
+                        }
+                        composable("company") {
+                            profile.data.company?.let { it ->
+                                CompanyScreen(
+                                    navController = navController,
+                                    company = it
+                                )
+                            }
+                        }
+                        composable("employees") {
+                            EmployeeScreen(
+                                navController = navController,
                                 application = application
                             )
+                        }
+                        composable("employees/create") {
+                            EmployeeCreateScreen(
+                                navController = navController,
+                                application = application
+                            )
+                        }
+                        composable("employees/{userId}/update") {
+                            val userId = it.arguments?.getString("userId")
+                            if (userId != null) {
+                                EmployeeUpdateScreen(
+                                    navController = navController,
+                                    application = application,
+                                    userId = userId
+                                )
+                            }
+                        }
+                        composable("categories") {
+                            CategoryScreen(
+                                navController = navController,
+                                application = application,
+                            )
+                        }
+                        composable("categories/create") {
+                            CategoryCreateScreen(
+                                navController = navController,
+                                application = application,
+                            )
+                        }
+                        composable("categories/{categoryId}") {
+                            val categoryId = it.arguments?.getString("categoryId")
+                            if (categoryId != null) {
+                                CategoryUpdateScreen(
+                                    navController = navController,
+                                    application = application,
+                                    categoryId = categoryId
+                                )
+                            }
+                        }
+                        composable("company-update") {
+                            (profileState as HttpState.Success).data.company?.let { it ->
+                                CompanyUpdateScreen(
+                                    navController = navController,
+                                    company = it,
+                                    application = application
+                                )
+                            }
                         }
                     }
                 }
