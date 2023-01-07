@@ -112,8 +112,17 @@ class MainActivity : ComponentActivity() {
                                     application,
                                     assetRepository = get()
                                 ),
-                                profile = profile.data,
-                                productViewModel = get()
+                                productViewModel = get(),
+                                profile = profile.data
+                            )
+                        }
+                        composable("products/{productId}/update") {
+                            val productId = it.arguments?.getString("productId")
+                            ProductUpdateScreen(
+                                navController = navController,
+                                application = application,
+                                productViewModel = get(),
+                                productId = productId!!
                             )
                         }
                         composable("company") {
@@ -155,7 +164,7 @@ class MainActivity : ComponentActivity() {
                         composable("categories/create") {
                             CategoryCreateScreen(
                                 navController = navController,
-                                application = application,
+                                application = application
                             )
                         }
                         composable("categories/{categoryId}") {

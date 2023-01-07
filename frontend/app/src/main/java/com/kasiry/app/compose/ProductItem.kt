@@ -90,7 +90,7 @@ fun ProductItem(
                             .background(Color.gray(300))
                     ) {
                         AsyncImage(
-                            model = "https://images.pexels.com/photos/4498135/pexels-photo-4498135.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                            model = product.picture.url,
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                         )
@@ -229,7 +229,7 @@ fun ProductItem(
                 .fillMaxWidth()
         ) {
             AsyncImage(
-                model = "https://images.pexels.com/photos/4498135/pexels-photo-4498135.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                model = product.picture.url,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
             )

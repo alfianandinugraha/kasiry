@@ -3,12 +3,13 @@ package com.kasiry.app.models.data
 data class Product(
     val productId: String,
     val name: String,
+    val description: String?,
     val weight: String?,
     val buyPrice: Double,
     val sellPrice: Double,
     val stock: Double,
-    val barcode: String,
-    val category: Category,
+    val barcode: String?,
+    val category: Category?,
     val company: Company,
     val picture: Asset,
 ) {

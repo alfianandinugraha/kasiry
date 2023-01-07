@@ -115,7 +115,7 @@ class ProductViewModel(
             is HttpState.Success -> {
                 val products = list.data
                 val filtered = products.filter {
-                    it.name.contains(query, true) || it.barcode.contains(query, true)
+                    it.name.contains(query, true) || it.barcode?.contains(query, true) == true
                 }
 
                 _filterListState.value = HttpState.Success(filtered)

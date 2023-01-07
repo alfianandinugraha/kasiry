@@ -187,7 +187,7 @@ fun ProductListScreen(
                                     .weight(1f),
                                 product = firstData,
                                 onUpdate = {
-                                    navController.navigate("products/${firstData.productId}")
+                                    navController.navigate("products/${firstData.productId}/update")
                                 }
                             )
                             if (secondData != null) {
@@ -196,7 +196,7 @@ fun ProductListScreen(
                                         .weight(1f),
                                     product = secondData,
                                     onUpdate = {
-                                        navController.navigate("products/${secondData.productId}")
+                                        navController.navigate("products/${secondData.productId}/update")
                                     }
                                 )
                             } else {
