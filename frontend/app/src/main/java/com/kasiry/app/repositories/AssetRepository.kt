@@ -24,7 +24,6 @@ class AssetRepository(
     data class UploadBody(
         val fileName: String,
         val file: InputStream,
-        val companyId: String
     )
 
     suspend fun upload(body: UploadBody): HttpState<Asset> {
@@ -36,7 +35,6 @@ class AssetRepository(
                 body.fileName,
                 body.file.readBytes().toRequestBody()
             )
-            .addFormDataPart("companyId", body.companyId)
             .build()
 
         val request = ApiRequest

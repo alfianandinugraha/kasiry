@@ -1,6 +1,7 @@
 package com.kasiry.app.repositories
 
 import android.content.Context
+import android.net.Uri
 import com.kasiry.app.models.data.Product
 import com.kasiry.app.utils.http.*
 import okhttp3.OkHttpClient
@@ -22,7 +23,7 @@ class ProductRepository(context: Context) {
         val stock: Double,
         val barcode: String?,
         val categoryId: String?,
-        var pictureId: String?
+        val pictureId: String? = null,
     )
 
     data class UpdateBody (

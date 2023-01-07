@@ -51,6 +51,7 @@ val appModules = module {
         ProductViewModel(
             androidApplication(),
             productRepository = get(),
+            assetRepository = get()
         )
     }
 

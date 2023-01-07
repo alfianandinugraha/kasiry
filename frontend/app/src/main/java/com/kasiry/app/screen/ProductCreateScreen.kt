@@ -509,9 +509,6 @@ fun ProductCreateScreen(
                         onClick = {
                             form.handleSubmit {
                                 val scope = CoroutineScope(Dispatchers.IO)
-                                val contentResolver = application
-                                    .applicationContext
-                                    .contentResolver
 
                                 scope.launch {
                                     val categoryId =
@@ -520,7 +517,7 @@ fun ProductCreateScreen(
                                         it["description"]?.value.toString().ifEmpty { null }
                                     val barcode = it["barcode"]?.value.toString().ifEmpty { null }
 
-                                    val productBody = ProductRepository
+                                    val productBody = ProductViewModel
                                         .StoreBody(
                                             name = it["name"]?.value.toString(),
                                             description = description,
@@ -531,58 +528,8 @@ fun ProductCreateScreen(
                                                 .toDouble(),
                                             buyPrice = it["buy_price"]?.value.toString().toDouble(),
                                             categoryId = categoryId,
-                                            pictureId = null
+                                            pictureUri = imageUri,
                                         )
-
-                                    if (imageUri !== Uri.EMPTY) {
-                                        val stream = contentResolver.openInputStream(imageUri)
-                                        val mimeType = contentResolver.getType(imageUri)
-
-                                        if (stream !== null && mimeType !== null) {
-                                            val (_, type) = mimeType.split("/")
-
-                                            try {
-                                                val assetResponse = assetViewModel.upload(
-                                                    body = AssetRepository
-                                                        .UploadBody(
-                                                            fileName = "test.$type",
-                                                            companyId = profile.companyId,
-                                                            file = stream,
-                                                        )
-                                                )
-
-                                                if (assetResponse is HttpState.Success) {
-                                                    productBody.pictureId = assetResponse.data.assetId
-                                                } else {
-                                                    Toast
-                                                        .makeText(
-                                                            application.applicationContext,
-                                                            "Gagal mengambil gambar",
-                                                            Toast.LENGTH_LONG
-                                                        )
-                                                        .show()
-                                                    return@launch
-                                                }
-                                            } catch (e: Exception) {
-                                                Toast
-                                                    .makeText(
-                                                        application.applicationContext,
-                                                        "Gagal mengambil gambar",
-                                                        Toast.LENGTH_LONG
-                                                    )
-                                                    .show()
-                                                return@launch
-                                            }
-                                        } else {
-                                            Toast
-                                                .makeText(
-                                                    application.applicationContext,
-                                                    "Gagal mengambil gambar",
-                                                    Toast.LENGTH_LONG
-                                                )
-                                                .show()
-                                        }
-                                    }
 
                                     productViewModel.store(productBody) {
                                         onSuccess {
