@@ -16,9 +16,10 @@ return new class extends Migration {
             $table->string("product_id", 100);
             $table->string("name");
             $table->string("description")->nullable();
-            $table->integer("stock");
             $table->float("buy_price");
             $table->float("sell_price");
+            $table->double("stock");
+            $table->string("weight")->default("Unit");
             $table->string("barcode")->nullable();
             $table->string("picture_id", 100)->nullable();
             $table->string("company_id", 100);
