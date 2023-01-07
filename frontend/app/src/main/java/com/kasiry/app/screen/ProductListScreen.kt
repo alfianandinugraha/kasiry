@@ -128,7 +128,6 @@ fun ProductListScreen(
                 )
             }
         ) {
-
             when (val list = filterListState.value) {
                 is HttpState.Success -> {
                     item {
@@ -191,7 +190,7 @@ fun ProductListScreen(
                     }
 
                     val data = list.data
-                    items(ceil(data.size / 2f).toInt()) { index ->
+                    items(ceil(data.size / 2f).toInt(), key = { data[it].productId }) { index ->
                         val firstData = data[index * 2]
                         val secondData = data.getOrNull((index * 2) + 1)
 
@@ -200,18 +199,24 @@ fun ProductListScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 32.dp)
-                                .padding(bottom = 16.dp)
+                                .padding(bottom = 16.dp),
                         ) {
                             ProductItem(
                                 modifier = Modifier
                                     .weight(1f),
                                 product = firstData,
+                                onUpdate = {
+                                    navController.navigate("products/${firstData.productId}")
+                                }
                             )
                             if (secondData != null) {
                                 ProductItem(
                                     modifier = Modifier
                                         .weight(1f),
                                     product = secondData,
+                                    onUpdate = {
+                                        navController.navigate("products/${secondData.productId}")
+                                    }
                                 )
                             } else {
                                 Spacer(
