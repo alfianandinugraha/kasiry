@@ -31,6 +31,7 @@ import coil.compose.AsyncImage
 import com.kasiry.app.compose.*
 import com.kasiry.app.models.data.Cart
 import com.kasiry.app.models.data.Product
+import com.kasiry.app.repositories.TransactionRepository
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.theme.blue
 import com.kasiry.app.theme.gray
@@ -39,6 +40,7 @@ import com.kasiry.app.utils.double.toFormattedString
 import com.kasiry.app.utils.http.HttpState
 import com.kasiry.app.viewmodel.CartViewModel
 import com.kasiry.app.viewmodel.ProductViewModel
+import com.kasiry.app.viewmodel.TransactionViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -55,7 +57,8 @@ fun CartListScreen(
     application: Application,
     cartViewModel: CartViewModel,
     productViewModel: ProductViewModel,
-    navController: NavController
+    navController: NavController,
+    transactionViewModel: TransactionViewModel
 ) {
     val cartState by cartViewModel.carts.collectAsState()
     val productsState by productViewModel.listState.collectAsState()
@@ -85,7 +88,7 @@ fun CartListScreen(
                             .map {
                                 Cart(
                                     cartId = it.cart?.cartId ?: UUID.randomUUID().toString(),
-                                    quantity = it.cart?.quantity ?: 0.0,
+                                    quantity = it.cart?.quantity ?: 0,
                                     product = it.product
                                 )
                             }
@@ -232,7 +235,7 @@ fun CartListScreen(
                                     .height(90.dp),
                             ) {
                                 Text(
-                                    text = "${item.quantity.toFormattedString()}x ${item.product.name}",
+                                    text = "${item.quantity}x ${item.product.name}",
                                     style = Typo.body,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -275,7 +278,7 @@ fun CartListScreen(
                                             tint = if (canDecrement) Color.blue() else Color.gray()
                                         )
                                         BasicTextField(
-                                            value = item.quantity.toFormattedString(),
+                                            value = item.quantity.toString(),
                                             onValueChange = {},
                                             modifier = Modifier
                                                 .width(40.dp),
@@ -414,7 +417,18 @@ fun CartListScreen(
                                 ) {
                                     val scope = CoroutineScope(Dispatchers.IO)
                                     scope.launch {
+
                                         withContext(Dispatchers.Main) {
+                                            transactionViewModel.store(
+                                                TransactionRepository.StoreBody(
+                                                    products = cartState.map {
+                                                        TransactionRepository.ProductRequest(
+                                                            productId = it.product.productId,
+                                                            quantity = it.quantity,
+                                                        )
+                                                    },
+                                                )
+                                            )
                                             navController.popBackStack()
                                         }
                                         cartViewModel.clear()

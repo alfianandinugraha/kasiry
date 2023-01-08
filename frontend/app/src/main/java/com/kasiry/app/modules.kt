@@ -1,10 +1,7 @@
 package com.kasiry.app
 
 import com.kasiry.app.repositories.*
-import com.kasiry.app.viewmodel.CartViewModel
-import com.kasiry.app.viewmodel.MainViewModel
-import com.kasiry.app.viewmodel.ProductViewModel
-import com.kasiry.app.viewmodel.ProfileViewModel
+import com.kasiry.app.viewmodel.*
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -41,6 +38,12 @@ val appModules = module {
         )
     }
 
+    factory {
+        TransactionRepository(
+            context = androidContext()
+        )
+    }
+
     single {
         MainViewModel(
             androidApplication(),
@@ -59,6 +62,13 @@ val appModules = module {
     single {
         CartViewModel(
             androidApplication(),
+        )
+    }
+
+    single {
+        TransactionViewModel(
+            androidApplication(),
+            transactionRepository = get(),
         )
     }
 

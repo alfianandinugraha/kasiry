@@ -193,7 +193,15 @@ class MainActivity : ComponentActivity() {
                                 navController = navController,
                                 application = application,
                                 cartViewModel = get(),
-                                productViewModel = get()
+                                productViewModel = get(),
+                                transactionViewModel = get()
+                            )
+                        }
+                        composable("transactions") {
+                            TransactionListScreen(
+                                navController = navController,
+                                application = application,
+                                transactionViewModel = get(),
                             )
                         }
                     }

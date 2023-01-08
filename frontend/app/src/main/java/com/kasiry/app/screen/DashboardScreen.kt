@@ -177,7 +177,10 @@ fun DashboardScreen(
                                 text = "Transaksi",
                                 icon = Icons.Rounded.ShoppingCart,
                                 bgColor = Color.blue(50),
-                                color = Color.blue()
+                                color = Color.blue(),
+                                onClick = {
+                                    navController.navigate("transactions")
+                                }
                             )
                             MainMenu(
                                 text = "Pegawai",

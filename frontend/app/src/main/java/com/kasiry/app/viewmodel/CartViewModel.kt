@@ -17,7 +17,7 @@ class CartViewModel(
     application: Application,
 ): AndroidViewModel(application) {
     data class StoreBody(
-        val quantity: Double,
+        val quantity: Int,
         val product: Product
     )
 
@@ -84,7 +84,7 @@ class CartViewModel(
         context.localStore.writeString("cart", Gson().toJson(_carts.value))
     }
 
-    suspend fun setQuantity(cartId: String, quantity: Double) {
+    suspend fun setQuantity(cartId: String, quantity: Int) {
         val context = getApplication<Application>().applicationContext
         val newCarts = _carts.value.map {
             if (it.cartId == cartId) {

@@ -21,4 +21,13 @@ class Transaction extends Model
     {
         return $this->belongsTo(Company::class, "company_id", "company_id");
     }
+
+    public function products()
+    {
+        return $this->hasMany(
+            TransactionProduct::class,
+            "transaction_id",
+            "transaction_id"
+        );
+    }
 }

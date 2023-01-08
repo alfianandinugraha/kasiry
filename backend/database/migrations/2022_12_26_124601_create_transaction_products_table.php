@@ -19,7 +19,8 @@ return new class extends Migration {
             $table->integer("quantity");
             $table->float("buy_price");
             $table->float("sell_price");
-            $table->string("barcode");
+            $table->string("barcode")->nullable();
+            $table->string("picture_id")->nullable();
             $table->timestamps();
 
             $table->primary("transaction_product_id");
@@ -27,6 +28,10 @@ return new class extends Migration {
                 ->foreign("transaction_id")
                 ->references("transaction_id")
                 ->on("transactions");
+            $table
+                ->foreign("picture_id")
+                ->references("asset_id")
+                ->on("assets");
         });
     }
 

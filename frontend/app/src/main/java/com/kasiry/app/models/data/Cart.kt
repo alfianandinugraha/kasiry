@@ -4,7 +4,7 @@ import android.net.Uri
 
 data class Cart(
     val cartId: String,
-    val quantity: Double,
+    val quantity: Int,
     val product: Product
 ) {
     override fun toString(): String {

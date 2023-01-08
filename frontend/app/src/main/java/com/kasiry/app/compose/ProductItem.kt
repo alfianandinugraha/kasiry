@@ -206,7 +206,7 @@ fun ProductItem(
                         onClick = {
                             onSubmitCart(
                                 Cart(
-                                    quantity = quantityField.value.toDouble(),
+                                    quantity = quantityField.value.toInt(),
                                     cartId = "cart-id",
                                     product = product,
                                 )

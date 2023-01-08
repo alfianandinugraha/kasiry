@@ -17,6 +17,7 @@ class TransactionProduct extends Model
         "buy_price",
         "sell_price",
         "barcode",
+        "picture_id",
     ];
 
     protected $primaryKey = "transaction_product_id";
@@ -32,5 +33,10 @@ class TransactionProduct extends Model
             "transaction_id",
             "transaction_id"
         );
+    }
+
+    public function picture()
+    {
+        return $this->belongsTo(Asset::class, "picture_id", "asset_id");
     }
 }

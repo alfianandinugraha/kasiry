@@ -36,4 +36,13 @@ class Asset extends Model
     {
         return $this->hasOne(Product::class, "picture_id", "asset_id");
     }
+
+    public function transactionProducts()
+    {
+        return $this->hasOne(
+            TransactionProduct::class,
+            "picture_id",
+            "asset_id"
+        );
+    }
 }
