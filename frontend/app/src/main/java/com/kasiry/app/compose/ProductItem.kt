@@ -24,7 +24,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import coil.compose.AsyncImage
+import com.kasiry.app.models.data.Cart
 import com.kasiry.app.models.data.Product
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.theme.blue
@@ -47,6 +49,7 @@ fun ProductItem(
     onClick: ((Product) -> Unit)? = null,
     product: Product,
     onUpdate: ((Product) -> Unit)? = null,
+    onSubmitCart: (Cart) -> Unit = {}
 ) {
     val sellPrice = remember(product.sellPrice) {
         formatter.format(product.sellPrice)
@@ -200,7 +203,16 @@ fun ProductItem(
                     Button(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            onSubmitCart(
+                                Cart(
+                                    quantity = quantityField.value.toDouble(),
+                                    cartId = "cart-id",
+                                    product = product,
+                                )
+                            )
+                            isModalOpen = false
+                        },
                     ) {
                         Text(
                             text = "Tambah ke Keranjang",
