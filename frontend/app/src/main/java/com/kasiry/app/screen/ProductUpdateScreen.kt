@@ -89,12 +89,6 @@ fun ProductUpdateScreen(
                 "barcode" to Field(
                     initialValue = "",
                 ),
-                "weight" to Field(
-                    initialValue = "",
-                    rules = listOf(
-                        required()
-                    )
-                ),
                 "category_id" to Field(
                     initialValue = "",
                 ),
@@ -139,7 +133,6 @@ fun ProductUpdateScreen(
                 form.setValue("sell_price", it.data.sellPrice.toString())
                 form.setValue("buy_price", it.data.buyPrice.toString())
                 form.setValue("barcode", it.data.barcode ?: "")
-                form.setValue("weight", it.data.weight ?: "")
                 form.setValue("category_id", it.data.category?.categoryId ?: "")
                 categoryName = it.data.category?.name ?: ""
 
@@ -343,30 +336,17 @@ fun ProductUpdateScreen(
                             .fillMaxWidth()
                             .padding(bottom = 12.dp),
                     )
-                    Row(
+                    TextField(
+                        label = "Stok",
+                        control = form,
+                        name = "stock",
                         modifier = Modifier
-                            .padding(bottom = 12.dp)
-                            .height(IntrinsicSize.Min),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        TextField(
-                            label = "Stok",
-                            control = form,
-                            name = "stock",
-                            modifier = Modifier
-                                .weight(1f),
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number
-                            ),
-                        )
-                        TextField(
-                            label = "Satuan",
-                            control = form,
-                            name = "weight",
-                            modifier = Modifier
-                                .weight(1f),
-                        )
-                    }
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        ),
+                    )
                     Row(
                         modifier = Modifier
                             .padding(bottom = 12.dp)
@@ -522,8 +502,7 @@ fun ProductUpdateScreen(
                                         .UpdateBody(
                                             name = it["name"]?.value.toString(),
                                             description = description,
-                                            stock = it["stock"]?.value.toString().toDouble(),
-                                            weight = it["weight"]?.value.toString(),
+                                            stock = it["stock"]?.value.toString().toInt(),
                                             barcode = barcode,
                                             sellPrice = it["sell_price"]?.value.toString()
                                                 .toDouble(),

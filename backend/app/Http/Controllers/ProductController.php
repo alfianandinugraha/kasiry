@@ -21,7 +21,6 @@ class ProductController extends Controller
             "buyPrice" => ["required", "numeric", "min:0"],
             "sellPrice" => ["required", "numeric", "min:0"],
             "barcode" => ["nullable", "string", "max:255"],
-            "weight" => ["required", "string", "max:255"],
             "categoryId" => [
                 "nullable",
                 "string",
@@ -42,7 +41,6 @@ class ProductController extends Controller
             "buy_price" => $request->buyPrice,
             "sell_price" => $request->sellPrice,
             "barcode" => $request->barcode,
-            "weight" => $request->weight,
             "company_id" => $user->company_id,
             "category_id" => $request->categoryId,
             "picture_id" => $request->pictureId,
@@ -145,7 +143,6 @@ class ProductController extends Controller
             "buyPrice" => ["required", "numeric", "min:0"],
             "sellPrice" => ["required", "numeric", "min:0"],
             "barcode" => ["nullable", "string", "max:255"],
-            "weight" => ["required", "string", "max:255"],
             "categoryId" => [
                 "nullable",
                 "string",
@@ -169,7 +166,6 @@ class ProductController extends Controller
             "buy_price" => $request->buyPrice,
             "sell_price" => $request->sellPrice,
             "barcode" => $request->barcode,
-            "weight" => $request->weight,
             "category_id" => $request->categoryId,
             "picture_id" => $request->pictureId,
         ];

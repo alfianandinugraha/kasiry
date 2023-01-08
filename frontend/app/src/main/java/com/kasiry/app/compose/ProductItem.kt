@@ -121,7 +121,7 @@ fun ProductItem(
                                     .padding(end = 4.dp)
                             )
                             Text (
-                                text = "$stock ${product.weight ?: ""}",
+                                text = "$stock pcs",
                                 style = Typo.body,
                                 color = Color.gray(),
                                 fontSize = 14.sp
@@ -270,7 +270,7 @@ fun ProductItem(
                         .padding(end = 4.dp)
                 )
                 Text (
-                    text = "$stock ${product.weight ?: ""}",
+                    text = "$stock pcs",
                     style = Typo.body,
                     color = Color.gray(),
                     fontSize = 14.sp

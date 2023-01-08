@@ -17,10 +17,9 @@ class ProductRepository(context: Context) {
     data class StoreBody(
         val name: String,
         val description: String?,
-        val weight: String,
         val buyPrice: Double,
         val sellPrice: Double,
-        val stock: Double,
+        val stock: Int,
         val barcode: String?,
         val categoryId: String?,
         val pictureId: String? = null,
@@ -29,10 +28,9 @@ class ProductRepository(context: Context) {
     data class UpdateBody (
         val name: String,
         val description: String?,
-        val weight: String,
         val buyPrice: Double,
         val sellPrice: Double,
-        val stock: Double,
+        val stock: Int,
         val barcode: String?,
         val categoryId: String?,
         val pictureId: String? = null,

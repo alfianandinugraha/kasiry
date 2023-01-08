@@ -18,8 +18,7 @@ return new class extends Migration {
             $table->string("description")->nullable();
             $table->float("buy_price");
             $table->float("sell_price");
-            $table->double("stock");
-            $table->string("weight")->default("Unit");
+            $table->integer("stock");
             $table->string("barcode")->nullable();
             $table->string("picture_id", 100)->nullable();
             $table->string("company_id", 100);

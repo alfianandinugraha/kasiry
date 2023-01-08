@@ -87,12 +87,6 @@ fun ProductCreateScreen(
                 "barcode" to Field(
                     initialValue = "",
                 ),
-                "weight" to Field(
-                    initialValue = "unit",
-                    rules = listOf(
-                        required()
-                    )
-                ),
                 "category_id" to Field(
                     initialValue = "",
                 ),
@@ -250,30 +244,17 @@ fun ProductCreateScreen(
                             .fillMaxWidth()
                             .padding(bottom = 12.dp),
                     )
-                    Row(
+                    TextField(
+                        label = "Stok",
+                        control = form,
+                        name = "stock",
                         modifier = Modifier
-                            .padding(bottom = 12.dp)
-                            .height(IntrinsicSize.Min),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        TextField(
-                            label = "Stok",
-                            control = form,
-                            name = "stock",
-                            modifier = Modifier
-                                .weight(1f),
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number
-                            ),
-                        )
-                        TextField(
-                            label = "Satuan",
-                            control = form,
-                            name = "weight",
-                            modifier = Modifier
-                                .weight(1f),
-                        )
-                    }
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        ),
+                    )
                     Row(
                         modifier = Modifier
                             .padding(bottom = 12.dp)
@@ -430,8 +411,7 @@ fun ProductCreateScreen(
                                         .StoreBody(
                                             name = it["name"]?.value.toString(),
                                             description = description,
-                                            stock = it["stock"]?.value.toString().toDouble(),
-                                            weight = it["weight"]?.value.toString(),
+                                            stock = it["stock"]?.value.toString().toInt(),
                                             barcode = barcode,
                                             sellPrice = it["sell_price"]?.value.toString()
                                                 .toDouble(),

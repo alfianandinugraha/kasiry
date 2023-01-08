@@ -25,10 +25,9 @@ class ProductViewModel(
     data class StoreBody(
         val name: String,
         val description: String?,
-        val weight: String,
         val buyPrice: Double,
         val sellPrice: Double,
-        val stock: Double,
+        val stock: Int,
         val barcode: String?,
         val categoryId: String?,
         val pictureUri: Uri? = null,
@@ -73,7 +72,6 @@ class ProductViewModel(
                 ProductRepository.StoreBody(
                     name = body.name,
                     description = body.description,
-                    weight = body.weight,
                     buyPrice = body.buyPrice,
                     sellPrice = body.sellPrice,
                     stock = body.stock,
@@ -147,10 +145,9 @@ class ProductViewModel(
     data class UpdateBody(
         val name: String,
         val description: String?,
-        val weight: String,
         val buyPrice: Double,
         val sellPrice: Double,
-        val stock: Double,
+        val stock: Int,
         val barcode: String?,
         val categoryId: String?,
         val pictureUri: Uri? = null,
@@ -203,7 +200,6 @@ class ProductViewModel(
             val updateBody = ProductRepository.UpdateBody(
                 name = body.name,
                 description = body.description,
-                weight = body.weight,
                 buyPrice = body.buyPrice,
                 sellPrice = body.sellPrice,
                 stock = body.stock,

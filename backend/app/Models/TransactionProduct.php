@@ -17,7 +17,6 @@ class TransactionProduct extends Model
         "buy_price",
         "sell_price",
         "barcode",
-        "weight_name",
     ];
 
     protected $primaryKey = "transaction_product_id";
