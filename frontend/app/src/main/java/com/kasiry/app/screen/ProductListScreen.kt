@@ -23,20 +23,26 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.google.gson.Gson
 import com.kasiry.app.compose.*
 import com.kasiry.app.theme.gray
 import com.kasiry.app.utils.Field
 import com.kasiry.app.utils.FormStore
 import com.kasiry.app.utils.http.HttpState
 import com.kasiry.app.utils.rememberPermissionRequest
+import com.kasiry.app.viewmodel.CartViewModel
 import com.kasiry.app.viewmodel.ProductViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.math.ceil
 
 @Composable
 fun ProductListScreen(
     navController: NavController,
     application: Application,
-    productViewModel: ProductViewModel
+    productViewModel: ProductViewModel,
+    cartViewModel: CartViewModel
 ) {
     val permission = rememberPermissionRequest("android.permission.CAMERA")
     val filterListState = productViewModel.filterListState.collectAsState()
@@ -193,6 +199,20 @@ fun ProductListScreen(
                                 product = firstData,
                                 onUpdate = {
                                     navController.navigate("products/${firstData.productId}/update")
+                                },
+                                onSubmitCart = {
+                                    val scope = CoroutineScope(Dispatchers.IO)
+
+                                    scope.launch {
+                                        cartViewModel.getAll()
+
+                                        cartViewModel.store(
+                                            CartViewModel.StoreBody(
+                                                quantity = it.quantity,
+                                                product = firstData
+                                            )
+                                        )
+                                    }
                                 }
                             )
                             if (secondData != null) {
@@ -202,6 +222,20 @@ fun ProductListScreen(
                                     product = secondData,
                                     onUpdate = {
                                         navController.navigate("products/${secondData.productId}/update")
+                                    },
+                                    onSubmitCart = {
+                                        val scope = CoroutineScope(Dispatchers.IO)
+
+                                        scope.launch {
+                                            cartViewModel.getAll()
+
+                                            cartViewModel.store(
+                                                CartViewModel.StoreBody(
+                                                    quantity = it.quantity,
+                                                    product = secondData
+                                                )
+                                            )
+                                        }
                                     }
                                 )
                             } else {

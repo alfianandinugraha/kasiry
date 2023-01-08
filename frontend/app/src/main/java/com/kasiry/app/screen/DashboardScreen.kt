@@ -22,11 +22,34 @@ import com.kasiry.app.models.data.Profile
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.theme.blue
 import com.kasiry.app.theme.gray
+import com.kasiry.app.viewmodel.CartViewModel
 import kotlin.math.ceil
 
 @Composable
-fun DashboardScreen(navController: NavController, profile: Profile) {
-    Layout {
+fun DashboardScreen(
+    navController: NavController,
+    profile: Profile,
+    cartViewModel: CartViewModel
+) {
+    val cartState by cartViewModel.carts.collectAsState()
+
+    LaunchedEffect(Unit) {
+        cartViewModel.getAll()
+    }
+
+    Layout(
+        floatingButton = {
+            if (cartState.isNotEmpty()) {
+                IconCircleButton(
+                    icon = Icons.Rounded.ShoppingCart,
+                    contentDescription = "Keranjang",
+                    onClick = {
+                        navController.navigate("cart")
+                    }
+                )
+            }
+        }
+    ) {
         item {
             Box {
                 Box(
@@ -214,35 +237,5 @@ fun DashboardScreen(navController: NavController, profile: Profile) {
                 }
             }
         }
-
-//        val data = listOf("☕", "🙂", "🥛", "🎉", "📐", "🎯")
-//        items(ceil(data.size / 2f).toInt()) { index ->
-//            val firstData = data[index * 2]
-//            val secondData = data.getOrNull((index * 2) + 1)
-//
-//            Row(
-//                horizontalArrangement = Arrangement.spacedBy(16.dp),
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(horizontal = 32.dp)
-//                    .padding(bottom = 16.dp)
-//            ) {
-//                ProductItem(
-//                    modifier = Modifier
-//                        .weight(1f)
-//                )
-//                if (secondData != null) {
-//                    ProductItem(
-//                        modifier = Modifier
-//                            .weight(1f)
-//                    )
-//                } else {
-//                    Spacer(
-//                        modifier = Modifier
-//                            .weight(1f)
-//                    )
-//                }
-//            }
-//        }
     }
 }

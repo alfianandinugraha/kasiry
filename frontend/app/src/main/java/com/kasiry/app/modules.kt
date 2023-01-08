@@ -1,6 +1,7 @@
 package com.kasiry.app
 
 import com.kasiry.app.repositories.*
+import com.kasiry.app.viewmodel.CartViewModel
 import com.kasiry.app.viewmodel.MainViewModel
 import com.kasiry.app.viewmodel.ProductViewModel
 import com.kasiry.app.viewmodel.ProfileViewModel
@@ -52,6 +53,12 @@ val appModules = module {
             androidApplication(),
             productRepository = get(),
             assetRepository = get()
+        )
+    }
+
+    single {
+        CartViewModel(
+            androidApplication(),
         )
     }
 

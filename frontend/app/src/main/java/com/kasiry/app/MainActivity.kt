@@ -79,7 +79,8 @@ class MainActivity : ComponentActivity() {
                         composable("dashboard") {
                             DashboardScreen(
                                 navController = navController,
-                                profile = profile.data
+                                profile = profile.data,
+                                cartViewModel = get(),
                             )
                         }
                         composable("profile") {
@@ -101,7 +102,8 @@ class MainActivity : ComponentActivity() {
                             ProductListScreen(
                                 navController = navController,
                                 application = application,
-                                productViewModel = get()
+                                productViewModel = get(),
+                                cartViewModel = get()
                             )
                         }
                         composable("products/create") {
@@ -185,6 +187,14 @@ class MainActivity : ComponentActivity() {
                                     application = application
                                 )
                             }
+                        }
+                        composable("cart") {
+                            CartListScreen(
+                                navController = navController,
+                                application = application,
+                                cartViewModel = get(),
+                                productViewModel = get()
+                            )
                         }
                     }
                 }
