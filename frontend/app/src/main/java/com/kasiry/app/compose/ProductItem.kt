@@ -63,6 +63,10 @@ fun ProductItem(
         formatter.format(product.stock)
     }
 
+    val isStockEmpty = remember(product.stock) {
+        product.stock <= 0
+    }
+
     var isModalOpen by remember { mutableStateOf(false) }
 
     if (isModalOpen) {
@@ -200,6 +204,7 @@ fun ProductItem(
                         )
                         BasicTextField(
                             value = quantityField.value,
+                            enabled = isStockEmpty.not(),
                             onValueChange = {
                                 quantityField.value = it
                             },
@@ -232,6 +237,7 @@ fun ProductItem(
                             )
                             isModalOpen = false
                         },
+                        disabled = isStockEmpty
                     ) {
                         Text(
                             text = "Tambah ke Keranjang",
@@ -275,7 +281,7 @@ fun ProductItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 4.dp)
+                .padding(top = 2.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -299,7 +305,9 @@ fun ProductItem(
                 text = "Rp${sellPrice}",
                 style = Typo.body,
                 fontWeight = FontWeight.Bold,
-                color = Color.blue(),
+                color = if (isStockEmpty) Color.gray(600) else Color.blue(),
+                modifier = Modifier
+                    .padding(top = 2.dp)
             )
         }
     }
