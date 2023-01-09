@@ -137,10 +137,12 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+        $limit = $request->query("limit");
 
         $transactions = Transaction::query()
             ->with(["products", "products.picture"])
             ->where("company_id", $user->company_id)
+            ->take($limit)
             ->get();
 
         foreach ($transactions as $transaction) {

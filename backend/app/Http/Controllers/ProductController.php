@@ -112,9 +112,12 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+        $limit = $request->query("limit");
+
         $products = Product::query()
             ->with(["picture", "category", "company"])
             ->where("company_id", $user->company_id)
+            ->take($limit)
             ->get();
 
         foreach ($products as $product) {
