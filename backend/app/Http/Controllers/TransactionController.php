@@ -64,15 +64,7 @@ class TransactionController extends Controller
 
             $transaction->saveOrFail();
 
-            TransactionProduct::query()->insert(
-                collect($products)
-                    ->map(function ($product) {
-                        return collect($product)
-                            ->except("product_id")
-                            ->all();
-                    })
-                    ->toArray()
-            );
+            TransactionProduct::query()->insert($products);
 
             foreach ($products as $product) {
                 Product::query()
@@ -99,7 +91,6 @@ class TransactionController extends Controller
     public function delete(Request $request, $transactionId)
     {
         $user = $request->user();
-        Log::info($transactionId);
 
         DB::transaction(function () use ($transactionId, $user) {
             $transaction = Transaction::query()
@@ -111,16 +102,11 @@ class TransactionController extends Controller
                 ->where("transaction_id", $transactionId)
                 ->get();
 
-            $products = Product::query();
             foreach ($transactionProducs as $transactionProduct) {
-                $products->orWhere(
-                    "product_id",
-                    $transactionProduct->product_id
-                );
+                Product::query()
+                    ->find($transactionProduct->product_id)
+                    ?->increment("stock", $transactionProduct->quantity);
             }
-
-            $products->where("company_id", $user->company_id);
-            $products = $products->get();
 
             $transaction->deleteOrFail();
         });

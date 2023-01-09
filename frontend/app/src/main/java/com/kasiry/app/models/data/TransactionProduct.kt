@@ -8,5 +8,5 @@ data class TransactionProduct(
     val buyPrice: Double,
     val sellPrice: Double,
     val barcode: String,
-    val picture: Asset
+    val picture: Asset?
 )

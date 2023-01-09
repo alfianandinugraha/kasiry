@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->float("sell_price");
             $table->string("barcode")->nullable();
             $table->string("picture_id")->nullable();
+            $table->string("product_id")->nullable();
             $table->timestamps();
 
             $table->primary("transaction_product_id");
@@ -33,6 +34,11 @@ return new class extends Migration {
                 ->foreign("picture_id")
                 ->references("asset_id")
                 ->on("assets");
+            $table
+                ->foreign("product_id")
+                ->references("product_id")
+                ->onDelete("SET NULL")
+                ->on("products");
         });
     }
 

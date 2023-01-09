@@ -267,7 +267,7 @@ fun TransactionDetailScreen(
                                 .size(50.dp)
                         ) {
                             AsyncImage(
-                                model = product.picture.url,
+                                model = product.picture?.url,
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop
                             )

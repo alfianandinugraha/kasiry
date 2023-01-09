@@ -106,7 +106,7 @@ fun TransactionListScreen(
                                 .size(80.dp)
                         ) {
                             AsyncImage(
-                                model = firstProduct.picture.url,
+                                model = firstProduct.picture?.url,
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop
                             )
