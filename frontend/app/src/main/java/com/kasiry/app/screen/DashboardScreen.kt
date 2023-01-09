@@ -27,9 +27,11 @@ import com.kasiry.app.models.data.Transaction
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.theme.blue
 import com.kasiry.app.theme.gray
+import com.kasiry.app.utils.double.toFormattedString
 import com.kasiry.app.utils.http.HttpState
 import com.kasiry.app.viewmodel.CartViewModel
 import com.kasiry.app.viewmodel.ProductViewModel
+import com.kasiry.app.viewmodel.SummaryViewModel
 import com.kasiry.app.viewmodel.TransactionViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,9 +44,12 @@ fun DashboardScreen(
     profile: Profile,
     cartViewModel: CartViewModel,
     productViewModel: ProductViewModel,
-    transactionViewModel: TransactionViewModel
+    transactionViewModel: TransactionViewModel,
+    summaryViewModel: SummaryViewModel
 ) {
     val cartState by cartViewModel.carts.collectAsState()
+    val summaryState by summaryViewModel.summaryState.collectAsState()
+
     var transactionsState by remember {
         mutableStateOf<HttpState<List<Transaction>>>(HttpState.Loading())
     }
@@ -82,6 +87,20 @@ fun DashboardScreen(
             onError {
                 Toast
                     .makeText(context, "Gagal memuat transaksi terakhir", Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        summaryViewModel.get() {
+            onSuccess {
+                Log.d("DasboardScreen", it.data.toString())
+            }
+
+            onError {
+                Toast
+                    .makeText(context, "Gagal memuat ringkasan", Toast.LENGTH_LONG)
                     .show()
             }
         }
@@ -181,12 +200,24 @@ fun DashboardScreen(
                                         fontSize = 14.sp,
                                         color = Color.gray()
                                     )
-                                    Text(
-                                        text = "Rp150.000",
-                                        style = Typo.body,
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Bold,
-                                    )
+                                    when(val summary = summaryState) {
+                                        is HttpState.Success -> {
+                                            Text(
+                                                text = "Rp${summary.data.total.toFormattedString()}",
+                                                style = Typo.body,
+                                                fontSize = 18.sp,
+                                                fontWeight = FontWeight.Bold,
+                                            )
+                                        }
+                                        else -> {
+                                            Text(
+                                                text = "Rp-",
+                                                style = Typo.body,
+                                                fontSize = 18.sp,
+                                                fontWeight = FontWeight.Bold,
+                                            )
+                                        }
+                                    }
                                 }
                                 Column(
                                     modifier = Modifier
@@ -199,12 +230,24 @@ fun DashboardScreen(
                                         fontSize = 14.sp,
                                         color = Color.gray()
                                     )
-                                    Text(
-                                        text = "Rp100.000",
-                                        style = Typo.body,
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Bold,
-                                    )
+                                    when(val summary = summaryState) {
+                                        is HttpState.Success -> {
+                                            Text(
+                                                text = "Rp${summary.data.profit.toFormattedString()}",
+                                                style = Typo.body,
+                                                fontSize = 18.sp,
+                                                fontWeight = FontWeight.Bold,
+                                            )
+                                        }
+                                        else -> {
+                                            Text(
+                                                text = "Rp-",
+                                                style = Typo.body,
+                                                fontSize = 18.sp,
+                                                fontWeight = FontWeight.Bold,
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }

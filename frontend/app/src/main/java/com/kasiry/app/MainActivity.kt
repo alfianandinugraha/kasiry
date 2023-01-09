@@ -82,7 +82,8 @@ class MainActivity : ComponentActivity() {
                                 profile = profile.data,
                                 cartViewModel = get(),
                                 productViewModel = get(),
-                                transactionViewModel = get()
+                                transactionViewModel = get(),
+                                summaryViewModel = get()
                             )
                         }
                         composable("profile") {

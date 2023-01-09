@@ -7,6 +7,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SummaryController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -83,4 +84,5 @@ Route::middleware("auth:sanctum")->group(function () {
         TransactionController::class,
         "delete",
     ]);
+    Route::get("/summary", [SummaryController::class, "index"]);
 });

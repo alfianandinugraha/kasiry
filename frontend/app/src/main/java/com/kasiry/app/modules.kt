@@ -44,6 +44,12 @@ val appModules = module {
         )
     }
 
+    factory {
+        SummaryRepository(
+            context = androidContext()
+        )
+    }
+
     single {
         MainViewModel(
             androidApplication(),
@@ -69,6 +75,13 @@ val appModules = module {
         TransactionViewModel(
             androidApplication(),
             transactionRepository = get(),
+        )
+    }
+
+    single {
+        SummaryViewModel(
+            androidApplication(),
+            summaryRepository = get(),
         )
     }
 
