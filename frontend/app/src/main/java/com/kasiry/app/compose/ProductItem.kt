@@ -185,9 +185,19 @@ fun ProductItem(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 16.dp)
+                            .padding(bottom = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        CartCounter(icon = Icons.Rounded.Remove)
+                        CartCounter(
+                            icon = Icons.Rounded.Remove,
+                            disabled = quantityField.value.toInt() <= 1,
+                            onClick = {
+                                val quantity = quantityField.value.toInt()
+                                if (quantity > 1) {
+                                    quantityField.value = (quantity - 1).toString()
+                                }
+                            }
+                        )
                         BasicTextField(
                             value = quantityField.value,
                             onValueChange = {
@@ -198,7 +208,16 @@ fun ProductItem(
                                 textAlign = TextAlign.Center,
                             ),
                         )
-                        CartCounter(icon = Icons.Rounded.Add)
+                        CartCounter(
+                            icon = Icons.Rounded.Add,
+                            disabled = quantityField.value.toInt() >= product.stock,
+                            onClick = {
+                                val quantity = quantityField.value.toInt()
+                                if (quantity < product.stock) {
+                                    quantityField.value = (quantity + 1).toString()
+                                }
+                            }
+                        )
                     }
                     Button(
                         modifier = Modifier
@@ -290,18 +309,25 @@ fun ProductItem(
 private fun CartCounter(
     icon: ImageVector,
     modifier: Modifier = Modifier,
+    disabled: Boolean = false,
+    onClick: () -> Unit = {},
 ) {
     Icon(
         icon,
         contentDescription = null,
         modifier = modifier
+            .clickable(
+                enabled = !disabled,
+            ) {
+                onClick()
+            }
             .size(32.dp)
             .border(
                 width = 1.dp,
-                color = Color.blue(),
+                color = if (disabled) Color.gray() else Color.blue(),
                 shape = RoundedCornerShape(4.dp)
             )
             .padding(4.dp),
-        tint = Color.blue()
+        tint = if (disabled) Color.gray() else Color.blue()
     )
 }
