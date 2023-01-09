@@ -27,6 +27,7 @@ return new class extends Migration {
             $table
                 ->foreign("transaction_id")
                 ->references("transaction_id")
+                ->onDelete("cascade")
                 ->on("transactions");
             $table
                 ->foreign("picture_id")
