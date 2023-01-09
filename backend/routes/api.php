@@ -79,4 +79,8 @@ Route::middleware("auth:sanctum")->group(function () {
         TransactionController::class,
         "detail",
     ]);
+    Route::delete("/transactions/{transactionId}", [
+        TransactionController::class,
+        "delete",
+    ]);
 });

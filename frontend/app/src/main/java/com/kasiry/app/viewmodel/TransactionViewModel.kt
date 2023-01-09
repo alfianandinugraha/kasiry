@@ -70,4 +70,15 @@ class TransactionViewModel(
             return@withContext response
         }
     }
+
+    suspend fun delete(
+        transactionId: String,
+        callback: HttpCallback<Transaction>.() -> Unit = {}
+    ): HttpState<Transaction> {
+        return withContext(viewModelScope.coroutineContext) {
+            val response = transactionRepository.delete(transactionId)
+            callback(HttpCallback(response))
+            return@withContext response
+        }
+    }
 }

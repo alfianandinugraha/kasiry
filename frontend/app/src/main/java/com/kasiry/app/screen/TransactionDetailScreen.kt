@@ -3,12 +3,13 @@ package com.kasiry.app.screen
 import android.app.Application
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.SpaceBetween
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.kasiry.app.compose.Alert
+import com.kasiry.app.compose.Button
 import com.kasiry.app.compose.Layout
 import com.kasiry.app.compose.TopBar
 import com.kasiry.app.models.data.Transaction
@@ -31,6 +34,9 @@ import com.kasiry.app.theme.red
 import com.kasiry.app.utils.double.toFormattedString
 import com.kasiry.app.utils.http.HttpState
 import com.kasiry.app.viewmodel.TransactionViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun TransactionDetailScreen(
@@ -41,6 +47,9 @@ fun TransactionDetailScreen(
 ) {
     var transactionState by remember {
         mutableStateOf<HttpState<Transaction>>(HttpState.Loading())
+    }
+    var isAlertOpen by remember {
+        mutableStateOf(false)
     }
 
     LaunchedEffect(Unit) {
@@ -57,6 +66,71 @@ fun TransactionDetailScreen(
                     .show()
                 navController.popBackStack()
             }
+        }
+    }
+
+    if (isAlertOpen) {
+        Alert(
+            title = "Hapus Transaksi",
+            icon = Icons.Rounded.Delete,
+            onClose = {
+                isAlertOpen = false
+            }
+        ) {
+            Column {
+                Text(
+                    text = "Apakah anda yakin ingin menghapus data ini? Stok barang akan di kembalikan",
+                    style = Typo.body,
+                    textAlign = TextAlign.Center,
+                )
+                Button(
+                    bgColor = { Color.red() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    onClick = {
+                        val scope = CoroutineScope(Dispatchers.IO)
+
+                        scope.launch {
+                            transactionViewModel.delete(transactionId) {
+                                onSuccess {
+                                    isAlertOpen = false
+                                    navController.popBackStack()
+                                    Toast
+                                        .makeText(application.applicationContext, "Transaksi berhasil dihapus", Toast.LENGTH_LONG)
+                                        .show()
+                                }
+
+                                onError {
+                                    Toast
+                                        .makeText(application.applicationContext, "Gagal menghapus transaksi", Toast.LENGTH_LONG)
+                                        .show()
+                                    isAlertOpen = false
+                                }
+                            }
+                        }
+                    }
+                ) {
+                    Text(
+                        text = "Hapus",
+                        style = Typo.body,
+                        textAlign = TextAlign.Center,
+                        color = Color.White,
+                    )
+                }
+                Text(
+                    text = "Batal",
+                    style = Typo.body,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            isAlertOpen = false
+                        }
+                        .padding(vertical = 14.dp),
+                )
+            }
+
         }
     }
 
@@ -236,8 +310,11 @@ fun TransactionDetailScreen(
                         color = Color.red(),
                         modifier = Modifier
                             .padding(top = 14.dp)
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                            .fillMaxWidth()
+                            .clickable {
+                                isAlertOpen = true
+                            },
+                        textAlign = TextAlign.Center,
                     )
                 }
             }

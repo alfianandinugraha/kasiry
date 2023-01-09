@@ -26,6 +26,8 @@ class HttpRequest <S>(
             val response = call.execute()
             val body = response.body?.string()
 
+            Log.d("execute()", body.toString())
+
             if (response.isSuccessful) {
                 val result = Gson()
                     .fromJson<HttpState.Success<S>>(body, success)

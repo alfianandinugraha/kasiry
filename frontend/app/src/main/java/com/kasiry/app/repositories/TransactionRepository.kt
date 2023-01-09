@@ -71,4 +71,19 @@ class TransactionRepository(
             )
             .execute()
     }
+
+    suspend fun delete(transactionId: String): HttpState<Transaction> {
+        val request = ApiRequest
+            .json(
+                HttpMethod.DELETE,
+                "/transactions/$transactionId",
+            )
+            .build()
+
+        return HttpRequest
+            .create<Transaction>(
+                call = client.newCall(request),
+            )
+            .execute()
+    }
 }

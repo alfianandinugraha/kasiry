@@ -99,6 +99,7 @@ class TransactionController extends Controller
     public function delete(Request $request, $transactionId)
     {
         $user = $request->user();
+        Log::info($transactionId);
 
         DB::transaction(function () use ($transactionId, $user) {
             $transaction = Transaction::query()
@@ -127,9 +128,7 @@ class TransactionController extends Controller
         return Response::make(
             [
                 "message" => "Berhasil menghapus transaksi.",
-                "data" => collect([])
-                    ->camelKeys()
-                    ->all(),
+                "data" => null,
             ],
             200
         );
