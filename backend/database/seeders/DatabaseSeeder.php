@@ -6,7 +6,6 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Company;
-use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -21,14 +20,12 @@ class DatabaseSeeder extends Seeder
     {
         User::query()->delete();
         Category::query()->delete();
-        Payment::query()->delete();
         Company::query()->delete();
 
         $this->call([
             CompanySeeder::class,
             UserSeeder::class,
             CategorySeeder::class,
-            PaymentSeeder::class,
         ]);
     }
 }
