@@ -56,4 +56,19 @@ class TransactionRepository(
             )
             .execute()
     }
+
+    suspend fun detail(transactionId: String): HttpState<Transaction> {
+        val request = ApiRequest
+            .json(
+                HttpMethod.GET,
+                "/transactions/$transactionId",
+            )
+            .build()
+
+        return HttpRequest
+            .create<Transaction>(
+                call = client.newCall(request),
+            )
+            .execute()
+    }
 }

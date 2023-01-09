@@ -197,6 +197,15 @@ class MainActivity : ComponentActivity() {
                                 transactionViewModel = get()
                             )
                         }
+                        composable("transactions/{transactionId}") {
+                            val transactionId = it.arguments?.getString("transactionId")!!
+                            TransactionDetailScreen(
+                                navController = navController,
+                                application = application,
+                                transactionViewModel = get(),
+                                transactionId = transactionId
+                            )
+                        }
                         composable("transactions") {
                             TransactionListScreen(
                                 navController = navController,

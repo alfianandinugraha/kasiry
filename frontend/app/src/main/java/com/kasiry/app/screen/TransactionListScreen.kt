@@ -85,7 +85,9 @@ fun TransactionListScreen(
                                     MutableInteractionSource()
                                 }
                             ) {
-
+                                navController.navigate(
+                                    "transactions/${transaction.transactionId}"
+                                )
                             }
                             .padding(
                                 horizontal = 32.dp

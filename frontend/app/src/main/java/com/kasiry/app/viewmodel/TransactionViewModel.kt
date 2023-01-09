@@ -59,4 +59,15 @@ class TransactionViewModel(
             return@withContext response
         }
     }
+
+    suspend fun detail(
+        transactionId: String,
+        callback: HttpCallback<Transaction>.() -> Unit = {}
+    ): HttpState<Transaction> {
+        return withContext(viewModelScope.coroutineContext) {
+            val response = transactionRepository.detail(transactionId)
+            callback(HttpCallback(response))
+            return@withContext response
+        }
+    }
 }

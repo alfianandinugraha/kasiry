@@ -159,4 +159,27 @@ class TransactionController extends Controller
                 ->all(),
         ]);
     }
+
+    public function detail(Request $request, $transactionId)
+    {
+        $user = $request->user();
+
+        $transaction = Transaction::query()
+            ->with(["products", "products.picture"])
+            ->where("transaction_id", $transactionId)
+            ->where("company_id", $user->company_id)
+            ->firstOrFail();
+
+        $products = $transaction->products;
+        foreach ($products as $product) {
+            $product->picture;
+        }
+
+        return Response::make([
+            "message" => "Berhasil",
+            "data" => collect($transaction)
+                ->camelKeys()
+                ->all(),
+        ]);
+    }
 }
