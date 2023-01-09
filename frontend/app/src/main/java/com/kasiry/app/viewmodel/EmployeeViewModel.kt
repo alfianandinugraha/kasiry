@@ -32,4 +32,22 @@ class EmployeeViewModel(
             callback(HttpCallback(response))
         }
     }
+
+
+    private val _delete = MutableStateFlow<HttpState<Any>?>(null)
+    val delete = _delete.asStateFlow()
+
+    fun delete (
+        userId: String,
+        callback: HttpCallback<Any>.() -> Unit
+    ) {
+        _delete.value = HttpState.Loading()
+
+        viewModelScope.launch {
+            val response = employeeRepository.delete(userId)
+            _delete.value = response
+
+            callback(HttpCallback(response))
+        }
+    }
 }

@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.kasiry.app.compose.*
 import com.kasiry.app.models.data.Employee
+import com.kasiry.app.models.data.Profile
 import com.kasiry.app.repositories.EmployeeRepository
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.utils.http.HttpState
@@ -23,7 +24,8 @@ import org.koin.androidx.compose.get
 @Composable
 fun EmployeeScreen(
     navController: NavController,
-    application: Application
+    application: Application,
+    profile: Profile
 ) {
     val employeeRepository: EmployeeRepository = get()
     val viewModel = remember {
@@ -59,8 +61,10 @@ fun EmployeeScreen(
             )
         },
         floatingButton = {
-            IconCircleButton(icon = Icons.Rounded.Add) {
-                navController.navigate("employees/create")
+            if (profile.abilities.employee == true) {
+                IconCircleButton(icon = Icons.Rounded.Add) {
+                    navController.navigate("employees/create")
+                }
             }
         }
     ) {
@@ -73,8 +77,12 @@ fun EmployeeScreen(
                         modifier = Modifier
                             .padding(bottom = 16.dp)
                             .padding(horizontal = 32.dp),
-                        onClick = {
-                            navController.navigate("employees/${employee.userId}/update")
+                        onClick = if (profile.abilities.employee == true) {
+                            {
+                                navController.navigate("employees/${employee.userId}")
+                            }
+                        } else {
+                            null
                         }
                     )
                 }

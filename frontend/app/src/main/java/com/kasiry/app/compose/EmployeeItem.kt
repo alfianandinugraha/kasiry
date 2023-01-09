@@ -28,7 +28,7 @@ import com.kasiry.app.theme.gray
 @Composable
 fun EmployeeItem(
     modifier: Modifier = Modifier,
-    onClick: (Employee) -> Unit,
+    onClick: ((Employee) -> Unit)? = null,
     employee: Employee,
 ) {
     Row(
@@ -39,9 +39,12 @@ fun EmployeeItem(
             )
             .clickable(
                 indication = rememberRipple(bounded = false),
-                interactionSource = remember { MutableInteractionSource() }
+                interactionSource = remember { MutableInteractionSource() },
+                enabled = onClick != null,
             ) {
-                onClick(employee)
+                if (onClick != null) {
+                    onClick(employee)
+                }
             }
             .border(
                 width = 1.dp,
@@ -72,13 +75,15 @@ fun EmployeeItem(
                 color = Color.gray()
             )
         }
-        Spacer(modifier = Modifier.weight(1f))
-        Icon(
-            Icons.Rounded.ChevronRight,
-            contentDescription = null,
-            tint = Color.blue(),
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-        )
+        if (onClick != null) {
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                Icons.Rounded.ChevronRight,
+                contentDescription = null,
+                tint = Color.blue(),
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+            )
+        }
     }
 }

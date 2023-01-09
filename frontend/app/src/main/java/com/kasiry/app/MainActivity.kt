@@ -141,7 +141,8 @@ class MainActivity : ComponentActivity() {
                         composable("employees") {
                             EmployeeScreen(
                                 navController = navController,
-                                application = application
+                                application = application,
+                                profile = profile.data,
                             )
                         }
                         composable("employees/create") {
@@ -156,7 +157,8 @@ class MainActivity : ComponentActivity() {
                                 EmployeeUpdateScreen(
                                     navController = navController,
                                     application = application,
-                                    userId = userId
+                                    userId = userId,
+                                    profile = profile.data
                                 )
                             }
                         }

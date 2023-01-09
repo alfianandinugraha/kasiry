@@ -33,6 +33,7 @@ import androidx.compose.ui.window.DialogWindowProvider
 import com.kasiry.app.compose.*
 import com.kasiry.app.models.data.Ability
 import com.kasiry.app.models.data.Employee
+import com.kasiry.app.models.data.Profile
 import com.kasiry.app.repositories.EmployeeRepository
 import com.kasiry.app.rules.minLength
 import com.kasiry.app.theme.Typo
@@ -48,11 +49,9 @@ import org.koin.androidx.compose.get
 fun EmployeeUpdateScreen(
     navController: NavController,
     application: Application,
-    userId: String
+    userId: String,
+    profile: Profile
 ) {
-    val mainViewModel: MainViewModel = get()
-    val profile by mainViewModel.profile.collectAsState()
-
     val viewModel = EmployeeUpdateViewModel(
         application = application,
         employeeRepository = get()
@@ -257,68 +256,63 @@ fun EmployeeUpdateScreen(
                         .weight(1f)
                 )
             }
-            when(val profileState = profile) {
-                is HttpState.Success -> {
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp),
-                        onClick = {
-                            form.handleSubmit {
-                                val name = it["name"]?.value as String
-                                val email = it["email"]?.value as String
-                                val phone = it["phone"]?.value as String
-                                val abilities = Ability(
-                                    employee = it["employee"]?.value as Boolean,
-                                    product = it["product"]?.value as Boolean,
-                                    transaction = it["transaction"]?.value as Boolean,
-                                )
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                onClick = {
+                    form.handleSubmit {
+                        val name = it["name"]?.value as String
+                        val email = it["email"]?.value as String
+                        val phone = it["phone"]?.value as String
+                        val abilities = Ability(
+                            employee = it["employee"]?.value as Boolean,
+                            product = it["product"]?.value as Boolean,
+                            transaction = it["transaction"]?.value as Boolean,
+                        )
 
-                                viewModel.update(
-                                    EmployeeRepository.UpdateBody(
-                                        name = name,
-                                        email = email,
-                                        phone = phone,
-                                        abilities = abilities,
-                                        userId = userId,
+                        viewModel.update(
+                            EmployeeRepository.UpdateBody(
+                                name = name,
+                                email = email,
+                                phone = phone,
+                                abilities = abilities,
+                                userId = userId,
+                            )
+                        ) {
+                            onSuccess {
+                                navController.popBackStack()
+                            }
+                            onError {
+                                Toast
+                                    .makeText(
+                                        application.applicationContext,
+                                        "Gagal mengubah pegawai",
+                                        Toast.LENGTH_SHORT
                                     )
-                                ) {
-                                    onSuccess {
-                                        navController.popBackStack()
-                                    }
-                                    onError {
-                                        Toast
-                                            .makeText(
-                                                application.applicationContext,
-                                                "Gagal mengubah pegawai",
-                                                Toast.LENGTH_SHORT
-                                            )
-                                            .show()
-                                    }
-                                }
+                                    .show()
                             }
                         }
-                    ) {
-                        Text(
-                            text = "Simpan",
-                            style = Typo.body,
-                            color = Color.White,
-                        )
                     }
-                    Text(
-                        text = "Hapus",
-                        style = Typo.body,
-                        color = Color.red(),
-                        modifier = Modifier
-                            .padding(top = 14.dp)
-                            .align(Alignment.CenterHorizontally)
-                            .clickable {
-                                isShow = true
-                            }
-                    )
                 }
-                else -> {}
+            ) {
+                Text(
+                    text = "Simpan",
+                    style = Typo.body,
+                    color = Color.White,
+                )
             }
+            Text(
+                text = "Hapus",
+                style = Typo.body,
+                color = Color.red(),
+                modifier = Modifier
+                    .padding(top = 14.dp)
+                    .align(Alignment.CenterHorizontally)
+                    .clickable {
+                        isShow = true
+                    }
+            )
         }
     }
 }
