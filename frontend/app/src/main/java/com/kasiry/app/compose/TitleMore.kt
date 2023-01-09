@@ -1,6 +1,7 @@
 package com.kasiry.app.compose
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -22,6 +23,7 @@ import com.kasiry.app.theme.blue
 fun TitleMore(
     text: String,
     modifier: Modifier = Modifier,
+    onMore: () -> Unit = {}
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -40,6 +42,9 @@ fun TitleMore(
                 .clip(
                     shape = RoundedCornerShape(999.dp)
                 )
+                .clickable {
+                    onMore()
+                }
                 .background(Color.blue())
                 .padding(horizontal = 12.dp, vertical = 4.dp)
         ) {
