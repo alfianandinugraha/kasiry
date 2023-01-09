@@ -95,6 +95,7 @@ class ProductViewModel(
 
     suspend fun getAll(
         query: String? = null,
+        limit: Int? = null,
         callback: (HttpCallback<List<Product>>.() -> Unit)? = null
     ): HttpState<List<Product>> {
         _listState.value = HttpState.Loading()

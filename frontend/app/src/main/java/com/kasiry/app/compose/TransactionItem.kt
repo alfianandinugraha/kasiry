@@ -8,22 +8,31 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CalendarToday
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kasiry.app.models.data.Transaction
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.theme.blue
 import com.kasiry.app.theme.gray
+import com.kasiry.app.utils.double.toFormattedString
 
 @Composable
 fun TransactionItem(
+    modifier: Modifier = Modifier,
+    transaction: Transaction,
     onClick: (() -> Unit)? = null
 ) {
+    var total = remember {
+        transaction.products.sumOf { it.quantity * it.sellPrice }
+    }
+
     Box(
-        modifier = Modifier
+        modifier = modifier
             .padding(
                 bottom = 12.dp
             )
@@ -36,7 +45,7 @@ fun TransactionItem(
     ) {
         Column {
             Text(
-                text = "Rp150.000",
+                text = "Rp${total.toFormattedString()}",
                 style = Typo.body,
                 color = Color.blue(),
                 fontWeight = FontWeight.Bold,

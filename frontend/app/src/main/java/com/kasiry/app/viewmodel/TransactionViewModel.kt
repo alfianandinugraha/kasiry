@@ -19,12 +19,13 @@ class TransactionViewModel(
     val listState = _listState.asStateFlow()
 
     suspend fun getAll(
+        limit: Int? = null,
         callback: HttpCallback<List<Transaction>>.() -> Unit = {}
     ): HttpState<List<Transaction>> {
         _listState.value = HttpState.Loading()
 
         return withContext(viewModelScope.coroutineContext) {
-            val response = transactionRepository.getAll()
+            val response = transactionRepository.getAll(limit = limit)
             _listState.value = response
 
             callback.invoke(

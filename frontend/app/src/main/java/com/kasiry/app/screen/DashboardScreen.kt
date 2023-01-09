@@ -1,5 +1,7 @@
 package com.kasiry.app.screen
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,28 +15,76 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.kasiry.app.compose.*
+import com.kasiry.app.models.data.Product
 import com.kasiry.app.models.data.Profile
+import com.kasiry.app.models.data.Transaction
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.theme.blue
 import com.kasiry.app.theme.gray
+import com.kasiry.app.utils.http.HttpState
 import com.kasiry.app.viewmodel.CartViewModel
+import com.kasiry.app.viewmodel.ProductViewModel
+import com.kasiry.app.viewmodel.TransactionViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.math.ceil
 
 @Composable
 fun DashboardScreen(
     navController: NavController,
     profile: Profile,
-    cartViewModel: CartViewModel
+    cartViewModel: CartViewModel,
+    productViewModel: ProductViewModel,
+    transactionViewModel: TransactionViewModel
 ) {
     val cartState by cartViewModel.carts.collectAsState()
+    var transactionsState by remember {
+        mutableStateOf<HttpState<List<Transaction>>>(HttpState.Loading())
+    }
+    var productsState by remember {
+        mutableStateOf<HttpState<List<Product>>>(HttpState.Loading())
+    }
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         cartViewModel.getAll()
+    }
+
+    LaunchedEffect(Unit) {
+        productViewModel.getAll(limit = 6) {
+            onSuccess {
+                productsState = it
+                Log.d("DasboardScreen", it.data.toString())
+            }
+
+            onError {
+                Toast
+                    .makeText(context, "Gagal memuat produk terbaru", Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        transactionViewModel.getAll(limit = 5) {
+            onSuccess {
+                transactionsState = it
+                Log.d("DasboardScreen", it.data.toString())
+            }
+
+            onError {
+                Toast
+                    .makeText(context, "Gagal memuat transaksi terakhir", Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
     }
 
     Layout(
@@ -210,35 +260,132 @@ fun DashboardScreen(
                                 }
                             )
                         }
-
-                        Column(
-                            modifier = Modifier
-                                .padding(
-                                    top = 28.dp,
-                                )
-                        ) {
-                            TitleMore(text = "Transaksi Terakhir")
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 12.dp)
-                            ) {
-                                TransactionItem()
-                                TransactionItem()
-                                TransactionItem()
-                                TransactionItem()
-                                TransactionItem()
-                            }
-                        }
-
-                        TitleMore(
-                            text = "Produk",
-                            modifier = Modifier
-                                .padding(top = 20.dp, bottom = 12.dp)
-                        )
                     }
                 }
             }
+        }
+
+        item {
+            TitleMore(
+                text = "Transaksi Terakhir",
+                modifier = Modifier
+                    .padding(
+                        horizontal = 32.dp
+                    )
+                    .padding(
+                        top = 28.dp,
+                        bottom = 12.dp
+                    ),
+                onMore = {
+                    navController.navigate("transactions")
+                }
+            )
+        }
+
+        when (val transactions = transactionsState) {
+            is HttpState.Success -> {
+                items(transactions.data.size) {
+                    val transaction = transactions.data[it]
+
+                    TransactionItem(
+                        transaction = transaction,
+                        modifier = Modifier
+                            .padding(horizontal = 32.dp),
+                        onClick = {
+                            navController.navigate("transactions/${transaction.transactionId}")
+                        }
+                    )
+                }
+            }
+            else -> {}
+        }
+
+        item {
+            TitleMore(
+                text = "Produk Terbaru",
+                modifier = Modifier
+                    .padding(
+                        horizontal = 32.dp
+                    )
+                    .padding(
+                        top = 16.dp,
+                        bottom = 12.dp
+                    ),
+                onMore = {
+                    navController.navigate("products")
+                }
+            )
+        }
+
+        when (val products = productsState) {
+            is HttpState.Success -> {
+                val data = products.data
+                items(ceil(data.size / 2f).toInt(), key = { data[it].productId }) { index ->
+                    val firstData = data[index * 2]
+                    val secondData = data.getOrNull((index * 2) + 1)
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 32.dp)
+                            .padding(bottom = 16.dp),
+                    ) {
+                        ProductItem(
+                            modifier = Modifier
+                                .weight(1f),
+                            product = firstData,
+                            onUpdate = {
+                                navController.navigate("products/${firstData.productId}/update")
+                            },
+                            onSubmitCart = {
+                                val scope = CoroutineScope(Dispatchers.IO)
+
+                                scope.launch {
+                                    cartViewModel.getAll()
+
+                                    cartViewModel.store(
+                                        CartViewModel.StoreBody(
+                                            quantity = it.quantity,
+                                            product = firstData
+                                        )
+                                    )
+                                }
+                            }
+                        )
+                        if (secondData != null) {
+                            ProductItem(
+                                modifier = Modifier
+                                    .weight(1f),
+                                product = secondData,
+                                onUpdate = {
+                                    navController.navigate("products/${secondData.productId}/update")
+                                },
+                                onSubmitCart = {
+                                    val scope = CoroutineScope(Dispatchers.IO)
+
+                                    scope.launch {
+                                        cartViewModel.getAll()
+
+                                        cartViewModel.store(
+                                            CartViewModel.StoreBody(
+                                                quantity = it.quantity,
+                                                product = secondData
+                                            )
+                                        )
+                                    }
+                                }
+                            )
+                        } else {
+                            Spacer(
+                                modifier = Modifier
+                                    .weight(1f)
+                            )
+                        }
+                    }
+                }
+            }
+            else -> {}
         }
     }
 }

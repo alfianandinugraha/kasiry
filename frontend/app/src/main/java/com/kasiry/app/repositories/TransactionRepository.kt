@@ -42,11 +42,16 @@ class TransactionRepository(
             .execute()
     }
 
-    suspend fun getAll(): HttpState<List<Transaction>> {
+    suspend fun getAll(
+        limit: Int? = null
+    ): HttpState<List<Transaction>> {
         val request = ApiRequest
             .json(
                 HttpMethod.GET,
                 "/transactions",
+                params = mapOf(
+                    "limit" to limit
+                )
             )
             .build()
 
