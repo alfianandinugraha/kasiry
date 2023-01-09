@@ -1,6 +1,5 @@
 package com.kasiry.app.screen
 
-import android.app.Application
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,28 +14,18 @@ import com.kasiry.app.compose.Button
 import com.kasiry.app.compose.TextField
 import com.kasiry.app.compose.TopBar
 import com.kasiry.app.models.data.Profile
-import com.kasiry.app.repositories.ProfileRepository
 import com.kasiry.app.rules.required
 import com.kasiry.app.theme.Typo
 import com.kasiry.app.utils.Field
 import com.kasiry.app.utils.FormStore
-import com.kasiry.app.viewmodel.MainViewModel
-import com.kasiry.app.viewmodel.ProfileUpdateViewModel
-import org.koin.androidx.compose.get
+import com.kasiry.app.viewmodel.ProfileViewModel
 
 @Composable
 fun ProfileUpdateScreen(
     navController: NavController,
     profile: Profile,
-    application: Application,
+    profileViewModel: ProfileViewModel
 ) {
-    val updateViewModel = remember {
-        ProfileUpdateViewModel(
-            application,
-            profileRepository = ProfileRepository(application.applicationContext)
-        )
-    }
-    val mainViewModel: MainViewModel = get()
 
     Column(
         modifier = Modifier
@@ -116,9 +105,9 @@ fun ProfileUpdateScreen(
                             userId = profile.userId,
                         )
 
-                        updateViewModel.update(payload) {
+                        profileViewModel.update(payload) {
                             onSuccess {
-                                mainViewModel.setProfile(payload)
+                                profileViewModel.setProfile(payload)
                                 navController.popBackStack()
                             }
                         }

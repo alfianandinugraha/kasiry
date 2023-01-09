@@ -66,4 +66,21 @@ class ProfileViewModel(
             }
         }
     }
+
+    private val _update = MutableStateFlow<HttpState<Profile>?>(null)
+    val update = _update.asStateFlow()
+
+    fun update(
+        profile: Profile,
+        callback: HttpCallback<Profile>.() -> Unit,
+    ) {
+        _update.value = HttpState.Loading()
+
+        viewModelScope.launch {
+            val response = profileRepository.update(profile)
+            _update.value = response
+
+            callback(HttpCallback(response))
+        }
+    }
 }

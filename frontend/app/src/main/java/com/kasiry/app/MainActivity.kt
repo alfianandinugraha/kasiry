@@ -97,8 +97,8 @@ class MainActivity : ComponentActivity() {
                         composable("profile-update") {
                             ProfileUpdateScreen(
                                 navController = navController,
-                                application = application,
-                                profile = profile.data
+                                profile = profile.data,
+                                profileViewModel = get()
                             )
                         }
                         composable("products") {
