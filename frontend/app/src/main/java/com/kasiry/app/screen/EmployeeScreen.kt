@@ -79,7 +79,7 @@ fun EmployeeScreen(
                             .padding(horizontal = 32.dp),
                         onClick = if (profile.abilities.employee == true) {
                             {
-                                navController.navigate("employees/${employee.userId}")
+                                navController.navigate("employees/${employee.userId}/update")
                             }
                         } else {
                             null
