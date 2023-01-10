@@ -15,6 +15,7 @@ return new class extends Migration {
         Schema::create("transactions", function (Blueprint $table) {
             $table->string("transaction_id", 100);
             $table->string("company_id", 100);
+            $table->dateTime("datetime");
             $table->timestamps();
 
             $table->primary("transaction_id");

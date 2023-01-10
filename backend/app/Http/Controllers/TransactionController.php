@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\TransactionProduct;
+use Carbon\Carbon;
 use GuzzleHttp\Handler\Proxy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +20,7 @@ class TransactionController extends Controller
     {
         $validator = Validator::make($request->all(), [
             "products" => ["required", "array"],
+            "datetime" => ["required", "numeric"],
         ]);
 
         $validator->validate();
@@ -56,10 +58,18 @@ class TransactionController extends Controller
             })
             ->toArray();
 
-        DB::transaction(function () use ($products, $transactionId, $user) {
+        DB::transaction(function () use (
+            $products,
+            $transactionId,
+            $request,
+            $user
+        ) {
             $transaction = new Transaction([
                 "transaction_id" => $transactionId,
                 "company_id" => $user->company_id,
+                "datetime" => Carbon::createFromTimestamp(
+                    $request->datetime
+                )->format("Y-m-d H:i:s"),
             ]);
 
             $transaction->saveOrFail();

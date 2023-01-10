@@ -37,6 +37,8 @@ import com.kasiry.app.viewmodel.TransactionViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun TransactionDetailScreen(
@@ -159,6 +161,20 @@ fun TransactionDetailScreen(
                         total - capital
                     }
 
+                    val date = remember(transaction.data.datetime) {
+                        SimpleDateFormat("dd MMMM yyyy")
+                            .format(
+                                Date(transaction.data.datetime.toLong() * 1000)
+                            )
+                    }
+
+                    val time = remember(transaction.data.datetime) {
+                        SimpleDateFormat("HH:mm")
+                            .format(
+                                Date(transaction.data.datetime.toLong() * 1000)
+                            )
+                    }
+
                     Column(
                         modifier = Modifier
                             .padding(horizontal = 32.dp)
@@ -172,7 +188,7 @@ fun TransactionDetailScreen(
                                 fontSize = 14.sp
                             )
                             Text(
-                                text = "28 Januari 2023",
+                                text = date,
                                 style = Typo.body,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold
@@ -190,7 +206,7 @@ fun TransactionDetailScreen(
                                 fontSize = 14.sp
                             )
                             Text(
-                                text = "08:23",
+                                text = time,
                                 style = Typo.body,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold

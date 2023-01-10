@@ -50,5 +50,11 @@ class UserSeeder extends Seeder
             "address" => "Sleman, Yogyakarta",
             "phone" => fake("ID")->phoneNumber(),
         ]);
+
+        User::query()
+            ->find($userId)
+            ->update([
+                "company_id" => $companyId,
+            ]);
     }
 }

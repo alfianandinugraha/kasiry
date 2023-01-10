@@ -1,8 +1,6 @@
 package com.kasiry.app.repositories
 
-import android.app.Application
 import android.content.Context
-import androidx.lifecycle.AndroidViewModel
 import com.kasiry.app.models.data.Transaction
 import com.kasiry.app.utils.http.*
 import okhttp3.OkHttpClient
@@ -22,8 +20,9 @@ class TransactionRepository(
         val productId: String
     )
 
-    data class StoreBody (
-        val products: List<ProductRequest>
+    data class StoreBody(
+        val products: List<ProductRequest>,
+        val datetime: Int
     )
 
     suspend fun store(body: StoreBody): HttpState<Transaction> {

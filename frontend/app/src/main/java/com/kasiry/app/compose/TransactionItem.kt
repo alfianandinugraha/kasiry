@@ -20,6 +20,8 @@ import com.kasiry.app.theme.Typo
 import com.kasiry.app.theme.blue
 import com.kasiry.app.theme.gray
 import com.kasiry.app.utils.double.toFormattedString
+import java.text.SimpleDateFormat
+import java.util.Date
 
 @Composable
 fun TransactionItem(
@@ -27,8 +29,15 @@ fun TransactionItem(
     transaction: Transaction,
     onClick: (() -> Unit)? = null
 ) {
-    var total = remember {
+    val total = remember {
         transaction.products.sumOf { it.quantity * it.sellPrice }
+    }
+
+    val date = remember(transaction.datetime) {
+        SimpleDateFormat("dd MMMM yyyy")
+            .format(
+                Date(transaction.datetime.toLong() * 1000)
+            )
     }
 
     Box(
@@ -66,7 +75,7 @@ fun TransactionItem(
                         .padding(end = 4.dp)
                 )
                 Text(
-                    text = "20 Januari 2021",
+                    text = date,
                     style = Typo.body,
                     fontSize = 14.sp,
                     color = Color.gray(),

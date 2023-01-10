@@ -9,13 +9,17 @@ class Transaction extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["transaction_id", "company_id"];
+    protected $fillable = ["transaction_id", "company_id", "datetime"];
 
     protected $primaryKey = "transaction_id";
 
     public $keyType = "string";
 
     public $incrementing = false;
+
+    public $casts = [
+        "datetime" => "timestamp",
+    ];
 
     public function company()
     {
