@@ -29,14 +29,17 @@ return new class extends Migration {
             $table
                 ->foreign("company_id")
                 ->references("company_id")
+                ->onDelete("CASCADE")
                 ->on("companies");
             $table
                 ->foreign("category_id")
                 ->references("category_id")
+                ->onDelete("SET NULL")
                 ->on("categories");
             $table
                 ->foreign("picture_id")
                 ->references("asset_id")
+                ->onDelete("SET NULL")
                 ->on("assets");
         });
     }
