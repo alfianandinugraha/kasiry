@@ -41,19 +41,19 @@ fun RegisterScreen(navController: NavController) {
             FormStore(
                 fields = mutableStateMapOf(
                     "name" to Field(
-                        initialValue = "",
+                        initialValue = "Alfian Andi",
                         rules = listOf(
                             required(),
                         )
                     ),
                     "email" to Field(
-                        initialValue = "",
+                        initialValue = "admin@gmail.com",
                         rules = listOf(
                             required(),
                         )
                     ),
                     "password" to Field(
-                        initialValue = "",
+                        initialValue = "admin123",
                         rules = listOf(
                             required(),
                             minLength(6),
@@ -71,13 +71,6 @@ fun RegisterScreen(navController: NavController) {
             append("Sudah punya akun? ")
             withStyle(style = SpanStyle(color = Color.blue(500), fontWeight = FontWeight.Bold)) {
                 append("Masuk")
-            }
-        }
-
-        val annotatedForgotPassword = buildAnnotatedString {
-            append("Lupa password? ")
-            withStyle(style = SpanStyle(color = Color.blue(500), fontWeight = FontWeight.Bold)) {
-                append("Reset")
             }
         }
 
@@ -154,14 +147,6 @@ fun RegisterScreen(navController: NavController) {
                         .clickable {
                             navController.navigate("login")
                         }
-                )
-                Text(
-                    text = annotatedForgotPassword,
-                    style = Typo.body,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 6.dp)
                 )
             }
         }
