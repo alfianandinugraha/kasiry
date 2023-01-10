@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import arrow.core.Either
@@ -37,6 +38,7 @@ fun TextField(
         keyboardType = KeyboardType.Text,
     ),
     onChange: (String) -> Unit = {},
+    visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
     val field = remember(control, name, rules) {
         control.getField<String>(name, rules)
@@ -106,6 +108,7 @@ fun TextField(
                 fontFamily = Typo.body.fontFamily,
                 color = if (disabled) Color.gray(500) else Color.black(500)
             ),
+            visualTransformation = visualTransformation,
             decorationBox = { innerTextField ->
                 Box(
                     modifier = Modifier
