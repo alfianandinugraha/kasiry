@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.kasiry.app.compose.*
+import com.kasiry.app.models.data.Profile
 import com.kasiry.app.repositories.CategoryRepository
 import com.kasiry.app.utils.http.HttpState
 import com.kasiry.app.viewmodel.CategoryViewModel
@@ -20,7 +21,8 @@ import org.koin.androidx.compose.get
 @Composable
 fun CategoryScreen(
     navController: NavController,
-    application: Application
+    application: Application,
+    profile: Profile
 ) {
     val categoryRepository: CategoryRepository = get()
     val viewModel = remember {
@@ -61,8 +63,10 @@ fun CategoryScreen(
             )
         },
         floatingButton = {
-            IconCircleButton(icon = Icons.Rounded.Add) {
-                navController.navigate("categories/create")
+            if (profile.abilities.product == true) {
+                IconCircleButton(icon = Icons.Rounded.Add) {
+                    navController.navigate("categories/create")
+                }
             }
         }
     ) {
@@ -78,8 +82,12 @@ fun CategoryScreen(
                             .padding(bottom = 12.dp)
                             .padding(horizontal = 32.dp),
                         category = category,
-                        onClick = {
-                            navController.navigate("categories/${category.categoryId}")
+                        onClick = if (profile.abilities.product == true) {
+                            {
+                                navController.navigate("categories/${category.categoryId}")
+                            }
+                        } else {
+                            null
                         }
                     )
                 }

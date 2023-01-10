@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.kasiry.app.compose.*
+import com.kasiry.app.models.data.Profile
 import com.kasiry.app.theme.gray
 import com.kasiry.app.utils.Field
 import com.kasiry.app.utils.FormStore
@@ -42,7 +43,8 @@ fun ProductListScreen(
     navController: NavController,
     application: Application,
     productViewModel: ProductViewModel,
-    cartViewModel: CartViewModel
+    cartViewModel: CartViewModel,
+    profile: Profile
 ) {
     val permission = rememberPermissionRequest("android.permission.CAMERA")
     val filterListState = productViewModel.filterListState.collectAsState()
@@ -108,12 +110,14 @@ fun ProductListScreen(
                 )
             },
             floatingButton = {
-                IconCircleButton(
-                    icon = Icons.Rounded.Add,
-                    onClick = {
-                        navController.navigate("products/create")
-                    }
-                )
+                if (profile.abilities.product == true) {
+                    IconCircleButton(
+                        icon = Icons.Rounded.Add,
+                        onClick = {
+                            navController.navigate("products/create")
+                        }
+                    )
+                }
             }
         ) {
             when (val list = filterListState.value) {
@@ -197,8 +201,12 @@ fun ProductListScreen(
                                 modifier = Modifier
                                     .weight(1f),
                                 product = firstData,
-                                onUpdate = {
-                                    navController.navigate("products/${firstData.productId}/update")
+                                onUpdate = if (profile.abilities.product == true) {
+                                    {
+                                        navController.navigate("products/${firstData.productId}/update")
+                                    }
+                                } else {
+                                    null
                                 },
                                 onSubmitCart = {
                                     val scope = CoroutineScope(Dispatchers.IO)
@@ -220,8 +228,12 @@ fun ProductListScreen(
                                     modifier = Modifier
                                         .weight(1f),
                                     product = secondData,
-                                    onUpdate = {
-                                        navController.navigate("products/${secondData.productId}/update")
+                                    onUpdate = if (profile.abilities.product == true) {
+                                        {
+                                            navController.navigate("products/${firstData.productId}/update")
+                                        }
+                                    } else {
+                                        null
                                     },
                                     onSubmitCart = {
                                         val scope = CoroutineScope(Dispatchers.IO)

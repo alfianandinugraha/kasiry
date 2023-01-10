@@ -378,8 +378,12 @@ fun DashboardScreen(
                             modifier = Modifier
                                 .weight(1f),
                             product = firstData,
-                            onUpdate = {
-                                navController.navigate("products/${firstData.productId}/update")
+                            onUpdate = if (profile.abilities.product == true) {
+                                {
+                                    navController.navigate("products/${firstData.productId}/update")
+                                }
+                            } else {
+                                null
                             },
                             onSubmitCart = {
                                 val scope = CoroutineScope(Dispatchers.IO)
@@ -401,8 +405,12 @@ fun DashboardScreen(
                                 modifier = Modifier
                                     .weight(1f),
                                 product = secondData,
-                                onUpdate = {
-                                    navController.navigate("products/${secondData.productId}/update")
+                                onUpdate = if (profile.abilities.product == true) {
+                                    {
+                                        navController.navigate("products/${firstData.productId}/update")
+                                    }
+                                } else {
+                                    null
                                 },
                                 onSubmitCart = {
                                     val scope = CoroutineScope(Dispatchers.IO)

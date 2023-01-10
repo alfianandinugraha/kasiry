@@ -106,7 +106,8 @@ class MainActivity : ComponentActivity() {
                                 navController = navController,
                                 application = application,
                                 productViewModel = get(),
-                                cartViewModel = get()
+                                cartViewModel = get(),
+                                profile = profile.data
                             )
                         }
                         composable("products/create") {
@@ -166,6 +167,7 @@ class MainActivity : ComponentActivity() {
                             CategoryScreen(
                                 navController = navController,
                                 application = application,
+                                profile = profile.data,
                             )
                         }
                         composable("categories/create") {
@@ -180,7 +182,8 @@ class MainActivity : ComponentActivity() {
                                 CategoryUpdateScreen(
                                     navController = navController,
                                     application = application,
-                                    categoryId = categoryId
+                                    categoryId = categoryId,
+                                    profile = profile.data
                                 )
                             }
                         }

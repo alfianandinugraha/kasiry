@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.kasiry.app.compose.*
 import com.kasiry.app.models.data.Category
+import com.kasiry.app.models.data.Profile
 import com.kasiry.app.repositories.CategoryRepository
 import com.kasiry.app.rules.required
 import com.kasiry.app.theme.Typo
@@ -41,10 +42,10 @@ import org.koin.androidx.compose.get
 fun CategoryUpdateScreen(
     navController: NavController,
     application: Application,
-    categoryId: String
+    categoryId: String,
+    profile: Profile
 ) {
     val mainViewModel: MainViewModel = get()
-    val profile by mainViewModel.profile.collectAsState()
 
     val categoryRepository: CategoryRepository = get()
     val viewModel = remember {
@@ -179,60 +180,54 @@ fun CategoryUpdateScreen(
                             .fillMaxWidth()
                             .padding(bottom = 16.dp, top = 8.dp),
                     )
-                    when(val profileState = profile) {
-                        is HttpState.Success -> {
-                            Button(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 16.dp),
-                                onClick = {
-                                    form.handleSubmit {
-                                        val name = it["name"]?.value as String
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        onClick = {
+                            form.handleSubmit {
+                                val name = it["name"]?.value as String
 
-                                        viewModel.update(
-                                            category = Category(
-                                                categoryId = categoryId,
-                                                name = name,
-                                                companyId = profileState.data.companyId
+                                viewModel.update(
+                                    category = Category(
+                                        categoryId = categoryId,
+                                        name = name,
+                                        companyId = profile.companyId
+                                    )
+                                ) {
+                                    onSuccess {
+                                        navController.popBackStack()
+                                    }
+                                    onError {
+                                        Toast
+                                            .makeText(
+                                                application.applicationContext,
+                                                "Gagal mengubah kategori",
+                                                Toast.LENGTH_SHORT
                                             )
-                                        ) {
-                                            onSuccess {
-                                                navController.popBackStack()
-                                            }
-                                            onError {
-                                                Toast
-                                                    .makeText(
-                                                        application.applicationContext,
-                                                        "Gagal mengubah kategori",
-                                                        Toast.LENGTH_SHORT
-                                                    )
-                                                    .show()
-                                            }
-                                        }
+                                            .show()
                                     }
                                 }
-                            ) {
-                                Text(
-                                    text = "Simpan",
-                                    style = Typo.body,
-                                    color = Color.White,
-                                )
                             }
-                            Text(
-                                text = "Hapus",
-                                style = Typo.body,
-                                color = Color.red(),
-                                modifier = Modifier
-                                    .padding(top = 14.dp)
-                                    .align(Alignment.CenterHorizontally)
-                                    .clickable {
-                                        isAlertShow = true
-                                    }
-                            )
-
                         }
-                        else -> {}
+                    ) {
+                        Text(
+                            text = "Simpan",
+                            style = Typo.body,
+                            color = Color.White,
+                        )
                     }
+                    Text(
+                        text = "Hapus",
+                        style = Typo.body,
+                        color = Color.red(),
+                        modifier = Modifier
+                            .padding(top = 14.dp)
+                            .align(Alignment.CenterHorizontally)
+                            .clickable {
+                                isAlertShow = true
+                            }
+                    )
                 }
             }
             is HttpState.Loading -> {

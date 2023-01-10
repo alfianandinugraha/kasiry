@@ -61,7 +61,8 @@ fun CategoryItem(
             .background(bgColor)
             .clickable(
                 indication = rememberRipple(bounded = false),
-                interactionSource = remember { MutableInteractionSource() }
+                interactionSource = remember { MutableInteractionSource() },
+                enabled = onClick != null
             ) {
                 if (onClick != null) {
                     onClick(category)
@@ -88,7 +89,7 @@ fun CategoryItem(
             modifier = Modifier.padding(start = 12.dp),
             color = textColor
         )
-        if (withMore) {
+        if (onClick != null && withMore) {
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 Icons.Rounded.ChevronRight,

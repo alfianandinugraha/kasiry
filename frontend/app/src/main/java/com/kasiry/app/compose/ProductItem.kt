@@ -131,18 +131,21 @@ fun ProductItem(
                                 fontSize = 14.sp
                             )
                         }
-                        Spacer(modifier = Modifier.weight(1f))
-                        Text(
-                            text = "Ubah",
-                            style = Typo.body,
-                            color = Color.blue(),
-                            modifier = Modifier
-                                .padding(bottom = 8.dp)
-                                .clickable {
-                                    isModalOpen = false
-                                    onUpdate?.invoke(product)
-                                }
-                        )
+                        if (onUpdate != null) {
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(
+                                text = "Ubah",
+                                style = Typo.body,
+                                color = Color.blue(),
+                                modifier = Modifier
+                                    .padding(bottom = 8.dp)
+                                    .clickable {
+                                        isModalOpen = false
+                                        onUpdate.invoke(product)
+                                    }
+                            )
+
+                        }
                     }
                 }
                 Row {
