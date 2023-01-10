@@ -47,24 +47,27 @@ fun TransactionDetailScreen(
     transactionViewModel: TransactionViewModel,
     navController: NavController
 ) {
-    var transactionState by remember {
-        mutableStateOf<HttpState<Transaction>>(HttpState.Loading())
-    }
     var isAlertOpen by remember {
         mutableStateOf(false)
     }
 
+    var transactionState by remember {
+        mutableStateOf<HttpState<Transaction>>(HttpState.Loading())
+    }
+
     LaunchedEffect(Unit) {
-        Log.d("TransactionDetailScreen", "Open!")
         transactionViewModel.detail(transactionId) {
             onSuccess {
                 transactionState = it
-                Log.d("TransactionDetailScreen", it.toString())
             }
 
             onError {
                 Toast
-                    .makeText(application.applicationContext, "Gagal memuat detail transaksi", Toast.LENGTH_LONG)
+                    .makeText(
+                        application.applicationContext,
+                        "Gagal memuat detail transaksi",
+                        Toast.LENGTH_LONG
+                    )
                     .show()
                 navController.popBackStack()
             }
