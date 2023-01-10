@@ -11,10 +11,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.AttachMoney
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Remove
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -439,11 +436,12 @@ fun CartListScreen(
                             horizontalArrangement = Arrangement.Center,
                         ) {
                             Icon(
-                                Icons.Rounded.AttachMoney,
+                                Icons.Rounded.Login,
                                 contentDescription = null,
                                 tint = Color.White,
                                 modifier = Modifier
-                                    .size(22.dp)
+                                    .size(28.dp)
+                                    .padding(end = 6.dp)
                             )
                             Text(
                                 text = "Bayar",
