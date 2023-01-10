@@ -2,6 +2,7 @@ package com.kasiry.app.screen
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,11 +42,19 @@ fun TransactionListScreen(
     transactionViewModel: TransactionViewModel
 ) {
     val listState by transactionViewModel.listState.collectAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        transactionViewModel.getAll() {
-            onSuccess {
-                Log.d("TransactionListScreen", "onSuccess: $it")
+        transactionViewModel.getAll {
+            onError {
+                Toast
+                    .makeText(
+                        context,
+                        "Gagal memuat semua transaksi",
+                        Toast.LENGTH_LONG
+                    )
+                    .show()
+                navController.popBackStack()
             }
         }
     }
