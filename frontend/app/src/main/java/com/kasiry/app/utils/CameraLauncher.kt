@@ -16,13 +16,16 @@ import androidx.core.content.FileProvider
 import java.io.File
 
 @Composable
-fun rememberCameraLauncher(context: Context, onResult: (Uri) -> Unit): CameraLauncher {
+fun rememberCameraLauncher(
+    context: Context, onResult: (Uri) -> Unit
+): CameraLauncher {
     var file by remember {
         mutableStateOf(Uri.EMPTY)
     }
 
     val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
+        contract = ActivityResultContracts
+            .StartActivityForResult(),
         onResult = {
             if (Activity.RESULT_OK == it.resultCode) {
                 onResult(file)
@@ -32,13 +35,20 @@ fun rememberCameraLauncher(context: Context, onResult: (Uri) -> Unit): CameraLau
 
     fun launch() {
         val timestamp = System.currentTimeMillis() / 1000
-        val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-        val fileTemp = File.createTempFile("kasiry_$timestamp", ".jpg", dir)
-        val fileTempUri = FileProvider.getUriForFile(
-            context,
-            "com.kasiry.app.provider",
-            fileTemp
-        )
+        val dir = Environment
+            .getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES
+            )
+        val fileTemp = File
+            .createTempFile(
+                "kasiry_$timestamp", ".jpg", dir
+            )
+        val fileTempUri = FileProvider
+            .getUriForFile(
+                context,
+                "com.kasiry.app.provider",
+                fileTemp
+            )
 
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 

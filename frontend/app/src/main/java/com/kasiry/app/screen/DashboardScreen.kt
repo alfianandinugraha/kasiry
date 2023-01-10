@@ -71,7 +71,11 @@ fun DashboardScreen(
 
             onError {
                 Toast
-                    .makeText(context, "Gagal memuat produk terbaru", Toast.LENGTH_LONG)
+                    .makeText(
+                        context,
+                        "Gagal memuat produk terbaru",
+                        Toast.LENGTH_LONG
+                    )
                     .show()
             }
         }
@@ -81,12 +85,15 @@ fun DashboardScreen(
         transactionViewModel.getAll(limit = 5) {
             onSuccess {
                 transactionsState = it
-                Log.d("DasboardScreen", it.data.toString())
             }
 
             onError {
                 Toast
-                    .makeText(context, "Gagal memuat transaksi terakhir", Toast.LENGTH_LONG)
+                    .makeText(
+                        context,
+                        "Gagal memuat transaksi terakhir",
+                        Toast.LENGTH_LONG
+                    )
                     .show()
             }
         }
@@ -100,7 +107,11 @@ fun DashboardScreen(
 
             onError {
                 Toast
-                    .makeText(context, "Gagal memuat ringkasan", Toast.LENGTH_LONG)
+                    .makeText(
+                        context,
+                        "Gagal memuat ringkasan",
+                        Toast.LENGTH_LONG
+                    )
                     .show()
             }
         }

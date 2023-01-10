@@ -125,19 +125,34 @@ fun ProductUpdateScreen(
         productViewModel.get(productId) {
             onSuccess {
                 productState = it
-                Log.d("ProductUpdateScreen", "ProductUpdateScreen: $it")
 
-                form.setValue("name", it.data.name)
-                form.setValue("description", it.data.description ?: "")
-                form.setValue("stock", it.data.stock.toString())
-                form.setValue("sell_price", it.data.sellPrice.toString())
-                form.setValue("buy_price", it.data.buyPrice.toString())
-                form.setValue("barcode", it.data.barcode ?: "")
-                form.setValue("category_id", it.data.category?.categoryId ?: "")
+                form.setValue(
+                    "name", it.data.name
+                )
+                form.setValue(
+                    "description", it.data.description ?: ""
+                )
+                form.setValue(
+                    "stock", it.data.stock.toString()
+                )
+                form.setValue(
+                    "sell_price", it.data.sellPrice.toString()
+                )
+                form.setValue(
+                    "buy_price", it.data.buyPrice.toString()
+                )
+                form.setValue(
+                    "barcode", it.data.barcode ?: ""
+                )
+                form.setValue(
+                    "category_id", it.data.category?.categoryId ?: ""
+                )
                 categoryName = it.data.category?.name ?: ""
 
                 if (it.data.picture !== null) {
-                    form.setValue("picture_id", it.data.picture.assetId ?: "")
+                    form.setValue(
+                        "picture_id", it.data.picture.assetId ?: ""
+                    )
                     imageUri = it.data.picture.url.toUri()
                 }
             }

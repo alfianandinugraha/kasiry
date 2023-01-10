@@ -16,19 +16,29 @@ fun rememberGetContent(type: String): GetContentRequest {
     ) {
         fn(
             object : GetContentRequestResult {
-                override fun onSuccess(callback: (uri: Uri) -> Unit) {
-                    if (it !== Uri.EMPTY && it !== null) callback(it)
+                override fun onSuccess(
+                    callback: (uri: Uri) -> Unit
+                ) {
+                    if (it !== Uri.EMPTY && it !== null) {
+                        callback(it)
+                    }
                 }
 
-                override fun onError(callback: () -> Unit) {
-                    if (it === Uri.EMPTY) callback()
+                override fun onError(
+                    callback: () -> Unit
+                ) {
+                    if (it === Uri.EMPTY) {
+                        return callback()
+                    }
                 }
             }
         )
     }
 
     return object : GetContentRequest {
-        override fun launch(callback: GetContentRequestResult.() -> Unit) {
+        override fun launch(
+            callback: GetContentRequestResult.() -> Unit
+        ) {
             fn = callback
             launcher.launch(type)
         }
@@ -36,10 +46,16 @@ fun rememberGetContent(type: String): GetContentRequest {
 }
 
 interface GetContentRequest {
-    fun launch(callback: GetContentRequestResult.() -> Unit)
+    fun launch(
+        callback: GetContentRequestResult.() -> Unit
+    )
 }
 
 interface GetContentRequestResult {
-    fun onSuccess(callback: (uri: Uri) -> Unit)
-    fun onError(callback: () -> Unit)
+    fun onSuccess(
+        callback: (uri: Uri) -> Unit
+    )
+    fun onError(
+        callback: () -> Unit
+    )
 }

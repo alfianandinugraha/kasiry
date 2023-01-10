@@ -57,7 +57,8 @@ fun EmployeeItem(
             Icons.Rounded.Person, contentDescription = null,
             modifier = Modifier
                 .size(24.dp)
-                .align(Alignment.CenterVertically)
+                .align(Alignment.CenterVertically),
+            tint = Color.gray(400)
         )
         Column(
             modifier = Modifier.padding(start = 12.dp)
